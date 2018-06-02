@@ -3,18 +3,18 @@ close all
 
 rho = 0.9;
 sigm = 1;
-T = 2000;
+T = 200;
 drift = 5;
 tt = 0;
 [y, yss] = generate_AR1(rho,sigm,T,drift,tt);
 x = [ones(T-1,1), y(1:end-1)'];
 y = y(2:end)';
 
-prior_rho = [drift - 3; rho - 0.2];
+prior_rho = [drift rho];
 prior_VARrho = eye(size(x,2));
 prior_s = 770;
 prior_v = 300;
-N_simul = 100000;
+N_simul = 10000;
 n = 3;
 
 [rho_post, sig_post, rho_dist, sig_dist] = ...

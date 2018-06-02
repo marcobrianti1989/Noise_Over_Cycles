@@ -1,0 +1,35 @@
+function [post_BETA_median, post_SIGMA_median, post_BETA_distribution, post_SIGMA_distribution] = bayesian_OLS(prior_BETA,prior_SIGMA,prior_s,prior_v,Y,X,N,n)
+%This function estimate a bayesian multivariate OLS using Gibbs sampling
+%procedure. We allow dependent variable Y to be (nvar,T).
+
+%%%%% Inputs: %%%%%
+%prior_BETA: prior of the regression coefficient. (k,nvar)
+%prior_SIGMA: prior of the variance of the shocks to y. (nvar,nvar)
+%prior_s: first argument of the Inverse-Wishart Distributin (nvar,nvar)
+%prior_v: second argument of the Inverse-Wishart Distribution (1,1)
+%Y: dependent variable vector. (T,nvar)
+%X: independent variable matrix (T,k)
+%N: number of simulations
+%n: scalar usuful to derive posterior of v.
+
+%%%%% Outputs: %%%%%
+%post_BETA: posterior of the regression coefficient. (k,nvar,N)
+%post_SIGMA: posterios of the variance of the shocks to y. (nvar,nvar,N)
+
+%Technical parameters
+[nvar, T] = size(Y);
+
+%Standard frequency approach OLS
+B_hat = (X'*X)^(-1)*(X'*Y);
+SSR = (Y-X*B_hat)'*(Y-X*B_hat); 
+
+%Standard procedure to obatin posterios in the Gibbs sampling
+post_s = prior_s + SSR;
+post_v = n*T + prior_v;
+
+%Create Matrices for posterios parameters
+post_BETA_distribution = zeros(k,nvar,N);
+post_SIGMA_distribution = zeros(k,nvar,N);
+
+
+end
