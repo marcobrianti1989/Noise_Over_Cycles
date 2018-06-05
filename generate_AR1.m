@@ -1,3 +1,4 @@
+%provs
 function [y, yss] = generate_AR1(rho,sigm,T,drift,tt)
 %This function generates an AR(1) process with persistence rho, 
 %a possible drift different from zero, a possible linear time trand (tt) and
