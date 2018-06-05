@@ -18,12 +18,14 @@ end
 % x_t+4|t-1 = sixth column of variables previous period
 
 %Import data of expected Real GDP level
-SPF_RGDP     = xlsread('medianLevel','RGDP','A2:H200');
-SPF_INDPROD  = xlsread('medianLevel','INDPROD','A2:H200');
-SPF_RRESINV  = xlsread('medianLevel','RRESINV','A2:H200');
+SPF_RGDP     = xlsread('meanLevel','RGDP','A2:H200');
+SPF_INDPROD  = xlsread('meanLevel','INDPROD','A2:H200');
+SPF_RRESINV  = xlsread('meanLevel','RRESINV','A2:H200');
+SPF_RNRESINV = xlsread('meanLevel','RNRESIN','A2:H200');
 
+time = 1968 + 4/4 : 1/4 : 2018+2/4;
 % Generalized Truncation
-data = [SPF_RGDP SPF_INDPROD SPF_RRESINV];
+data = [SPF_RGDP SPF_INDPROD SPF_RRESINV SPF_RNRESINV];
 n_var_system = size(data,2);
 threshold = -1/eps;
 for i_var_system = 1:n_var_system
@@ -33,7 +35,8 @@ truncation_point = max(loc);
 SPF_RGDP     = SPF_RGDP(truncation_point:end,:);
 SPF_INDPROD  = SPF_INDPROD(truncation_point:end,:);
 SPF_RRESINV  = SPF_RRESINV(truncation_point:end,:);
-
+SPF_RNRESINV  = SPF_RNRESINV(truncation_point:end,:);
+time = time(truncation_point+1:end);
 %Building Zt
 %Step 1 - Getting the forecasted growth rates
 Delta_RGDP_t = log(SPF_RGDP(:,7)) - log(SPF_RGDP(:,3));
@@ -42,15 +45,24 @@ Delta_INDPROD_t = log(SPF_INDPROD(:,7)) - log(SPF_INDPROD(:,3));
 Delta_INDPROD_t1 = log(SPF_INDPROD(:,8)) - log(SPF_INDPROD(:,4));
 Delta_RRESINV_t = log(SPF_RRESINV(:,7)) - log(SPF_RRESINV(:,3));
 Delta_RRESINV_t1 = log(SPF_RRESINV(:,8)) - log(SPF_RRESINV(:,4));
+
+Delta_RINV_t = log(SPF_RNRESINV(:,7) + SPF_RRESINV(:,7)) ...
+      - log(SPF_RNRESINV(:,3) + SPF_RRESINV(:,3));
+Delta_RINV_t1 = log(SPF_RNRESINV(:,8) + SPF_RRESINV(:,8)) ...
+      - log(SPF_RNRESINV(:,4) + SPF_RRESINV(:,4));
 %Step 2 - Revision in forecast growth rates
 Z1 = Delta_RGDP_t(2:end) - Delta_RDGP_t1(1:end-1);
 Z2 = Delta_INDPROD_t(2:end) - Delta_INDPROD_t1(1:end-1);
-Z3 = Delta_RRESINV_t(2:end) - Delta_RRESINV_t1(1:end-1);
+%Z3 = Delta_RRESINV_t(2:end) - Delta_RRESINV_t1(1:end-1);
+Z3 = Delta_RINV_t(2:end) - Delta_RINV_t1(1:end-1);
 
-plot(Z1)
+figure(1)
 hold on
-plot(Z2)
-plot(Z3)
+grid on
+plot(time',Z1)
+plot(time',Z2)
+plot(time',Z3)
+legend('Real GDP','Industrial production','Investment')
 hold off
 
 Z = [Z1 Z2 Z3];
