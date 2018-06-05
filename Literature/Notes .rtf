@@ -4,22 +4,53 @@
 \margl1440\margr1440\vieww25100\viewh14200\viewkind0
 \pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural
 
-\f0\fs48 \cf0 \ul \ulc0 Literature on expectation shocks \
-\ulnone \
+\f0\i\fs48 \cf0 \ul \ulc0 Literature on expectation shocks \
+
+\i0 \ulnone \
 - Beaudry Portier 2014: survey paper\
-- Leduc Sill 2013 Restat\
-- Milani 2011 EJ, 2017 JEDC\
-- Feve Guay 2016\
-- Levchenko Pandalai-Nayar 2018 JEEA: identify sentiment shocks as those that are orthogonal to surprise and TFP news shocks and that maximize the short run forecast error variance of either GDP forecast or Consumer confidence index. \
 \
-\ul Problems with survey data\
-\ulnone \
+- Leduc Sill 2013 Restat\
+\
+- Levchenko Pandalai-Nayar 2018 JEEA: identify sentiment shocks as those that are orthogonal to surprise and TFP news shocks and that maximize the short run forecast error variance of either GDP forecast or Consumer confidence index. Note that we depart from them at least in 2 aspects: 1) the identification procedure is substantially different. 2) we orthogonalize relatively to the TFP path which is a weaker condition than news and surprise shock. In principle the belief shock can be correlated with news and surprise in a way that it has no effect on TFP.\
+\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural
+\cf0 - Feve Guay 2018 EJ: empirical paper, identification similar to LPN above but results are different (sentiment shocks not important). They use confidence measure, not forecasts. \
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural
+\cf0 \
+
+\i More theoretical literature:
+\i0 \
+- Angeletos Collard Dellas, \'85\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural
+\cf0 \
+- Milani 2011 EJ, 2017 JEDC: estimate 
+\i near
+\i0 -rational learning model (rather than rational expectations) using SPF data. Sentiments are defined as waves of optimism/pessimism. Agents forms expectations using a correctly specified model but they do not know the parameters, as econometricians. However they are hit by exogenous sentiment shocks that make them deviating from their point forecast. These deviations are estimated by looking at the difference between SPF forecasts and realized macroeconomic series. \
+\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural
+
+\i \cf0 Literature supporting the view of asymmetric importance/effects of beliefs shocks:
+\i0 \
+-\
+\
+
+\i \ul Problems with survey data
+\i0 \
+\
+\ulnone 	- SPF info set different from agents\
+	- Only medium horizon forecast \'97 really a problem?\
 	- the underlying series, say GDP, gets revised -> see Clements Galvao\
 	- monthly data gets released once the forecast in that quarter 
 \i  for 
 \i0  say one year ahead has been already made -> Mixed frequency VAR\
 \
-\ul Bear in mind\
-	\ulnone - sentiments shock can be correlated with uncertainty shocks \'97 an increase of uncertainty leads to a downward revision of forecasts of macro variables. Shall we also control for the Jurado Ludvigson Ng measure? Is it too restrictive? \
-	- is the same to orthogonalize beliefs wrt to TFP and wrt to surprise and news of TFP?\
+
+\i \ul Bear in mind
+\i0 \
+\
+	\ulnone - sentiments shock can be correlated with uncertainty shocks \'97 an increase of uncertainty leads to a downward revision of forecasts of macro variables. Shall we also control for the Jurado Ludvigson Ng measure? Is it too restrictive? Levchenko Pandalai-Nayar check the covariance with Bloom\'92s uncertainty measure.\
+\
+	- is the same to orthogonalize beliefs wrt to TFP and wrt to surprise and news of TFP? No, as a matter of fact it would be nice if it exhibits some correlation\
+\
+	- could also think of estimating a theoretical model that has the potential for asymmetries built-in\
 }
