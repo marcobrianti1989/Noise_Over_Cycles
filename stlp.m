@@ -14,8 +14,8 @@ for h = 1:H
     end
     X = [X , ones(length(Y),1),[1:1:length(Y)]'];
     B = X'*X\(X'*Y);
-    IRF_E(h) = B(1)*0.8 + B(2)*0.2; %here we are fixing the probability over the IRFs - need to relax
-    IRF_R(h) = B(1)*0.2 + B(2)*0.8;
+    IRF_E(h) = B(1)*1 + B(2)*0; %here we are fixing the probability over the IRFs - need to relax
+    IRF_R(h) = B(1)*0 + B(2)*1;
 end
 
 
