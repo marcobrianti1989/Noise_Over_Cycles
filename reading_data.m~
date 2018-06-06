@@ -101,7 +101,7 @@ lags = 0;
 H = 20; %irfs horizon
 
 %standardize Ztilde to get one std dev shock
-Ztilde = Ztilde/std(Ztilde);
+
 %stlp(y,x,u,fz(-1),lags,H); where y is the dep var, u is the shock, x are the controls
 [IR_E, IR_R] = stlp(dataset(start:end-lagged,end),0,Ztilde, dataset(start-1:end-lagged-1,end),lags,H);
 
@@ -112,10 +112,10 @@ h = plot([1:H]', IR_R, '--b','linewidth', 3);
 plot([1:H]', 0*[1:H]', ':k');
 set(gca,'TickLabelInterpreter','latex')
 title(varlist{j},'interpreter', 'latex', 'fontsize', 18);
-xlabel('Quarter','interpreter','latex','fontsize',16);
-ylabel('\% deviation from s.s.','interpreter','latex','fontsize',16);
-l=legend([q h],{'Expansion','Recession'},'Location', 'SouthOutside','interpreter','latex');
-set(l, 'box','on', 'FontSize',16,'Orientation','horizontal');
+xlabel('Quarter','interpreter','latex');
+ylabel('\% deviation from s.s.','interpreter','latex');
+l=legend([q h],{'Expansion','Recession'},'Location', 'SouthEast','interpreter','latex');
+set(l, 'box','on', 'FontSize',9,'Orientation','vertical','Position',[0.558 0.368 0.11 0.067]);
 
 
 
