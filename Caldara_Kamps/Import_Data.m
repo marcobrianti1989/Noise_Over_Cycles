@@ -1,7 +1,7 @@
 clear all; 
 close all;
 																	
-DATASET.TSERIES=xlsread('CK_RESTUD_DATASET.xlsx','FINAL');
+DATASET.TSERIES   = xlsread('CK_RESTUD_DATASET.xlsx','FINAL');
 
 DATASET.LABEL     = {'DATES','GDP','TAX','G','TB3MS','CPI_PIQ4','MUNI1Y','PDVMILY','DTFP_UTIL','HAMILTON3YP','RESID08','TAXNARRATIVE'};
 DATASET.VALUE	= [  1	  ,    2,    3,	 4,	5     ,	   6     ,	 7    ,	       8,	       9,	  10	  , 11      ,   12	  ];	  

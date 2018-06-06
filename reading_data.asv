@@ -1,0 +1,65 @@
+clear 
+close all
+
+%Data Info
+% x_t|t     = first column of variables
+% x_t+4|t   = fifth column of variables
+% x_t|t-1   = second column of variables previous period
+% x_t+4|t-1 = sixth column of variables previous period
+
+filename = 'main_file';
+sheet = 'Sheet1';
+range = 'B1:X290';
+[dataset, var_names] = read_data2(filename, sheet, range);
+
+%Building Zt 
+%Step 1 - Getting the forecasted growth rates
+Delta_RGDP_t   = log(dataset(:,10)) - log(dataset(:,8));
+Delta_RDGP_t1  = log(dataset(:,11)) - log(dataset(:,9));
+%Delta_INDPROD_t = log(dataset(:,22)) - log(dataset(:,20));
+%Delta_INDPROD_t1 = log(dataset(:,23)) - log(dataset(:,21));
+%Investment is the sum between residential and non residential investment
+%Delta_RINV_t = log(dataset(:,14) + dataset(:,18)) ...
+ %     - log(dataset(:,12) + dataset(:,16));
+%Delta_RINV_t1 = log(dataset(:,15) + dataset(:,19)) ...
+%      - log(dataset(:,13) + dataset(:,17));
+%Step 2 - Revision in forecast growth rates
+Z1 = Delta_RGDP_t(2:end) - Delta_RDGP_t1(1:end-1);
+%Z2 = Delta_INDPROD_t(2:end) - Delta_INDPROD_t1(1:end-1);
+%Z3 = Delta_RINV_t(2:end) - Delta_RINV_t1(1:end-1);
+dataset   = dataset(2:end,:);
+
+%Runniong OLS to obtain Ztilde
+[T, nvar] = size(dataset);
+const     = ones(T-4,1);
+X         = [const dataset(3:end-2,2:7) dataset(5:end,4) dataset(4:end-1,4) ...
+      dataset(1:end-4,4) dataset(2:end-3,4)];
+Y         = Z1(3:end-2);
+[B, zhat, Ztilde] = quick_ols(Y,X);
+
+figure(1)
+hold on
+grid on
+plot(dataset(3:end-2,1),Ztilde)
+hold off
+
+corr(Ztilde(1:end-3),dataset(4:end,4))
+corr(Ztilde,dataset(4:end,4))
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

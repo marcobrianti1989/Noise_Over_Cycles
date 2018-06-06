@@ -1,70 +1,96 @@
 clear 
 close all
 
-%Add path for data dor both Marco's PC and Vito's Mac
-current_dir = pwd;
-base_path = pwd;
-addpath(base_path)
-if exist([base_path '\Data'], 'dir')
-      addpath([base_path '\Data']) %for Microsoft
-else
-      addpath([base_path '/Data']) %for Mac
-end
-
 %Data Info
 % x_t|t     = first column of variables
 % x_t+4|t   = fifth column of variables
 % x_t|t-1   = second column of variables previous period
 % x_t+4|t-1 = sixth column of variables previous period
 
-%Import data of expected Real GDP level
-SPF_RGDP     = xlsread('meanLevel','RGDP','A2:H200');
-SPF_INDPROD  = xlsread('meanLevel','INDPROD','A2:H200');
-SPF_RRESINV  = xlsread('meanLevel','RRESINV','A2:H200');
-SPF_RNRESINV = xlsread('meanLevel','RNRESIN','A2:H200');
+filename = 'main_file';
+sheet = 'Sheet1';
+range = 'B1:Z290';
+[dataset, var_names] = read_data2(filename, sheet, range);
 
-time = 1968 + 4/4 : 1/4 : 2018+2/4;
-% Generalized Truncation
-data = [SPF_RGDP SPF_INDPROD SPF_RRESINV SPF_RNRESINV];
-n_var_system = size(data,2);
-threshold = -1/eps;
-for i_var_system = 1:n_var_system
-      loc(i_var_system) = find(data(:,i_var_system) > threshold, 1);
-end
-truncation_point = max(loc);
-SPF_RGDP     = SPF_RGDP(truncation_point:end,:);
-SPF_INDPROD  = SPF_INDPROD(truncation_point:end,:);
-SPF_RRESINV  = SPF_RRESINV(truncation_point:end,:);
-SPF_RNRESINV  = SPF_RNRESINV(truncation_point:end,:);
-time = time(truncation_point+1:end);
-%Building Zt
+%Building Zt 
 %Step 1 - Getting the forecasted growth rates
-Delta_RGDP_t = log(SPF_RGDP(:,7)) - log(SPF_RGDP(:,3));
-Delta_RDGP_t1 = log(SPF_RGDP(:,8)) - log(SPF_RGDP(:,4));
-Delta_INDPROD_t = log(SPF_INDPROD(:,7)) - log(SPF_INDPROD(:,3));
-Delta_INDPROD_t1 = log(SPF_INDPROD(:,8)) - log(SPF_INDPROD(:,4));
-Delta_RRESINV_t = log(SPF_RRESINV(:,7)) - log(SPF_RRESINV(:,3));
-Delta_RRESINV_t1 = log(SPF_RRESINV(:,8)) - log(SPF_RRESINV(:,4));
-
-Delta_RINV_t = log(SPF_RNRESINV(:,7) + SPF_RRESINV(:,7)) ...
-      - log(SPF_RNRESINV(:,3) + SPF_RRESINV(:,3));
-Delta_RINV_t1 = log(SPF_RNRESINV(:,8) + SPF_RRESINV(:,8)) ...
-      - log(SPF_RNRESINV(:,4) + SPF_RRESINV(:,4));
+Delta_RGDP_t   = log(dataset(:,10)) - log(dataset(:,8));
+Delta_RDGP_t1  = log(dataset(:,11)) - log(dataset(:,9));
+%Delta_INDPROD_t = log(dataset(:,22)) - log(dataset(:,20));
+%Delta_INDPROD_t1 = log(dataset(:,23)) - log(dataset(:,21));
+%Investment is the sum between residential and non residential investment
+%Delta_RINV_t = log(dataset(:,14) + dataset(:,18)) ...
+ %     - log(dataset(:,12) + dataset(:,16));
+%Delta_RINV_t1 = log(dataset(:,15) + dataset(:,19)) ...
+%      - log(dataset(:,13) + dataset(:,17));
 %Step 2 - Revision in forecast growth rates
 Z1 = Delta_RGDP_t(2:end) - Delta_RDGP_t1(1:end-1);
-Z2 = Delta_INDPROD_t(2:end) - Delta_INDPROD_t1(1:end-1);
-%Z3 = Delta_RRESINV_t(2:end) - Delta_RRESINV_t1(1:end-1);
-Z3 = Delta_RINV_t(2:end) - Delta_RINV_t1(1:end-1);
+%Z2 = Delta_INDPROD_t(2:end) - Delta_INDPROD_t1(1:end-1);
+%Z3 = Delta_RINV_t(2:end) - Delta_RINV_t1(1:end-1);
+dataset   = dataset(2:end,:);
 
+%Runniong OLS to obtain Ztilde
+[T, nvar] = size(dataset);
+lag = 11;
+start     = lag+1;
+lagged    = lag;
+const     = ones(T-start-lagged+1,1);
+X         = [const dataset(start:end-lagged,2:7) ...
+dataset(start+2:end-lagged+2,4) ...
+      dataset(start+1:end-lagged+1,4) dataset(start-2:end-lagged-2,4) ...
+      dataset(start-1:end-lagged-1,4) dataset(start+3:end-lagged+3,4) ...
+      dataset(start-3:end-lagged-3,4) dataset(start+4:end-lagged+4,4) ...
+      dataset(start-4:end-lagged-4,4) dataset(start+5:end-lagged+5,4) ...
+      dataset(start-5:end-lagged-5,4) dataset(start+6:end-lagged+6,4) ...
+     dataset(start-6:end-lagged-6,4) ...
+dataset(start+7:end-lagged+7,4) ...
+      dataset(start-7:end-lagged-7,4) dataset(start+8:end-lagged+8,4) ...
+      dataset(start-8:end-lagged-8,4) dataset(start+9:end-lagged+9,4) ...
+      dataset(start-9:end-lagged-9,4) dataset(start+10:end-lagged+10,4) ...
+      dataset(start-10:end-lagged-10,4) dataset(start+11:end-lagged+11,4) ...
+      dataset(start-11:end-lagged-11,4)
+];
+Y         = Z1(start:end-lagged);
+[B, zhat, Ztilde] = quick_ols(Y,X);
+
+% figure(1)
+% hold on
+% grid on
+% plot(dataset(3:end-2,1),Ztilde)
+% hold off
+
+% corr(Ztilde(1:end),dataset(start:end-lagged,4))
+for fo = 1:20
+      fo
+      cori(fo) = corr(Ztilde(1:end-fo),dataset(start+fo:end-lagged,4));
+end
+% plot(cori)
+
+% figure
+% plot(dataset(start:end-lagged,1),Ztilde)
+
+Ztilde_graph = Ztilde + .05;
+figure('Position',[100 100 1000 600])
 figure(1)
+area(dataset(start:end-lagged,1),dataset(start:end-lagged,end-1),'FaceColor',[0.75 0.75 0.75],'EdgeColor','none')
 hold on
 grid on
-plot(time',Z1)
-plot(time',Z2)
-plot(time',Z3)
-legend('Real GDP','Industrial production','Investment')
+plot(dataset(start:end-lagged,1),Ztilde_graph,'black-','Linewidth',3)
 hold off
+%xlim([12 252])
+ylim([.03 .061])
+%legend('NBER recessions','Weight on recession regime F(z)','Location','SouthOutside','Orientation','horizontal')
+%legend('boxoff')
 
-Z = [Z1 Z2 Z3];
 
-corr(Z)
+
+
+
+
+
+
+
+
+
+
+
