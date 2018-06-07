@@ -103,7 +103,7 @@ H = 20; %irfs horizon
 %standardize Ztilde to get one std dev shock
 Ztilde = Ztilde/std(Ztilde);
 %stlp(y,x,u,fz(-1),lags,H); where y is the dep var, u is the shock, x are the controls
-[IR_E, IR_R] = stlp(dataset(start:end-lagged,end),0,Ztilde, dataset(start-1:end-lagged-1,end),lags,H);
+[IR_E, IR_R] = stlp(dataset(start:end-lagged,4),0,Ztilde, dataset(start-1:end-lagged-1,end),lags,H);
 
 figure(2)
 hold on
