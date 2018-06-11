@@ -17,7 +17,7 @@ close all
 
 filename = 'main_file';
 sheet = 'Sheet1';
-range = 'B1:Z290';
+range = 'B1:AA290';
 [dataset, var_names] = read_data2(filename, sheet, range);
 
 %Building Zt 
@@ -42,7 +42,18 @@ dataset   = dataset(2:end,:);
 lag = 11;
 start     = lag+1;
 lagged    = lag;
+%lagged    = 0;
 const     = ones(T-start-lagged+1,1);
+% X         = [const dataset(start:end-lagged,2:7) ...
+%     dataset(start-1:end-lagged-1,4)  ...
+%     dataset(start-3:end-lagged-3,4) ...
+%     dataset(start-4:end-lagged-4,4)  ...
+%     dataset(start-5:end-lagged-5,4)  ...
+%     dataset(start-6:end-lagged-6,4)  ...
+%     dataset(start-7:end-lagged-7,4) ...
+%     dataset(start-8:end-lagged-8,4) ...
+%     ];
+
 X         = [const dataset(start:end-lagged,2:7) ...
 dataset(start+2:end-lagged+2,4) ...
       dataset(start+1:end-lagged+1,4) dataset(start-2:end-lagged-2,4) ...
@@ -79,7 +90,7 @@ end
 Ztilde_graph = Ztilde + .05;
 figure('Position',[100 100 1000 600])
 figure(1) 
-area(dataset(start:end-lagged,1),dataset(start:end-lagged,end-1),'FaceColor',[0.75 0.75 0.75],'EdgeColor','none')
+area(dataset(start:end-lagged,1),dataset(start:end-lagged,24),'FaceColor',[0.75 0.75 0.75],'EdgeColor','none')
 hold on
 grid on
 plot(dataset(start:end-lagged,1),Ztilde_graph,'black-','Linewidth',3)
@@ -95,27 +106,30 @@ ylim([.03 .061])
 %                                                                         %
 %*************************************************************************%
 varlist = {'DTFP','Real GDP', 'Real Consumption', 'Unemployment'};
-j = 1; %select variable
+j = 2; %select variable
 
-lags = 0; 
+lags =8; 
 H = 20; %irfs horizon
 
 %standardize Ztilde to get one std dev shock
-
+Ztilde = Ztilde/std(Ztilde);
 %stlp(y,x,u,fz(-1),lags,H); where y is the dep var, u is the shock, x are the controls
-[IR_E, IR_R] = stlp(dataset(start:end-lagged,end),0,Ztilde, dataset(start-1:end-lagged-1,end),lags,H);
+
+
+[IR_E, IR_R] = stlp(100*dataset(start:end-lagged,4),,Ztilde, dataset(start-1:end-lagged-1,25),lags,H);
+
 
 figure(2)
 hold on
-q = plot([1:H]', IR_E, '-r', 'linewidth', 3);
-h = plot([1:H]', IR_R, '--b','linewidth', 3);
+q = plot([1:H]',cumsum(IR_E), '-r', 'linewidth', 3);
+h = plot([1:H]',cumsum(IR_R), '--b','linewidth', 3);
 plot([1:H]', 0*[1:H]', ':k');
 set(gca,'TickLabelInterpreter','latex')
 title(varlist{j},'interpreter', 'latex', 'fontsize', 18);
-xlabel('Quarter','interpreter','latex');
-ylabel('\% deviation from s.s.','interpreter','latex');
-l=legend([q h],{'Expansion','Recession'},'Location', 'SouthEast','interpreter','latex');
-set(l, 'box','on', 'FontSize',9,'Orientation','vertical','Position',[0.558 0.368 0.11 0.067]);
+xlabel('Quarter','interpreter','latex','fontsize',16);
+ylabel('\% deviation from s.s.','interpreter','latex','fontsize',16);
+l=legend([q h],{'Expansion','Recession'},'Location', 'SouthOutside','interpreter','latex');
+set(l, 'box','on', 'FontSize',16,'Orientation','horizontal');
 
 
 
