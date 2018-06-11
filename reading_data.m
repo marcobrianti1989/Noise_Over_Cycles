@@ -17,7 +17,7 @@ close all
 
 filename = 'main_file';
 sheet = 'Sheet1';
-range = 'B1:Z290';
+range = 'B1:AA290';
 [dataset, var_names] = read_data2(filename, sheet, range);
 
 %Building Zt 
@@ -79,7 +79,7 @@ end
 Ztilde_graph = Ztilde + .05;
 figure('Position',[100 100 1000 600])
 figure(1) 
-area(dataset(start:end-lagged,1),dataset(start:end-lagged,end-1),'FaceColor',[0.75 0.75 0.75],'EdgeColor','none')
+area(dataset(start:end-lagged,1),dataset(start:end-lagged,24),'FaceColor',[0.75 0.75 0.75],'EdgeColor','none')
 hold on
 grid on
 plot(dataset(start:end-lagged,1),Ztilde_graph,'black-','Linewidth',3)
@@ -95,15 +95,19 @@ ylim([.03 .061])
 %                                                                         %
 %*************************************************************************%
 varlist = {'DTFP','Real GDP', 'Real Consumption', 'Unemployment'};
-j = 1; %select variable
+j = 2; %select variable
 
-lags = 0; 
+lags =0; 
 H = 20; %irfs horizon
 
 %standardize Ztilde to get one std dev shock
 Ztilde = Ztilde/std(Ztilde);
 %stlp(y,x,u,fz(-1),lags,H); where y is the dep var, u is the shock, x are the controls
+<<<<<<< HEAD
 [IR_E, IR_R] = stlp(dataset(start:end-lagged,4),0,Ztilde, dataset(start-1:end-lagged-1,end),lags,H);
+=======
+[IR_E, IR_R] = stlp(100*dataset(start:end-lagged,26),100*dataset(start-1:end-lagged-1,26),Ztilde, dataset(start-1:end-lagged-1,25),lags,H);
+>>>>>>> 18f72a4d7cfee66f23056ad83b70b438fa864277
 
 figure(2)
 hold on
