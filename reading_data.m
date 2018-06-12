@@ -42,7 +42,7 @@ Z1 = Delta_RGDP_t(2:end) - Delta_RDGP_t1(1:end-1);
 
 %Runniong OLS to obtain Ztilde
 T              = size(Z1,1);
-lag            = 8;
+lag            = 4;
 start          = lag;
 lagged         = lag;
 const          = ones(T-start-lagged,1);
@@ -79,7 +79,7 @@ ylim([.03 .061])
 %                                                                         %
 %*************************************************************************%
 varlist = {'DTFP','Real GDP', 'Real Consumption', 'Unemployment'};
-j = 2; %select variable
+j = 3; %select variable
 
 lags =8;
 H = 20; %irfs horizon
@@ -90,7 +90,7 @@ Ztilde = Ztilde/std(Ztilde);
 
 
 [IR_E, IR_R] = stlp(100*RealCons(start+1+1:end-lagged),0,Ztilde, ...
-      ProbRecession(start+1:end-lagged-1),lags,H);
+      ProbRecession(start:end-lagged-2),lags,H);
 
 
 figure(2)
