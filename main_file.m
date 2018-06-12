@@ -48,7 +48,7 @@ loc_end = loc_start + loc_end - 1;
 Z1 = Z1(loc_start:loc_end-1);
 %Runniong OLS to obtain Ztilde
 T              = size(Z1,1);
-lag            = 10;
+lag            = 8;
 const          = ones(T,1);
 X              = zeros(T,6 + 2*lag + 1);
 X(:,1)         = const;
@@ -83,17 +83,21 @@ ylim([.03 .061])
 %                                                                         %
 %*************************************************************************%
 varlist = {'DTFP','Real GDP', 'Real Consumption', 'Unemployment'};
-j = 3; %select variable
+j = 2; %select variable
 
-lags =8;
+lags =6;
 H = 20; %irfs horizon
 
 %standardize Ztilde to get one std dev shock
 Ztilde = Ztilde/std(Ztilde);
 %stlp(y,x,u,fz(-1),lags,H); where y is the dep var, u is the shock, x are the controls
 
-[IR_E, IR_R, IR_L] = stlp(100*RealCons(loc_start+1:loc_end),0,Ztilde, ...
-       ProbRecession(loc_start+1:loc_end),lags,H);
+[IR_E, IR_R, IR_L] = stlp(100*RealCons(loc_start+1:loc_end-2),0,Ztilde(1:end-2), ...
+       ProbRecession(loc_start:loc_end-1-2),lags,H);
+ [IR_E, IR_R, IR_L] = stlp(100*RealGDP(loc_start+1:loc_end-2),0,Ztilde(1:end-2), ...
+       ProbRecession(loc_start:loc_end-1-2),lags,H);
+%  [IR_E, IR_R, IR_L] = stlp(100*DTFP_UTIL(loc_start+1:loc_end-2),0,Ztilde(1:end-2), ...
+%        ProbRecession(loc_start:loc_end-1-2),lags,H);
 
 % [IR_E, IR_R, IR_L] = stlp(100*DTFP_UTIL(start+1+1:end-lagged),0,Ztilde, ...
 %      ProbRecession(start+1:end-lagged-1),lags,H);
