@@ -3,6 +3,9 @@ function pc = get_principal_components(data)
 % data is (T, nvar)
 
 [T,n] = size(data);
+for i=1:n
+      data(:,i) = zscore(data(:,i));
+end
 
 % Get VC matrix
 sigma = 1/T*data'*data;
