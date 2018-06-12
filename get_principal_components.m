@@ -8,6 +8,8 @@ function pc = get_principal_components(data)
 sigma = 1/T*data'*data;
 
 [V,lamb] = eig(sigma); % diag(lamb) are the eigenvalues, V the eigenvectors
-
+V = real(V);
+lamb = real(lamb);
 pc = data*V./n;
+
 end
