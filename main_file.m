@@ -16,16 +16,31 @@ close all
 % x_t|t-1   = second column of variables previous period
 % x_t+4|t-1 = sixth column of variables previous period
 
+%Read the main datset
 filename = 'main_file';
 sheet = 'Sheet1';
 range = 'B1:CC300';
 do_truncation = 0; %Do not truncate data. You will have many NaN 
 [dataset, var_names] = read_data2(filename, sheet, range, do_truncation);
 dataset = real(dataset);
-
 for i = 1:size(dataset,2)
-      eval([var_names{i} '= dataset(:,i);']);
+      eval([var_names{i} ' = dataset(:,i);']);
 end
+
+%Read the dataset_PC for PC analysis
+filename_PC = 'Dataset_test_PC';
+sheet_PC = 'Quarterly';
+range_PC = 'B2:DA300';
+do_truncation_PC = 1; %Do truncate data.
+[dataset_PC, var_names_PC] = read_data2(filename_PC, sheet_PC, range_PC, do_truncation_PC);
+dataset_PC = real(dataset_PC);
+date_start_PC = dataset_PC(1,1); 
+dataset_PC = dataset_PC(:,2:end); %Removing time befor PC analysis
+pc = get_principal_components(dataset_PC);
+PC = nan(size(dataset,1),size(dataset_PC,2));
+loc_time_PC = find(Time == date_start_PC);
+PC(loc_time_PC:loc_time_PC+size(pc,1)-1,:) = pc;
+return
 
 %Building Zt
 %Step 1 - Getting the forecasted growth rates
@@ -84,14 +99,11 @@ ylim([.03 .061])
 %                                                                         %
 %*************************************************************************%
 
-% Get principal component
-read_PC;
-mpc = 2;
-
 % STLP
 varlist = {'TFP','Real GDP', 'Real Consumption', 'Unemployment Rate','Real Wage','Hours'};
 lags =6;
 H = 20; %irfs horizon
+mpc = 2;
 
 %standardize Ztilde to get one std dev shock
 Ztilde = Ztilde/std(Ztilde);
