@@ -57,8 +57,8 @@ for i_var = 1:nvar
 end
 
 % Selecting the VAR system we want to work with
-data     = zeros(size(full_data,1), sum(In_or_out));
-var_names= cell(1, sum(In_or_out));
+data       = zeros(size(full_data,1), sum(In_or_out));
+var_names  = cell(1, sum(In_or_out));
 for i_var = 1:nvar
       if In_or_out(i_var) == 1
             data(:,position(i_var)) = full_data(:,i_var);
