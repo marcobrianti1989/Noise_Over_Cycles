@@ -12,11 +12,11 @@ for h = 1:H
             if x(1)^2 > 0; 
             X  = [X,u(lags-jj+1:end-jj-h+1,:), u(lags-jj+1:end-jj-h+1,:).*fz(lags+1:end-h+1,1),y(lags-jj+1:end-jj-h+1,:), y(lags-jj+1:end-jj-h+1,:).*fz(lags+1:end-h+1,1),...
                x(lags-jj+1:end-jj-h+1,:),x(lags-jj+1:end-jj-h+1,:).*fz(lags+1:end-h+1,1)];
-           XL  = [XL, u(lags-jj+1:end-jj-h+1,:), y(lags-jj+1:end-jj-h+1,:),...
+            XL = [XL, u(lags-jj+1:end-jj-h+1,:), y(lags-jj+1:end-jj-h+1,:),...
                x(lags-jj+1:end-jj-h+1,:)];
             else 
                 X  = [X,u(lags-jj+1:end-jj-h+1,:), u(lags-jj+1:end-jj-h+1,:).*fz(lags+1:end-h+1,1),y(lags-jj+1:end-jj-h+1,:), y(lags-jj+1:end-jj-h+1,:).*fz(lags+1:end-h+1,1)];
-                XL  = [XL, u(lags-jj+1:end-jj-h+1,:), y(lags-jj+1:end-jj-h+1,:)];
+                XL = [XL, u(lags-jj+1:end-jj-h+1,:), y(lags-jj+1:end-jj-h+1,:)];
             end
             end
     end

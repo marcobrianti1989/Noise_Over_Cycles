@@ -3,11 +3,12 @@
 %                                                                         %
 % NOTE describe variables in dataset        %
 %                                                                         %
-% last change 6/6/2018                                                    %
+% last change 6/12/2018                                                    %
 %*************************************************************************%
 
 clear
 close all
+
 
 %Data Info
 % x_t|t     = first column of variables
@@ -82,6 +83,12 @@ ylim([.03 .061])
 % 2nd stage - Smooth Transition Local Projections                         %
 %                                                                         %
 %*************************************************************************%
+
+% Get principal component
+read_PC;
+mpc = 2;
+
+% STLP
 varlist = {'TFP','Real GDP', 'Real Consumption', 'Unemployment Rate','Real Wage','Hours'};
 lags =6;
 H = 20; %irfs horizon
@@ -90,7 +97,7 @@ H = 20; %irfs horizon
 Ztilde = Ztilde/std(Ztilde);
 %stlp(y,x,u,fz(-1),lags,H); where y is the dep var, u is the shock, x are the controls
 
-[IR_E_C, IR_R_C, IR_L_C] = stlp(100*RealCons(loc_start+1:loc_end-2),0,Ztilde(1:end-2), ...
+[IR_E_C, IR_R_C, IR_L_C] = stlp(100*RealCons(loc_start+1:loc_end-2),pc(loc_start+1:loc_end-2,1:mpc),Ztilde(1:end-2), ...
        ProbRecession(loc_start:loc_end-1-2),lags,H);
 
 [IR_E_G, IR_R_G, IR_L_G] = stlp(100*RealGDP(loc_start+1:loc_end-2),0,Ztilde(1:end-2), ...
