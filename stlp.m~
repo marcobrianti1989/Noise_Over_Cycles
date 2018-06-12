@@ -1,4 +1,4 @@
-function [IRF_E, IRF_R, IRF_L ] = stlp(y,x,u,fz,lags,H)
+function [IRF_E, IRF_R ] = stlp(y,x,u,fz,lags,H)
 % H is the length of the irf
 % y and x are Tx1;
 % the regression is  y(t+h) = A0 + PI^E(1-F(z(t-1)))u(t) + PI^RF(z(t-1))u(t) + B1u(t-1) + C1y(t-1) + D1x(t-1) + C2y(t-2) + ...
@@ -12,21 +12,15 @@ for h = 1:H
             if x(1)^2 > 0; 
             X  = [X, u(lags-jj+1:end-jj-h+1,:), y(lags-jj+1:end-jj-h+1,:),...
                x(lags-jj+1:end-jj-h+1,:)];
-           XL  = [XL, u(lags-jj+1:end-jj-h+1,:), y(lags-jj+1:end-jj-h+1,:),...
-               x(lags-jj+1:end-jj-h+1,:)];
             else 
                 X  = [X, u(lags-jj+1:end-jj-h+1,:), y(lags-jj+1:end-jj-h+1,:)];
-                XL  = [XL, u(lags-jj+1:end-jj-h+1,:), y(lags-jj+1:end-jj-h+1,:)];
             end
             end
     end
-    X = [X , ones(length(Y),1), [1:1:length(Y)]'];%,[1:1:length(Y)]' this add a linear trend
-    XL = [XL , ones(length(Y),1),[1:1:length(Y)]'];
+    X = [X , ones(length(Y),1)];%,[1:1:length(Y)]' this add a linear trend
     B = X'*X\(X'*Y);
-    BL = XL'*XL\(XL'*Y);
-    IRF_E(h) = B(1)*.8 + B(2)*0.2; %here we are fixing the probability over the IRFs - need to relax
-    IRF_R(h) = B(1)*.2 + B(2)*.8;
-    IRF_L(h) = BL(1);
+    IRF_E(h) = B(1)*1 + B(2)*0; %here we are fixing the probability over the IRFs - need to relax
+    IRF_R(h) = B(1)*0 + B(2)*1;
 end
 
 
