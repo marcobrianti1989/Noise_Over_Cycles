@@ -1,4 +1,4 @@
-function [data, var_names] = read_data2(filename, sheet, range)
+function [data, var_names] = read_data2(filename, sheet, range, do_truncation)
 % This file is completely general function for reading in data. The only
 % requirement for its use is that the dataset in Excel is structured in a
 % specific way, which is:
@@ -71,20 +71,22 @@ for i_var = 1:nvar
 end
 
 % Generalized Truncation
-n_var_system = size(data,2);
-threshold = -1/eps;
-for i_var_system = 1:n_var_system
-      loc(i_var_system) = find(data(:,i_var_system) > threshold, 1);
+if do_truncation == 1
+      n_var_system = size(data,2);
+      threshold = -1/eps;
+      for i_var_system = 1:n_var_system
+            loc(i_var_system) = find(data(:,i_var_system) > threshold, 1);
+      end
+      truncation_point = max(loc);
+      data = [data(truncation_point:end,:); NaN(1,n_var_system)];
+      
+      loc2 = zeros(1,n_var_system);
+      for i_var_system2 = 1:n_var_system
+            loc2(1,i_var_system2) = find(isnan(data(:,i_var_system2)),1);
+      end
+      truncation_point2 = min(loc2) - 1;
+      data = data(1:truncation_point2,:);
 end
-truncation_point = max(loc);
-data = [data(truncation_point:end,:); NaN(1,n_var_system)];
-
-loc2 = zeros(1,n_var_system);
-for i_var_system2 = 1:n_var_system
-      loc2(1,i_var_system2) = find(isnan(data(:,i_var_system2)),1);
-end
-truncation_point2 = min(loc2) - 1;
-data = data(1:truncation_point2,:);
 
 
 end

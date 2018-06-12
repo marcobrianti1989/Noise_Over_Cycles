@@ -17,8 +17,10 @@ close all
 
 filename = 'main_file';
 sheet = 'Sheet1';
-range = 'B1:AB300';
-[dataset, var_names] = read_data2(filename, sheet, range);
+range = 'B1:CC300';
+do_truncation = 0; %Do not truncate data. You will have many NaN 
+[dataset, var_names] = read_data2(filename, sheet, range, do_truncation);
+dataset = real(dataset);
 
 for i = 1:size(dataset,2)
       eval([var_names{i} '= dataset(:,i);']);
@@ -39,34 +41,36 @@ Delta_RDGP_t1  = log(RGDP6_SPF) - log(RGDP2_SPF);
 Z1 = Delta_RGDP_t(2:end) - Delta_RDGP_t1(1:end-1);
 %Z2 = Delta_INDPROD_t(2:end) - Delta_INDPROD_t1(1:end-1);
 %Z3 = Delta_RINV_t(2:end) - Delta_RINV_t1(1:end-1);
-
+threshold = -1/eps;
+loc_start = find(Z1 > threshold, 1);
+loc_end = find(isnan(MUNI1Y(loc_start+1:end)),1);
+loc_end = loc_start + loc_end - 1;
+Z1 = Z1(loc_start:loc_end-1);
 %Runniong OLS to obtain Ztilde
 T              = size(Z1,1);
-lag            = 4;
-start          = lag;
-lagged         = lag;
-const          = ones(T-start-lagged,1);
-X              = zeros(T-start-lagged,6+2*lag);
+lag            = 10;
+const          = ones(T,1);
+X              = zeros(T,6 + 2*lag + 1);
 X(:,1)         = const;
-X(:,2)         = MUNI1Y(start+1+1:end-lagged); 
-X(:,3)         = PDVMILY(start+1+1:end-lagged);
-X(:,4)         = HAMILTON3YP(start+1+1:end-lagged);
-X(:,5)         = RESID08(start+1+1:end-lagged);
-X(:,6)         = TAXNARRATIVE(start+1+1:end-lagged);
+X(:,2)         = MUNI1Y(loc_start+1:loc_end); 
+X(:,3)         = PDVMILY(loc_start+1:loc_end);
+X(:,4)         = HAMILTON3YP(loc_start+1:loc_end);
+X(:,5)         = RESID08(loc_start+1:loc_end);
+X(:,6)         = TAXNARRATIVE(loc_start+1:loc_end);
 for i = 1:2*lag+1
-      X(:,6+i) = DTFP_UTIL(start-lag+i+1:end-lagged-lag+i-1);
+      X(:,6+i) = DTFP_UTIL(loc_start-lag+i:loc_end-lag+i-1);
 end
 
-Y                 = Z1(start+1:end-lagged);
+Y                 = Z1;
 [B, zhat, Ztilde] = quick_ols(Y,X);
 
 Ztilde_graph = Ztilde + .05;
 figure('Position',[100 100 1000 600])
 figure(1)
-area(Time(start+1+1:end-lagged),NBERDates(start+1+1:end-lagged),'FaceColor',[0.75 0.75 0.75],'EdgeColor','none')
+area(Time(loc_start+1:loc_end),NBERDates(loc_start+1:loc_end),'FaceColor',[0.75 0.75 0.75],'EdgeColor','none')
 hold on
 grid on
-plot(Time(start+1+1:end-lagged),Ztilde_graph,'black-','Linewidth',3)
+plot(Time(loc_start+1:loc_end),Ztilde_graph,'black-','Linewidth',3)
 hold off
 %xlim([12 252])
 ylim([.03 .061])
@@ -88,9 +92,8 @@ H = 20; %irfs horizon
 Ztilde = Ztilde/std(Ztilde);
 %stlp(y,x,u,fz(-1),lags,H); where y is the dep var, u is the shock, x are the controls
 
-
-[IR_E, IR_R, IR_L] = stlp(100*RealCons(start+1+1:end-lagged),0,Ztilde, ...
-       ProbRecession(start+1:end-lagged-1),lags,H);
+[IR_E, IR_R, IR_L] = stlp(100*RealCons(loc_start+1:loc_end),0,Ztilde, ...
+       ProbRecession(loc_start+1:loc_end),lags,H);
 
 % [IR_E, IR_R, IR_L] = stlp(100*DTFP_UTIL(start+1+1:end-lagged),0,Ztilde, ...
 %      ProbRecession(start+1:end-lagged-1),lags,H);
