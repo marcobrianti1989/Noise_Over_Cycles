@@ -82,9 +82,8 @@ ylim([.03 .061])
 % 2nd stage - Smooth Transition Local Projections                         %
 %                                                                         %
 %*************************************************************************%
-varlist = {'TFP','Real GDP', 'Real Consumption', 'Unemployment Rate'};
-
-
+varlist = {'TFP','Real GDP', 'Real Consumption', 'Unemployment Rate','Real Wage','Hours'};
+dhours = Hou
 lags =6;
 H = 20; %irfs horizon
 
@@ -101,38 +100,48 @@ Ztilde = Ztilde/std(Ztilde);
 [IR_E_T, IR_R_T, IR_L_T] = stlp(100*DTFP_UTIL(loc_start+1:loc_end-2),0,Ztilde(1:end-2), ...
         ProbRecession(loc_start:loc_end-1-2),lags,H);
 
-[IR_E_U, IR_R_U, IR_L_U] = stlp(100*UnempRate(loc_start+1:loc_end-2),0,Ztilde(1:end-2), ...
+[IR_E_U, IR_R_U, IR_L_U] = stlp(UnempRate(loc_start+1:loc_end-2),0,Ztilde(1:end-2), ...
+        ProbRecession(loc_start:loc_end-1-2),lags,H);
+    
+[IR_E_W, IR_R_W, IR_L_W] = stlp(RealWage(loc_start+1:loc_end-2),0,Ztilde(1:end-2), ...
         ProbRecession(loc_start:loc_end-1-2),lags,H);
 
-IR_E = {IR_E_T, IR_E_G,IR_E_C, IR_E_U};
-IR_R = {IR_R_T, IR_R_G,IR_R_C, IR_R_U};
-IR_L = {IR_L_T, IR_L_G,IR_L_C, IR_L_U};
+IR_E = {IR_E_T, IR_E_G,IR_E_C, IR_E_U, IR_E_W};
+IR_R = {IR_R_T, IR_R_G,IR_R_C, IR_R_U, IR_R_W};
+IR_L = {IR_L_T, IR_L_G,IR_L_C, IR_L_U, IR_L_W};
 
+nvar = length(varlist);
+n_row = 2;
+n_col = ceil(nvar/n_row);
 figure(2)
 for j = 1: length(varlist)
-    s = subplot(3,3,j);
+    s = subplot(n_row,n_col,j);
     hold on
     if j == 4
+        q = plot([1:H]',IR_E{j}, '-r', 'linewidth', 3);
+        h = plot([1:H]',IR_R{j}, '--b','linewidth', 3);
+        l = plot([1:H]',IR_L{j}, '-ok','linewidth', 3);
+        plot([1:H]', 0*[1:H]', ':k');
+        set(gca,'TickLabelInterpreter','latex')
+        title(varlist{j},'interpreter', 'latex', 'fontsize', 12);
+    else
         q = plot([1:H]',cumsum(IR_E{j}), '-r', 'linewidth', 3);
         h = plot([1:H]',cumsum(IR_R{j}), '--b','linewidth', 3);
         l = plot([1:H]',cumsum(IR_L{j}), '-ok','linewidth', 3);
         plot([1:H]', 0*[1:H]', ':k');
         set(gca,'TickLabelInterpreter','latex')
-    title(varlist{j},'interpreter', 'latex', 'fontsize', 12);
-    q = plot([1:H]',cumsum(IR_E{j}), '-r', 'linewidth', 3);
-    h = plot([1:H]',cumsum(IR_R{j}), '--b','linewidth', 3);
-    l = plot([1:H]',cumsum(IR_L{j}), '-ok','linewidth', 3);
-    plot([1:H]', 0*[1:H]', ':k');
-    set(gca,'TickLabelInterpreter','latex')
-    title(varlist{j},'interpreter', 'latex', 'fontsize', 12);
-    if j == 1
-        xlabel('Quarter','interpreter','latex','fontsize',16);
-        label('\% deviation from s.s.','interpreter','latex','fontsize',16);
+        title(varlist{j},'interpreter', 'latex', 'fontsize', 14);
     end
-    
+    if j == 1
+        xlabel('Quarter','interpreter','latex','fontsize',12);
+        ylabel('\% deviation from s.s.','interpreter','latex','fontsize',12);
+    end
+    set(s, 'xlim', [1,H], 'ylim', ylim );
 end
-l=legend([q h l],{'Expansion','Recession','Linear'},'Location', 'SouthOutside','interpreter','latex');
-set(l, 'box','on', 'FontSize',16,'Orientation','horizontal');
+l=legend([q h l],{'Expansion','Recession','Linear'},'interpreter','latex');
+set(l, 'box','on', 'FontSize',13,'Orientation','horizontal','Position',[0.3 0.015 0.40 0.01]);
+
+
 
 
 

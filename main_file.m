@@ -82,8 +82,7 @@ ylim([.03 .061])
 % 2nd stage - Smooth Transition Local Projections                         %
 %                                                                         %
 %*************************************************************************%
-varlist = {'TFP','Real GDP', 'Real Consumption', 'Unemployment Rate'};
-
+varlist = {'TFP','Real GDP', 'Real Consumption', 'Unemployment Rate','Real Wage','Hours'};
 lags =6;
 H = 20; %irfs horizon
 
@@ -102,10 +101,13 @@ Ztilde = Ztilde/std(Ztilde);
 
 [IR_E_U, IR_R_U, IR_L_U] = stlp(UnempRate(loc_start+1:loc_end-2),0,Ztilde(1:end-2), ...
         ProbRecession(loc_start:loc_end-1-2),lags,H);
+    
+[IR_E_W, IR_R_W, IR_L_W] = stlp(RealWage(loc_start+1:loc_end-2),0,Ztilde(1:end-2), ...
+        ProbRecession(loc_start:loc_end-1-2),lags,H);
 
-IR_E = {IR_E_T, IR_E_G,IR_E_C, IR_E_U};
-IR_R = {IR_R_T, IR_R_G,IR_R_C, IR_R_U};
-IR_L = {IR_L_T, IR_L_G,IR_L_C, IR_L_U};
+IR_E = {IR_E_T, IR_E_G,IR_E_C, IR_E_U, IR_E_W};
+IR_R = {IR_R_T, IR_R_G,IR_R_C, IR_R_U, IR_R_W};
+IR_L = {IR_L_T, IR_L_G,IR_L_C, IR_L_U, IR_L_W};
 
 nvar = length(varlist);
 n_row = 2;

@@ -1,6 +1,3 @@
-clear
-close all
-
 filename = 'Dataset_test_PC';
 sheet = 'Quarterly';
 range = 'B2:DA300';
