@@ -80,6 +80,8 @@ X = [X DATA(loc_start+1-l:loc_end-l,:) pc(loc_start+1-l:loc_end-l,1:mpc)];
 end
 
 Y = Z1;
+Y = 0.1*Mich1Y(loc_start+1:loc_end);
+%Y = 0.1*SP500(loc_start+1:loc_end);
 [B, zhat, Ztilde] = quick_ols(Y,X);
 
 Ztilde_graph = Ztilde + .05;
