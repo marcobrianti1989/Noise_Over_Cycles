@@ -78,11 +78,11 @@ for iii = 1:1
             loc_end        = find(isnan(MUNI1Y(loc_start+1:end)),1);
             loc_end        = loc_start + loc_end - 1-2;
             ZZ             = ZZ(loc_start:loc_end-1);
-%             for it = 1:10
-%                   cori(it) = corr(ZZ,DTFP_UTIL(loc_start+1+it:loc_end+it))
-%             end
-%             plot(cori)
-           
+            %             for it = 1:10
+            %                   cori(it) = corr(ZZ,DTFP_UTIL(loc_start+1+it:loc_end+it))
+            %             end
+            %             plot(cori)
+            
             
             %Runniong OLS to obtain Ztilde
             T              = size(ZZ,1);
@@ -107,18 +107,19 @@ for iii = 1:1
                   X = [X DATA(loc_start+1-l:loc_end-l,:) pc(loc_start+1-l:loc_end-l,1:mpc)];
             end
             Y = ZZ;
-%             Y = 0.1*Mich1Y(loc_start+1:loc_end);
-%             Y = 0.1*SP500(loc_start+1:loc_end);
+            %             Y = 0.1*Mich1Y(loc_start+1:loc_end);
+            %             Y = 0.1*SP500(loc_start+1:loc_end);
             [B, zhat, Ztilde] = quick_ols(Y,X);
-                        for it = 1:10
-                  cori(it) = corr(Ztilde.*ProbRecession(loc_start:loc_end-1),DTFP_UTIL(loc_start+1+it:loc_end+it))
-            end
-            plot(cori)
-            return
+%             for it = 1:10
+%                   cori(it) = corr(Ztilde.*ProbRecession(loc_start:loc_end-1),DTFP_UTIL(loc_start+1+it:loc_end+it))
+%             end
+%            plot(cori)
+           
             
             Ztilde_graph = Ztilde + .05;
-            figure('Position',[100 100 1000 600])
+            figure('Position',[-1919          41        1920         963])
             figure(iii)
+            set(gcf,'color','w');
             area(Time(loc_start+1:loc_end),NBERDates(loc_start+1:loc_end),'FaceColor',[0.75 0.75 0.75],'EdgeColor','none')
             hold on
             grid on
@@ -183,8 +184,10 @@ for iii = 1:1
             
             nvar = length(varlist);
             n_row = 2;
-            n_col = ceil(nvar/n_row);
+            n_col = ceil(nvar/n_row);           
             figure(3+iii)
+            figure('Position',[1          41        1920         963])
+            set(gcf,'color','w');
             for j = 1: length(varlist)
                   s = subplot(n_row,n_col,j);
                   hold on
