@@ -10,6 +10,7 @@
 \bibliographystyle{chicago}
 \newcommand{\spitem}{\vspace{.3cm}\item}
 \newcommand{\elas}{$E_{labor}$}
+\def \ourFigPath {../../} 
 
 
 
@@ -37,7 +38,7 @@
 	
 	\
 	
-	We employ a \textbf{regime switching} econometric model where transitions across states (recession and expansion) are \textbf{smooth} to answer this question
+	We employ a \textbf{regime switching} econometric model where transitions across states (recession and expansion) are \textbf{smooth}
 		
 }
 	
@@ -110,19 +111,19 @@
 	
 	\textbf{Solution.} Estimate $\tilde{Z}_t$ as follows	
 $$
-Z_t = C +  \sum_{j=-J}^H \delta_j TFP_{t+j} + \gamma SS_t + \mu PC_{t-1} + \tilde{Z}_t
+Z_t = C +  \sum_{j=-J}^H \delta_j \Delta TFP_{t+j} + \gamma SS_t + \mu PC_{t-1} + \tilde{Z}_t
 $$
 where
 \begin{itemize}
 	\item $C$ is the constant
-	\item $TFP_t$ is total factor productivity at time $t$
-	\item $SS_t$ is a vector of structural shocks at time $t$
+	\item $\Delta TFP_t$ is first difference of total factor productivity at time $t$
+	\item $SS_t$ is a vector of structural shocks at time $t$ from the dataset of Caldara and Kamps (2017)
 	\item $PC_{t-1}$ is a vector of principal component at time $t-1$
 \end{itemize}
 
 \
 
-$\tilde{Z}_t$ represents a change expectation which is not related to any source of fundamental fluctuations, i.e. a \textbf{noise shock}.
+$\tilde{Z}_t$ represents a change in expectations which is not related to any source of fundamental fluctuations, i.e. a \textbf{noise shock}.
 	
 }
 
@@ -149,11 +150,53 @@ and variables $\eta_t$ is an index (normalized to have zero mean and unit varian
 
 \end{frame}
 
-\frame{\frametitle{Results}
+\frame{\frametitle{Noise Shocks $\tilde{Z_t}$}
+	
+	\begin{center}
+	\includegraphics[scale = 0.27]{\ourFigPath Figures/Noise_Shocks_SPF_GDPgrowth_revisions}
+\end{center}
 
 
 
+}
 
+
+\frame{\frametitle{Local Projection using Smooth Transition}
+	
+	\begin{center}
+		\includegraphics[scale = 0.27]{\ourFigPath Figures/STLP_IRFs_Noise_Shocks_SPF_GDPgrowth_revisions}
+	\end{center}
+	
+	
+	
+}
+
+
+\frame{\frametitle{Main Issues}
+	
+\begin{enumerate}
+	\item SPF information set may be different to the one of economic agents.
+	
+	\
+	
+	\item Forecast horizon of SPF may be to short to properly capture future beliefs.
+	
+	\
+	
+	\item Do we need to treat for possible trend in the data? 
+	
+	\
+	
+	\item Need to set up a reliable procedure for the confidence intervals.
+	
+	\
+	
+	
+	\item Need to allow for endogenous feedbacks of noise on $\eta_t$ in the local projection.
+	\end{enumerate}
+	
+	
+	
 }
 
 
@@ -167,8 +210,24 @@ and variables $\eta_t$ is an index (normalized to have zero mean and unit varian
 \begin{frame}[label=Details]
 \frametitle{Details on $\eta_t$ and STPL procedure}
 
+$\eta_t$ is defined as the seven-quarter moving average of the output growth rate. 
+\begin{itemize}
+	\item Notice that we can easily consider dynamic feedbacks from noise to the state of the regime.
+\end{itemize}
 
 
+\
+
+\
+
+
+Following Auerbach and Gorodnichenko (2012) we calibrate $\gamma$ to $1.5$ for now.\begin{itemize}
+	\item Granger and Teravista (1993) suggest robustness checks procedure for $\gamma$.
+\end{itemize}
+
+\
+
+\
 
 
 
