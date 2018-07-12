@@ -1,10 +1,13 @@
-function pc = get_principal_components(data)
+function pc = get_principal_components(data,Zscore)
 % Get principal components (see Stock & Watson 2002, eq 6)
 % data is (T, nvar)
 
 [T,n] = size(data);
-for i=1:n
-      data(:,i) = zscore(data(:,i));
+
+if Zscore == 1
+      for i=1:n
+            data(:,i) = zscore(data(:,i));
+      end
 end
 
 % Get VC matrix

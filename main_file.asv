@@ -32,8 +32,7 @@ do_truncation_PC                           = 1; %Do truncate data.
 dataset_PC                                 = real(dataset_PC);
 date_start_PC                              = dataset_PC(1,1);
 dataset_PC                                 = dataset_PC(:,2:end); %Removing time before PC analysis
-Zscore                                     = 1; %Standardize data before taking PC
-PC                                         = get_principal_components(dataset_PC,Zscore);
+PC                                         = get_principal_components(dataset_PC);
 pc                                         = nan(size(dataset,1),size(dataset_PC,2));
 loc_time_PC                                = find(Time == date_start_PC);
 pc(loc_time_PC:loc_time_PC+size(PC,1)-1,:) = PC;
@@ -61,7 +60,7 @@ Z2                  = Delta_INDPROD_t(2:end) - Delta_INDPROD_t1(1:end-1);
 Z3                  = Delta_RINV_t(2:end) - Delta_RINV_t1(1:end-1);
 
 %Technical values to build Ztilde
-lag_tfp           = 4; %number of lags of TFP - cannot be zero since 1 include current TFP
+lag_tfp           = 8; %number of lags of TFP - cannot be zero since 1 include current TFP
 lead_tfp          = 16; %number of leads of TFP
 lag               = 2;  %number of lags of control variables (other structural shocks)
 mpc               = 2; %max number of principal components
@@ -71,18 +70,17 @@ threshold         = -1/eps; %Remove all the NaN values
 Z                   = [Z1 Z2 Z3];
 
 %Building Ztilde
-iii                   = 2; %Get either Z1, Z2, Z3, or ZPC. ZPC if iii = 0!
+iii                   = 0; %Get either Z1, Z2, Z3, or ZPC. ZPC if iii = 0!
 if iii == 0 %Get the first principal component of Z1, Z2, and Z3
-      for in = 1:2
-            loc_start(in)   = find(Z(:,in) > threshold, 1);
+      for in = 1:size(Z,2)
+            loc_start(in)   = find(Z(in,) > threshold, 1) + lag;
+            loc_start       = max(loc_start);
+            loc_end         = find(isnan(MUNI1Y(loc_start+1:end)),1);
+            loc_end         = loc_start + loc_end - 1 - 2;
+            ZPC             = get_principal_components(Z(loc_start:loc_end,:));
+            ZPC             = ZPC(:,1);
+            ZZ              = ZPC;
       end
-      loc_start       = max(loc_start) + lag;
-      loc_end         = find(isnan(MUNI1Y(loc_start+1:end)),1);
-      loc_end         = loc_start + loc_end - 1 - 2;
-      NoZscore        = 0; %Do not standardize data before taking PC
-      ZPC             = get_principal_components(Z(loc_start:loc_end-1,1:2),NoZscore);
-      ZPC             = ZPC(:,1);
-      ZZ              = ZPC;
 else %Get either Z1, Z2, or Z3
       ZZ              = Z(:,iii);
       loc_start       = find(ZZ > threshold, 1) + lag;
