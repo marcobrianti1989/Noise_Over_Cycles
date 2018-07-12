@@ -23,6 +23,7 @@ for i = 1:size(dataset,2)
       eval([var_names{i} ' = dataset(:,i);']);
 end
 
+
 %Read dataset_PC for PC analysis
 filename_PC                                = 'Dataset_test_PC';
 sheet_PC                                   = 'Quarterly';
@@ -166,6 +167,8 @@ varlist = {'TFP','Real GDP', 'Real Consumption',...
 lags    = 1;
 H       = 20; %irfs horizon
 mpc     = 2; %max number of principal components
+
+
 
 %standardize Ztilde to get one std dev shock
 Ztilde  = Ztilde/std(Ztilde);
