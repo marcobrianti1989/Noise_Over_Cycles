@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.18 (MiKTeX 2.9.6350 64-bit) (preloaded format=pdflatex 2017.8.21)  21 JUN 2018 12:25
+This is pdfTeX, Version 3.14159265-2.6-1.40.18 (MiKTeX 2.9.6350 64-bit) (preloaded format=pdflatex 2017.8.21)  13 JUL 2018 13:52
 entering extended mode
 **./meeting.tex
 (meeting.tex
@@ -1139,14 +1139,14 @@ Overfull \hbox (1.60075pt too wide) in paragraph at lines 161--161
 [8
 
  <../../Figures/Noise_Shocks_SPF_GDPgrowth_revisions.pdf>]
-<../../Figures/STLP_IRFs_Noise_Shocks_SPF_GDPgrowth_revisions.pdf, id=89, 1156.
-82187pt x 689.83723pt>
-File: ../../Figures/STLP_IRFs_Noise_Shocks_SPF_GDPgrowth_revisions.pdf Graphic 
-file (type pdf)
+<../../Figures/STLP_IRFs_Noise_Shocks_SPF_GDPgrowth_revisions_logdiff.pdf, id=8
+9, 1156.82187pt x 689.83723pt>
+File: ../../Figures/STLP_IRFs_Noise_Shocks_SPF_GDPgrowth_revisions_logdiff.pdf 
+Graphic file (type pdf)
 
-<use ../../Figures/STLP_IRFs_Noise_Shocks_SPF_GDPgrowth_revisions.pdf>
+<use ../../Figures/STLP_IRFs_Noise_Shocks_SPF_GDPgrowth_revisions_logdiff.pdf>
 Package pdftex.def Info: ../../Figures/STLP_IRFs_Noise_Shocks_SPF_GDPgrowth_rev
-isions.pdf used on input line 172.
+isions_logdiff.pdf used on input line 172.
 (pdftex.def)             Requested size: 312.34608pt x 186.25853pt.
 
 Overfull \hbox (5.05621pt too wide) in paragraph at lines 172--172
@@ -1155,10 +1155,10 @@ Overfull \hbox (5.05621pt too wide) in paragraph at lines 172--172
 
 [9
 
- <../../Figures/STLP_IRFs_Noise_Shocks_SPF_GDPgrowth_revisions.pdf>] [10
+ <../../Figures/STLP_IRFs_Noise_Shocks_SPF_GDPgrowth_revisions_logdiff.pdf>]
+[10
 
-]
-[11
+] [11
 
 ]
 \tf@nav=\write6
@@ -1180,7 +1180,7 @@ Package rerunfilecheck Info: File `meeting.out' has not changed.
  ) 
 Here is how much of TeX's memory you used:
  20691 strings out of 493323
- 407959 string characters out of 3139072
+ 407999 string characters out of 3139072
  471498 words of memory out of 3000000
  23696 multiletter control sequences out of 15000+200000
  50306 words of font info for 62 fonts, out of 3000000 for 9000
@@ -1199,7 +1199,7 @@ onts/type1/public/lm/lmsso10.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/publi
 c/lm/lmsso12.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/lm/lmsso8.pfb>
 <C:/Program Files/MiKTeX 2.9/fonts/type1/public/lm/lmsy10.pfb><C:/Program Files
 /MiKTeX 2.9/fonts/type1/public/lm/lmsy8.pfb>
-Output written on meeting.pdf (11 pages, 351486 bytes).
+Output written on meeting.pdf (11 pages, 351494 bytes).
 PDF statistics:
  159 PDF objects out of 1000 (max. 8388607)
  27 named destinations out of 1000 (max. 500000)
