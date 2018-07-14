@@ -14,23 +14,42 @@ close all
 %Read main dataset
 filename                    = 'main_file';
 sheet                       = 'Sheet1';
-range                       = 'B1:AI300';
+range                       = 'B1:AN300';
 do_truncation               = 0; %Do not truncate data. You will have many NaN
 [dataset, var_names]        = read_data2(filename, sheet, range, do_truncation);
 dataset                     = real(dataset);
 filter                      = 1; %Filter the data - Just HPfilter for now
+numberTFP                   = strmatch('DTFP_UTIL', var_names);
 %If filter = 0 check the excel file to set log-vediation, transformation = 5.
-if filter == 1     
+if filter == 1
+      [dataset_filter, loc, loc2]               = truncate_data(dataset(:,numberTFP:end));
+      loc2                                      = loc + loc2 - 1;
       switch 'hpfilter'
             case 'hpfilter'
-                  [dataset_HP, loc, loc2]               = truncate_data(dataset(:,26:end));
-                  [~ , dataset_HP]                      = hpfilter(dataset_HP,1600);
+                  [~ , dataset_HP]                      = hpfilter(dataset_filter,1600);
                   dataset_HP2(1:loc-1,:)                = NaN(loc-1,size(dataset_HP,2));
                   dataset_HP2(loc:loc2,:)               = dataset_HP;
                   dataset_HP2(loc2+1:size(dataset,1),:) = NaN(size(dataset,1)-loc2,size(dataset_HP,2));
-                  dataset                               = [dataset(:,1:25) dataset_HP2];
+                  dataset                               = [dataset(:,1:numberTFP-1) dataset_HP2];
+            case 'OneSidedHPfilter'
+                  dataset_HP                            = zeros(size(dataset_filter,1),size(dataset_filter,2));
+                  for iif = 1:length(dataset_filter)
+                        [~ , dataset_HPgen]             = hpfilter(dataset_filter(1:iif,:),1600);
+                        dataset_HP(iif,:)               = dataset_HPgen(end,:);
+                  end
+                  cutoff                                = 8;
+                  dataset_HP2(1:loc-1+cutoff,:)         = NaN(loc-1+cutoff,size(dataset_HP,2));
+                  dataset_HP2(loc+cutoff:loc2,:)        = dataset_HP(1+cutoff:end,:);
+                  dataset_HP2(loc2+1:size(dataset,1),:) = NaN(size(dataset,1)-loc2,size(dataset_HP,2));
+                  dataset                               = [dataset(:,1:numberTFP-1) dataset_HP2];
+            case 'BandPassfilter' %Do not use it, still not working!
+                  dataset_bp                            = bpfilt(dataset_filter,6,32,1,0);
+                  dataset_bp2(1:loc-1,:)                = NaN(loc-1,size(dataset_bp,2));
+                  dataset_bp2(loc:loc2,:)               = dataset_bp(1:end,:);
+                  dataset_bp2(loc2+1:size(dataset,1),:) = NaN(size(dataset,1)-loc2,size(dataset_bp,2));
+                  dataset                               = [dataset(:,1:numberTFP-1) dataset_bp2];
             otherwise
-                  disp('Only HPfilter for now.')
+                  disp('Wrong filter selection')
       end
 end
 %Assess names to each variable
@@ -78,7 +97,7 @@ Z3                  = Delta_RINV_t(2:end) - Delta_RINV_t1(1:end-1);
 %Technical values to build Ztilde
 lag_tfp           = 2; %number of lags of TFP - cannot be zero since 1 include current TFP
 lead_tfp          = 16; %number of leads of TFP
-lag               = 2;  %number of lags of control variables (other structural shocks)
+lag               = 1;  %number of lags of control variables (other structural shocks)
 mpc               = 2; %max number of principal components
 threshold         = -1/eps; %Remove all the NaN values
 
@@ -86,24 +105,37 @@ threshold         = -1/eps; %Remove all the NaN values
 Z                   = [Z1 Z2 Z3];
 
 %Building Ztilde
-iii                   = 1; %Get either Z1, Z2, Z3, or ZPC. ZPC if iii = 0!
-if iii == 0 %Get the first principal component of Z1, Z2, and Z3
-      for in = 1:2
-            loc_start(in)   = find(Z(:,in) > threshold, 1);
-      end
-      loc_start       = max(loc_start) + lag;
-      loc_end         = find(isnan(MUNI1Y(loc_start+1:end)),1);
-      loc_end         = loc_start + loc_end - 1 - 2;
-      NoZscore        = 0; %Do not standardize data before taking PC
-      ZPC             = get_principal_components(Z(loc_start:loc_end-1,1:2),NoZscore);
-      ZPC             = ZPC(:,1);
-      ZZ              = ZPC;
-else %Get either Z1, Z2, or Z3
-      ZZ              = Z(:,iii);
-      loc_start       = find(ZZ > threshold, 1) + lag;
-      loc_end         = find(isnan(MUNI1Y(loc_start+1:end)),1);
-      loc_end         = loc_start + loc_end - 1 - 2;
-      ZZ              = ZZ(loc_start:loc_end-1);
+switch 'MichiganIndex'
+      case 'First_Principal_Component'
+            for in = 1:2
+                  loc_start(in)   = find(Z(:,in) > threshold, 1);
+            end
+            loc_start       = max(loc_start) + lag;
+            loc_end         = find(isnan(MUNI1Y(loc_start+1:end)),1);
+            loc_end         = loc_start + loc_end - 1 - 2;
+            NoZscore        = 0; %Do not standardize data before taking PC
+            ZPC             = get_principal_components(Z(loc_start:loc_end-1,1:2),NoZscore);
+            ZPC             = ZPC(:,1);
+            ZZ              = ZPC;
+      case 'CascaldiGarcia' %Get either Z1, Z2, or Z3
+            iii             = 1;
+            ZZ              = Z(:,iii);
+            loc_start       = find(ZZ > threshold, 1) + lag;
+            loc_end         = find(isnan(MUNI1Y(loc_start+1:end)),1);
+            loc_end         = loc_start + loc_end - 1 - 2;
+            ZZ              = ZZ(loc_start:loc_end-1);
+      case 'MichiganIndex'
+            ZZ              = Mich1Y;
+            loc_start       = find(RESID08 > threshold, 1) + lag;
+            loc_end         = find(isnan(MUNI1Y(loc_start+1:end)),1);
+            loc_end         = loc_start + loc_end - 1 - 2;
+            ZZ              = ZZ(loc_start:loc_end-1);
+      case 'StockPrices'
+            ZZ              = SP500;
+            loc_start       = find(RESID08 > threshold, 1) + lag;
+            loc_end         = find(isnan(MUNI1Y(loc_start+1:end)),1);
+            loc_end         = loc_start + loc_end - 1 - 2;
+            ZZ              = ZZ(loc_start:loc_end-1);
 end
 
 %Runniong OLS to obtain Ztilde
@@ -129,7 +161,7 @@ Y                 = ZZ;
 [B,zhat,Ztilde]   = quick_ols(Y,X);
 
 %Show the graph of Ztilde - Figure(1)
-Ztilde_graph = Ztilde + .05;
+Ztilde_graph = 0.05*Ztilde + .05;
 figure('Position', [-1919 41 1920 963])
 figure(1)
 set(gcf,'color','w');
@@ -212,7 +244,7 @@ end
 for j = 1: length(varlist)
       s = subplot(n_row,n_col,j);
       hold on
-      if j >= 1
+      if j >= 1 %Be careful if j >= 1 No variables are cumulated!
             q = plot([1:H]',IR_E{j}, '-r', 'linewidth', 3);
             h = plot([1:H]',IR_R{j}, '--b','linewidth', 3);
             l = plot([1:H]',IR_L{j}, '-ok','linewidth', 3);
@@ -237,7 +269,7 @@ l = legend([q h l],{'Expansion','Recession','Linear'},'interpreter','latex');
 set(l, 'box','off', 'FontSize',30,'Orientation','horizontal','Position',[0.3 0.015 0.40 0.01]);
 
 % Print figure authomatically if "export_figure1 = 1"
-export_figure2 = 1;
+export_figure2 = 0;
 if export_figure2 == 1
       % Create the correct path
       base_path = pwd;
@@ -253,7 +285,7 @@ if export_figure2 == 1
             addpath([base_path '/Export_Fig']) %for Mac
       end
       warning on
-      export_fig(['STLP_IRFs_Noise_Shocks_SPF_GDPgrowth_revisions_logHPfilter.pdf'])
+      export_fig(['STLP_IRFs_Noise_Shocks_SPF_GDPgrowth_revisions_log_OneSided_HPfilter.pdf'])
       close all
       cd(base_path) %back to the original path
 end
