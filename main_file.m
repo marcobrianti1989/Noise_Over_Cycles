@@ -102,7 +102,7 @@ mpc               = 2; %max number of principal components
 threshold         = -1/eps; %Remove all the NaN values
 
 %Set Z1, Z2, and Z3 into a vector
-Z                   = [Z1 Z2 Z3];
+Z                 = [Z1 Z2 Z3];
 
 %Building Ztilde
 switch 'CascaldiGarcia'
@@ -227,10 +227,12 @@ dep_var = [ 100*DTFP_UTIL(loc_start+1:loc_end-2) 100*RealGDP(loc_start+1:loc_end
 
 %stlp(y,x,u,fz(-1),lags,H); where y is the dep var, u is the shock, x are the controls
 for kk = 1:size(dep_var,2)
-      [IR_E{kk}, IR_R{kk}, IR_L{kk}] = stlp(dep_var(:,kk),...
+      [IR_E{kk}, IR_R{kk}, IR_L{kk}, res_uncond{kk}, B_store{kk}, Rsquared{kk}] = stlp(dep_var(:,kk),...
             pc(loc_start+1:loc_end-2,1:mpc),Ztilde(1:end-2),...
             ProbRecession(loc_start:loc_end-1-2),lags,H,DTFP_UTIL(loc_start+1:loc_end-2));
 end
+
+%[dataset_boot] = data_boot(B,nburn,res,nsimul,which_correction,q)
 
 %Impulse Response Functions using Local Projection
 nvar     = length(varlist);

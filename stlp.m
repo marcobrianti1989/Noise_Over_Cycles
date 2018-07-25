@@ -1,10 +1,11 @@
-function [IRF_E, IRF_R, IRF_L ] = stlp(y,x,u,fz,lags,H,TFP)
+function [IRF_E, IRF_R, IRF_L , res_uncond, B_store, Rsquared] = stlp(y,x,u,fz,lags,H,TFP)
 % H is the horizon of the irf
 % y and x are (T,1);
 % regression: y(t+h) = A0 + PI^E*(1-F(z(t-1)))*u(t) + PI^R*F(z(t-1))*u(t) + ...
 %                         + B1*u(t-1) + C1*y(t-1) + D1*x(t-1) + C2*y(t-2) + ...
 
-FZ = repmat(fz,1,size(x,2));
+FZ              = repmat(fz,1,size(x,2));
+%res_uncond      = zeros(length(Y),H);
 for h = 1:H
       Y          = y(h+lags:end,:);
       X          = u(lags+1:end-h+1,:); %make sure fz is lagged in the argument of the function
@@ -39,11 +40,14 @@ for h = 1:H
             X      = [X,  ones(length(Y),1), trend];
             XL     = [XL, ones(length(Y),1), trend];
       end
-      B            = X'*X\(X'*Y);
-      BL           = XL'*XL\(XL'*Y); %unconditional OLS, not controlling for smooth transition F(z)
-      IRF_E(h)     = B(1); %here we are fixing the probability over the IRFs - need to relax
-      IRF_R(h)     = B(1) + B(2); %this is correct, it can be proved mathematically in 2 steps
-      IRF_L(h)     = BL(1); %unconditional OLS, not controlling for smooth transition F(z)
+      B               = X'*X\(X'*Y);
+      res_uncond{h}   = Y - X*B;
+      Rsquared(h)     = sum((Y - X*B).^2)/(length(Y)-1)*1/var(Y);
+      BL              = XL'*XL\(XL'*Y); %unconditional OLS, not controlling for smooth transition F(z)
+      IRF_E(h)        = B(1); %here we are fixing the probability over the IRFs - need to relax
+      IRF_R(h)        = B(1) + B(2); %this is correct, it can be proved mathematically in 2 steps
+      IRF_L(h)        = BL(1); %unconditional OLS, not controlling for smooth transition F(z)
+      B_store(:,h)    = B;
 end
 
 
