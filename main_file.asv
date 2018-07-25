@@ -14,7 +14,7 @@ close all
 %Read main dataset
 filename                    = 'main_file';
 sheet                       = 'Sheet1';
-range                       = 'B1:AR300';
+range                       = 'B1:AN300';
 do_truncation               = 0; %Do not truncate data. You will have many NaN
 [dataset, var_names]        = read_data2(filename, sheet, range, do_truncation);
 dataset                     = real(dataset);
@@ -95,9 +95,9 @@ Z2                  = Delta_INDPROD_t(2:end) - Delta_INDPROD_t1(1:end-1);
 Z3                  = Delta_RINV_t(2:end) - Delta_RINV_t1(1:end-1);
 
 %Technical values to build Ztilde
-lag_tfp           = 8; %number of lags of TFP - cannot be zero since 1 include current TFP
+lag_tfp           = 2; %number of lags of TFP - cannot be zero since 1 include current TFP
 lead_tfp          = 16; %number of leads of TFP
-lag               = 2;  %number of lags of control variables (other structural shocks)
+lag               = 1;  %number of lags of control variables (other structural shocks)
 mpc               = 2; %max number of principal components
 threshold         = -1/eps; %Remove all the NaN values
 
@@ -105,7 +105,7 @@ threshold         = -1/eps; %Remove all the NaN values
 Z                   = [Z1 Z2 Z3];
 
 %Building Ztilde
-switch 'CascaldiGarcia'
+switch 'Cascaldigarcia'
       case 'First_Principal_Component'
             for in = 1:2
                   loc_start(in)   = find(Z(:,in) > threshold, 1);
@@ -244,7 +244,7 @@ end
 for j = 1: length(varlist)
       s = subplot(n_row,n_col,j);
       hold on
-      if j == 40 %Be careful if j >= 1 No variables are cumulated!
+      if j == 7 %Be careful if j >= 1 No variables are cumulated!
             q = plot([1:H]',IR_E{j}, '-r', 'linewidth', 3);
             h = plot([1:H]',IR_R{j}, '--b','linewidth', 3);
             l = plot([1:H]',IR_L{j}, '-ok','linewidth', 3);
@@ -285,7 +285,7 @@ if export_figure2 == 1
             addpath([base_path '/Export_Fig']) %for Mac
       end
       warning on
-      export_fig(['STLP_IRFs_Noise_Shocks_SPF_GDPgrowth_revisions3quarters_logdiff.pdf'])
+      export_fig(['STLP_IRFs_Noise_Shocks_MichIndex_1Y_logdiff.pdf'])
       close all
       cd(base_path) %back to the original path
 end
