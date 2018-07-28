@@ -1,0 +1,102 @@
+{\rtf1\ansi\ansicpg1252\cocoartf1348\cocoasubrtf170
+{\fonttbl\f0\fswiss\fcharset0 Helvetica;}
+{\colortbl;\red255\green255\blue255;}
+{\*\listtable{\list\listtemplateid1\listhybrid{\listlevel\levelnfc23\levelnfcn23\leveljc0\leveljcn0\levelfollow0\levelstartat1\levelspace360\levelindent0{\*\levelmarker \{hyphen\}}{\leveltext\leveltemplateid1\'01\uc0\u8259 ;}{\levelnumbers;}\fi-360\li720\lin720 }{\listname ;}\listid1}
+{\list\listtemplateid2\listhybrid{\listlevel\levelnfc23\levelnfcn23\leveljc0\leveljcn0\levelfollow0\levelstartat1\levelspace360\levelindent0{\*\levelmarker \{hyphen\}}{\leveltext\leveltemplateid101\'01\uc0\u8259 ;}{\levelnumbers;}\fi-360\li720\lin720 }{\listname ;}\listid2}}
+{\*\listoverridetable{\listoverride\listid1\listoverridecount0\ls1}{\listoverride\listid2\listoverridecount0\ls2}}
+\margl1440\margr1440\vieww25400\viewh14500\viewkind0
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural
+
+\f0\i\fs36 \cf0 \ul \ulc0 Literature on expectation shocks \
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural
+
+\i0 \cf0 \ulnone \
+- Beaudry Portier 2014: survey paper\
+\
+- Leduc Sill 2013 Restat: study changes in the expectations and their interactions with monetary policy. Use data from SPF 
+\i and 
+\i0 from Livingston Survey. Monetary policy tightens in expectations of good times. Check that results are robust if they use the Michigan Survey.\
+\
+- Levchenko Pandalai-Nayar 2018 JEEA: identify sentiment shocks as those that are orthogonal to surprise and TFP news shocks and that maximize the short run forecast error variance of either GDP forecast or Consumer confidence index. Note that we depart from them at least in 2 aspects: 1) the identification procedure is substantially different. 2) we orthogonalize relatively to the TFP path which is a weaker condition than news and surprise shock. In principle the belief shock can be correlated with news and surprise in a way that it has no effect on TFP.\
+\
+- Feve Guay 2018 EJ: empirical paper, identification similar to LPN above but results are different (sentiment shocks not important). They use confidence measure, not forecasts. \
+\
+
+\i More theoretical literature:
+\i0 \
+- Angeletos Collard Dellas, \'85\
+\
+- Milani 2011 EJ, 2017 JEDC: estimate 
+\i near
+\i0 -rational learning model (rather than rational expectations) using SPF data. Sentiments are defined as waves of optimism/pessimism. Agents forms expectations using a correctly specified model but they do not know the parameters, as econometricians. However they are hit by exogenous sentiment shocks that make them deviating from their point forecast. These deviations are estimated by looking at the difference between SPF forecasts and realized macroeconomic series. \
+\
+
+\i Literature supporting the view of asymmetric importance/effects of beliefs shocks:
+\i0 \
+-\
+\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural
+
+\i \cf0 \ul Problems with survey data
+\i0 \
+\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural
+\cf0 \ulnone 	- SPF info set different from agents\
+	- Only medium horizon forecast \'97 really a problem?\
+	- the underlying series, say GDP, gets revised -> see Clements Galvao, Leduc Sill use unemployment data as they do not get revised\
+	- monthly data gets released once the forecast in that quarter 
+\i  for 
+\i0  say one year ahead has been already made -> Mixed frequency VAR\
+\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural
+
+\i \cf0 \ul Bear in mind
+\i0 \
+\
+	\ulnone - sentiments shock can be correlated with uncertainty shocks \'97 an increase of uncertainty leads to a downward revision of forecasts of macro variables. Shall we also control for the Jurado Ludvigson Ng measure? Is it too restrictive? Levchenko Pandalai-Nayar check the covariance with Bloom\'92s uncertainty measure.\
+\
+	- is the same to orthogonalize beliefs wrt to TFP and wrt to surprise and news of TFP? No, as a matter of fact it would be nice if it exhibits some correlation\
+\
+	- Are we identifying a shock? In other words, is the revision unpredictable?\
+\
+	- could also think of estimating a theoretical model that has the potential for asymmetries built-in\
+\
+when we analyse the irf to a shock we do not take a one std deviation shock but a one stdev*(1-F(z)) shock\'85need to check it\
+\
+\pard\tx220\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\li720\fi-720\pardirnatural
+\ls1\ilvl0\cf0 		- we are implicitly assuming a Cholesky ordering in the second stage\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural
+\cf0 \
+\pard\tx220\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\li720\fi-720\pardirnatural
+\ls2\ilvl0\cf0 {\listtext	\uc0\u8259 	}- we are following AG2017, doe it make sense to compute irfs with fz = 0? Do they consider the feedback? \
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural
+\cf0 \
+\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural
+
+\i \cf0 \ul Data treatment\
+\
+	
+\i0 \ulnone - Since we are not interested in long run changes due to demographics, labor market composition, etc. we should remove the long run trends as in Stock and Watson (2016, replication files available) using a biweight filter with bandwidth of 100 quarters. The detrending is done on a integrated of order \ul zero\ulnone  series (requires truncation at the ends of the sample, see p 61). (Baxter-King filter gives similar results).\
+\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural
+
+\b \cf0 TODO\
+\
+	
+\b0 - try other measures of forecasts: at different times, individually taken or combined; other variables such as unemployment, investment; or Livingston survey, Michigan, if possible. \
+\
+	- Construct Confidence Intervals\
+\
+	- Variable transformation \'97 filtering and division by population\
+\
+	- compute pvalues\
+\
+	- see email\
+\
+	- check stock prices \
+	\
+	- should we control for uncertainty shocks?\
+	\
+\
+}

@@ -8,7 +8,7 @@
 % Code by Brianti, Marco e Cormun, Vito
 %*************************************************************************%
 
-clear
+clear 
 close all
 
 %Read main dataset
@@ -200,6 +200,7 @@ if export_figure1 == 1
       close all
       cd(base_path) %back to the original path
 end
+close
 
 %*************************************************************************%
 %                                                                         %
@@ -209,12 +210,10 @@ end
 
 % Smooth Transition Local Projection
 varlist = {'TFP','Real GDP', 'Real Consumption',...
-      'Unemployment Rate','Real Wage','Hours','CPI','Real Investment'};
+      'Unemployment Rate','Real Wage','Hours','CPI','Real Investment','SP500'};
 lags    = 1;
 H       = 20; %irfs horizon
 mpc     = 2; %max number of principal components
-
-
 
 %standardize Ztilde to get one std dev shock
 Ztilde  = Ztilde/std(Ztilde);
@@ -223,16 +222,38 @@ Ztilde  = Ztilde/std(Ztilde);
 dep_var = [ 100*DTFP_UTIL(loc_start+1:loc_end-2) 100*RealGDP(loc_start+1:loc_end-2) ...
       100*RealCons(loc_start+1:loc_end-2)  UnempRate(loc_start+1:loc_end-2) ...
       100*RealWage(loc_start+1:loc_end-2) 100*Hours(loc_start+1:loc_end-2) ...
-      100*CPI(loc_start+1:loc_end-2) 100*RealInvestment(loc_start+1:loc_end-2) ];
+      100*CPI(loc_start+1:loc_end-2) 100*RealInvestment(loc_start+1:loc_end-2) ...
+      100*SP500(loc_start+1:loc_end-2)];
 
 %stlp(y,x,u,fz(-1),lags,H); where y is the dep var, u is the shock, x are the controls
 for kk = 1:size(dep_var,2)
-      [IR_E{kk}, IR_R{kk}, IR_L{kk}, res_uncond{kk}, B_store{kk}, Rsquared{kk}] = stlp(dep_var(:,kk),...
+      [IR_E{kk}, IR_R{kk}, IR_L{kk}, res_uncond{kk}, Rsquared{kk}, ...
+            BL{kk}, regressor{kk}] = stlp(dep_var(:,kk),...
             pc(loc_start+1:loc_end-2,1:mpc),Ztilde(1:end-2),...
             ProbRecession(loc_start:loc_end-1-2),lags,H,DTFP_UTIL(loc_start+1:loc_end-2));
 end
 
-%[dataset_boot] = data_boot(B,nburn,res,nsimul,which_correction,q)
+% Build a table for the Rsquared
+% This R-squared has to be interpreted as the variance explained by noise
+% shocks of macroeconomic variables at each specific horizon
+for kkk = 1:size(dep_var,2) %Raws are time horizons, Columns are variables
+      Rsquared_Table(:,kkk) = Rsquared{kkk}'; 
+end
+varlist;
+Rsquared_Table;
+
+% Block bootstrap
+nsimul = 5;
+which_correction = 'none';
+q = 10;
+Bbeta = BL{2};
+Bbeta = Bbeta(:,2);
+res_res = res_uncond{2}';
+res_res = res_res{2};
+reg_reg = regressor{2};
+reg_reg = reg_reg{2};
+dataset_boot = data_boot_local_projection(Bbeta,res_res,nsimul,which_correction,...
+      q,reg_reg);
 
 %Impulse Response Functions using Local Projection
 nvar     = length(varlist);
@@ -246,7 +267,7 @@ end
 for j = 1: length(varlist)
       s = subplot(n_row,n_col,j);
       hold on
-      if j == 40 %Be careful if j >= 1 No variables are cumulated!
+      if j >= 1000 %Be careful if j >= 1 No variables are cumulated!
             q = plot([1:H]',IR_E{j}, '-r', 'linewidth', 3);
             h = plot([1:H]',IR_R{j}, '--b','linewidth', 3);
             l = plot([1:H]',IR_L{j}, '-ok','linewidth', 3);
@@ -287,13 +308,12 @@ if export_figure2 == 1
             addpath([base_path '/Export_Fig']) %for Mac
       end
       warning on
-      export_fig(['STLP_IRFs_Noise_Shocks_SPF_GDPgrowth_revisions3quarters_logdiff.pdf'])
+      export_fig(['STLP_IRFs_Noise_Shocks_SPF_GDPgrowth_revisions_loglevel.pdf'])
       close all
       cd(base_path) %back to the original path
 end
 
-
-
+close all
 
 
 
