@@ -269,13 +269,17 @@ for j = 1: length(varlist)
       s = subplot(n_row,n_col,j);
       hold on
       if j >= 1000 %Be careful if j >= 1 No variables are cumulated!
+            h1 = plot([1:H]',IR_E{j}+1.96*SE_store{j}, 'r','linewidth', 2);
+            h2 = plot([1:H]',IR_E{j}-1.96*SE_store{j}, 'r','linewidth', 2);
             q = plot([1:H]',IR_E{j}, '-r', 'linewidth', 3);
-            h = plot([1:H]',IR_R{j}, '--b','linewidth', 3);
-            l = plot([1:H]',IR_L{j}, '-ok','linewidth', 3);
+            %h = plot([1:H]',IR_R{j}, '--b','linewidth', 3);
+            %l = plot([1:H]',IR_L{j}, '-ok','linewidth', 3);
             plot([1:H]', 0*[1:H]', ':k');
             set(gca,'TickLabelInterpreter','latex')
             title(varlist{j},'interpreter', 'latex', 'fontsize', 12);
       else
+           % h1 = plot([1:H]',cumsum(IR_L{j}+1.96*SEL_store{j}), '.k','linewidth', 2);
+           % h2 = plot([1:H]',cumsum(IR_L{j}-1.96*SEL_store{j}), '.k','linewidth', 2);
             q = plot([1:H]',cumsum(IR_E{j}), '-r', 'linewidth', 3);
             h = plot([1:H]',cumsum(IR_R{j}), '--b','linewidth', 3);
             l = plot([1:H]',cumsum(IR_L{j}), '-ok','linewidth', 3);
@@ -289,8 +293,8 @@ for j = 1: length(varlist)
       end
       set(s, 'xlim', [1,H], 'ylim', ylim );
 end
-l = legend([q h l],{'Expansion','Recession','Linear'},'interpreter','latex');
-set(l, 'box','off', 'FontSize',30,'Orientation','horizontal','Position',[0.3 0.015 0.40 0.01]);
+%l = legend([q h l],{'Expansion','Recession','Linear'},'interpreter','latex');
+%set(l, 'box','off', 'FontSize',30,'Orientation','horizontal','Position',[0.3 0.015 0.40 0.01]);
 
 % Print figure automatically if "export_figure1 = 1"
 export_figure2 = 0;

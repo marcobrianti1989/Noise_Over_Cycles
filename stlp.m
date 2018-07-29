@@ -53,8 +53,8 @@ for h = 1:H
     Rsquared(h)     = 1 - var(res_uncond{h})/var(Y);
     BL_store(:,h)   = BL;
     XL_store{h}     = XL;
-    SE_store(h)     = se(2);
-    SEL_store(h)    = sel(2);
+    SE_store(h)     = se(1);%this is only for the case of expansion -- to correct 
+    SEL_store(h)    = sel(1);
 end
 
 close
