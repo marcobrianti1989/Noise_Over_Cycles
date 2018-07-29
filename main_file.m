@@ -226,9 +226,10 @@ dep_var = [ 100*DTFP_UTIL(loc_start+1:loc_end-2) 100*RealGDP(loc_start+1:loc_end
       100*SP500(loc_start+1:loc_end-2)];
 
 %stlp(y,x,u,fz(-1),lags,H); where y is the dep var, u is the shock, x are the controls
+
 for kk = 1:size(dep_var,2)
       [IR_E{kk}, IR_R{kk}, IR_L{kk}, res_uncond{kk}, Rsquared{kk}, ...
-            BL{kk}, regressor{kk}] = stlp(dep_var(:,kk),...
+            BL{kk}, regressor{kk},SE_store{kk},SEL_store{kk}] = stlp(dep_var(:,kk),...
             pc(loc_start+1:loc_end-2,1:mpc),Ztilde(1:end-2),...
             ProbRecession(loc_start:loc_end-1-2),lags,H,DTFP_UTIL(loc_start+1:loc_end-2));
 end
@@ -291,7 +292,7 @@ end
 l = legend([q h l],{'Expansion','Recession','Linear'},'interpreter','latex');
 set(l, 'box','off', 'FontSize',30,'Orientation','horizontal','Position',[0.3 0.015 0.40 0.01]);
 
-% Print figure authomatically if "export_figure1 = 1"
+% Print figure automatically if "export_figure1 = 1"
 export_figure2 = 0;
 if export_figure2 == 1
       % Create the correct path
@@ -313,7 +314,7 @@ if export_figure2 == 1
       cd(base_path) %back to the original path
 end
 
-close all
+
 
 
 
