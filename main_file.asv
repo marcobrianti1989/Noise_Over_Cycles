@@ -18,10 +18,10 @@ range                       = 'B1:AS300';
 do_truncation               = 0; %Do not truncate data. You will have many NaN
 [dataset, var_names]        = read_data2(filename, sheet, range, do_truncation);
 dataset                     = real(dataset);
-filter                      = 0; %Filter the data - Just HPfilter for now
+filter                      = 1; %Filter the data - Just HPfilter for now
 numberTFP                   = strmatch('DTFP_UTIL', var_names);
 %If filter = 0 check the excel file to set log-vediation, transformation = 5.
-if filter == 1
+if filter == 0
       [dataset_filter, loc, loc2]               = truncate_data(dataset(:,numberTFP:end));
       loc2                                      = loc + loc2 - 1;
       switch 'hpfilter'
@@ -162,7 +162,7 @@ Y                 = ZZ;
 for iii = 1:20
       corr(Ztilde,DTFP_UTIL(loc_start+1+iii:loc_end+iii))
 end
-
+return
 %Show the graph of Ztilde - Figure(1)
 Ztilde_graph = 0.05*Ztilde + .05;
 figure('Position', [-1919 41 1920 963])
@@ -221,20 +221,21 @@ mpc     = 2; %max number of principal components
 Ztilde  = Ztilde/std(Ztilde);
 
 % Matrix of dependen variables
-dep_var = [100*DTFP_UTIL(loc_start+1:loc_end-2) 100*RealGDP(loc_start+1:loc_end-2) ...
+dep_var = [ 100*DTFP_UTIL(loc_start+1:loc_end-2) 100*RealGDP(loc_start+1:loc_end-2) ...
       100*RealCons(loc_start+1:loc_end-2)  UnempRate(loc_start+1:loc_end-2) ...
       100*RealWage(loc_start+1:loc_end-2) 100*Hours(loc_start+1:loc_end-2) ...
       100*CPI(loc_start+1:loc_end-2) 100*RealInvestment(loc_start+1:loc_end-2) ...
       100*SP500(loc_start+1:loc_end-2)];
 
 %stlp(y,x,u,fz(-1),lags,H); where y is the dep var, u is the shock, x are the controls
+
 for kk = 1:size(dep_var,2)
       [IR_E{kk}, IR_R{kk}, IR_L{kk}, res_uncond{kk}, Rsquared{kk}, ...
             BL{kk}, regressor{kk},SE_store{kk},SEL_store{kk}] = stlp(dep_var(:,kk),...
             pc(loc_start+1:loc_end-2,1:mpc),Ztilde(1:end-2),...
             ProbRecession(loc_start:loc_end-1-2),lags,H,DTFP_UTIL(loc_start+1:loc_end-2));
 end
-%pc(loc_start+1:loc_end-2,1:mpc)
+
 loc_Vix_vec = find(isnan(Vix));
 loc_Vix = loc_Vix_vec(end);
 
@@ -280,10 +281,10 @@ end
 for j = 1:length(varlist)
       s = subplot(n_row,n_col,j);
       hold on
-      if j >= 0 %Be careful if j >= 1 No variables are cumulated!
-            h1 = plot([1:H]',IR_L{j}+1.64*SEL_store{j}, '--k','linewidth', 2);
-            h2 = plot([1:H]',IR_L{j}-1.64*SEL_store{j}, '--k','linewidth', 2);
-            q = plot([1:H]',IR_L{j}, 'k', 'linewidth', 3);
+      if j >= 1000 %Be careful if j >= 1 No variables are cumulated!
+            h1 = plot([1:H]',IR_E{j}+1.96*SE_store{j}, 'r','linewidth', 2);
+            h2 = plot([1:H]',IR_E{j}-1.96*SE_store{j}, 'r','linewidth', 2);
+            q = plot([1:H]',IR_E{j}, '-r', 'linewidth', 3);
             %h = plot([1:H]',IR_R{j}, '--b','linewidth', 3);
             %l = plot([1:H]',IR_L{j}, '-ok','linewidth', 3);
             plot([1:H]', 0*[1:H]', ':k');
@@ -309,7 +310,7 @@ end
 %set(l, 'box','off', 'FontSize',30,'Orientation','horizontal','Position',[0.3 0.015 0.40 0.01]);
 
 % Print figure automatically if "export_figure1 = 1"
-export_figure2 = 1;
+export_figure2 = 0;
 if export_figure2 == 1
       % Create the correct path
       base_path = pwd;
@@ -325,7 +326,7 @@ if export_figure2 == 1
             addpath([base_path '/Export_Fig']) %for Mac
       end
       warning on
-      export_fig(['STLP_IRFs_Noise_Shocks_SPF_GDPgrowth_revisions_loglevel.pdf'])
+      export_fig(['STLP_IRFs_Noise_Shocks_SPF_GDPgrowth_revisions_logdiff.pdf'])
       close all
       cd(base_path) %back to the original path
 end

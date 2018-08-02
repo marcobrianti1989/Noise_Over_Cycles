@@ -35,7 +35,7 @@ for h = 1:H
     trend = [1:1:length(Y)]';
     if nargin > 6 %control for contemporaneous TFP
         X      = [X,  ones(length(Y),1), trend, TFP(h+lags:end,:)];
-        XL     = [XL, ones(length(Y),1), trend, TFP(h+lags:end,:)];
+        XL     = [XL, ones(length(Y),1), trend];
     else
         X      = [X,  ones(length(Y),1), trend];
         XL     = [XL, ones(length(Y),1), trend];
@@ -57,6 +57,6 @@ for h = 1:H
     SEL_store(h)    = sel(1);
 end
 
-close
+
 
 
