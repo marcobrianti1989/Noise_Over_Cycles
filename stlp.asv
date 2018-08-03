@@ -1,5 +1,4 @@
-function [IRF_E, IRF_R, IRF_L , res_uncond, Rsquared, BL_store, ...
-      XL_store, SE_store, SEL_store, tuple_store] ...
+function [IRF_E, IRF_R, IRF_L , res_uncond, Rsquared, BL_store, XL_store,SE_store,SEL_store] ...
     = stlp(y,x,u,fz,lags,H,TFP)
 % H is the horizon of the irf
 % y and x are (T,1);
@@ -42,7 +41,8 @@ for h = 1:H
         XL     = [XL, ones(length(Y),1), trend];
     end
     
-    tuple_store{h}  = [Y XL];
+    XL_store(h)     = XL
+    
     
     maxLag          = floor(4*(length(Y)/100)^(2/9));
     B               = X'*X\(X'*Y);

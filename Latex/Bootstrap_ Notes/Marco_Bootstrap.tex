@@ -1,0 +1,96 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage[a4paper,top=3cm,bottom=3cm,left=3cm,right=3cm,%
+bindingoffset=0mm]{geometry}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\newtheorem{prop}{Proposition}
+\newtheorem{lemma}{Lemma}
+\newenvironment{proof}[1][Proof]{\begin{trivlist}
+\item[\hskip \labelsep {\bfseries #1}]}{\end{trivlist}}
+\newcommand{\qed}{\nobreak \ifvmode \relax \else
+      \ifdim\lastskip<1.5em \hskip-\lastskip
+      \hskip1.5em plus0em minus0.5em \fi \nobreak
+      \vrule height0.75em width0.75em depth0em\fi}
+\usepackage{tikz}
+\usepackage{graphicx}
+\usepackage{rotating}
+\usepackage{float}
+\linespread{1.3}
+\raggedbottom
+
+
+
+
+%
+\font\reali=msbm10 at 12pt
+% subsets of real numbers
+\newcommand{\real}{\hbox{\reali R}}
+\newcommand{\realp}{\hbox{\reali R}_{\scriptscriptstyle +}}
+\newcommand{\realpp}{\hbox{\reali R}_{\scriptscriptstyle ++}}
+\newcommand{\R}{\mathbb{R}}
+\DeclareMathOperator{\E}{\mathbb{E}}
+%
+
+\title{Bootstrap}
+\author{Marco Brianti}
+\date{A.Y. 2018/2019}
+
+\begin{document}
+	\large{
+
+\maketitle
+As long as $t \geq H$, then the dependent variable of interest $Y_t$ can be represented by $H$ equations where $H$ is the forecast horizon.
+\begin{eqnarray}\label{equation:Yt_h0}
+Y_t = B_0 U_t + \varepsilon_t^0
+\end{eqnarray}
+\begin{eqnarray}\label{equation:Yt_h1}
+Y_t = B_1 U_{t-1} + \varepsilon_{t-1}^1
+\end{eqnarray}
+\begin{eqnarray}\label{equation:Yt_h2}
+Y_t = B_2 U_{t-2} + \varepsilon_{t-2}^2
+\end{eqnarray}
+$$
+\vdots
+$$
+\begin{eqnarray}\label{equation:Yt_Hminus1}
+Y_t = B_{H-1} U_{t-H+1} + \varepsilon_{t-H+1}^{H-1}
+\end{eqnarray}
+\begin{eqnarray}\label{equation:Yt_H}
+Y_t = B_H U_{t-H} + \varepsilon_{t-H}^H
+\end{eqnarray}
+Now, lag Equation \ref{equation:Yt_h0} and isolate over $U_{t-1}$ as follows,
+\begin{eqnarray}\label{equation:Utminus1}
+U_{t-1} = \frac{Y_{t-1} - \varepsilon_{t-1}^0}{B_0}
+\end{eqnarray}
+Substitute Equation \ref{equation:Utminus1} into Equation \ref{equation:Yt_h1} as follows,
+\begin{eqnarray}\label{equation:Yt_Ytminus1}
+Y_t = \frac{B_1}{B_0} Y_{t-1} - \frac{B_1}{B_0} \varepsilon_{t-1}^0 + \varepsilon_{t-1}^1
+\end{eqnarray}
+Now there are two possible avenues:
+\begin{enumerate}
+	\item Lag twice Equation \ref{equation:Yt_h0}, isolate over $U_{t-2}$, substitute into Equation \ref{equation:Yt_h2} and obtain
+	\begin{eqnarray}
+	Y_t = \frac{B_2}{B_0} Y_{t-2} - \frac{B_2}{B_0} \varepsilon_{t-2}^0 + \varepsilon_{t-2}^2
+	\end{eqnarray}
+	As a general result we obtain,
+		\begin{eqnarray}
+	Y_t = \frac{B_h}{B_0} Y_{t-h} - \frac{B_h}{B_0} \varepsilon_{t-h}^0 + \varepsilon_{t-h}^h
+	\end{eqnarray}
+	\item Lat Equation \ref{equation:Yt_h1}, isolate over $U_{t-2}$, substitute into Equation \ref{equation:Yt_h2} and obtain 
+		\begin{eqnarray}
+	Y_t = \frac{B_2}{B_1} Y_{t-1} - \frac{B_2}{B_1} \varepsilon_{t-2}^1 + \varepsilon_{t-2}^2
+	\end{eqnarray}
+	As a general result we obtain,
+	\begin{eqnarray}
+	Y_t = \frac{B_h}{B_{h-1}} Y_{t-1} - \frac{B_h}{B_{h-1}} \varepsilon_{t-h}^{h-1} + \varepsilon_{t-h}^h
+	\end{eqnarray}
+\end{enumerate}
+
+
+
+
+}
+\end{document}
+

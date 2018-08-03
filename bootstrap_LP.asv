@@ -1,0 +1,24 @@
+function data_boot_LP = bootstrap_LP(Y,X,block_size,nsimul)
+
+% Inputs:
+% Y which is the projected variable at horizon h. Length is T
+% X is the matrix of regressor. Length is T
+% nsimul = number of simulations, i.e. how many bootstrapped datasets to generate
+% block_size is how many combinations of Y and X (at the same time) should be taken in block
+
+% Given all the possible combinations of Y and X we extract only a subset
+% of consecutive Y and X of length block_size
+
+T      = length(Y);
+l      = floor(T/2);
+draw   = randi(l,1);
+
+
+
+
+
+
+
+
+
+end

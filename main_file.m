@@ -8,7 +8,7 @@
 % Code by Brianti, Marco e Cormun, Vito
 %*************************************************************************%
 
-clear 
+clear
 close all
 
 %Read main dataset
@@ -160,7 +160,7 @@ end
 Y                 = ZZ;
 [B,zhat,Ztilde]   = quick_ols(Y,X);
 for iii = 1:20
-      corr(Ztilde,DTFP_UTIL(loc_start+1+iii:loc_end+iii))
+      corr(Ztilde,DTFP_UTIL(loc_start+1+iii:loc_end+iii));
 end
 
 %Show the graph of Ztilde - Figure(1)
@@ -212,7 +212,7 @@ end
 
 % Smooth Transition Local Projection
 varlist = {'TFP','Real GDP', 'Real Consumption',...
-      'Unemployment Rate','Real Wage','Hours','CPI','Real Investment','SP500','Vix'};
+      'Unemployment Rate','Real Wage','Hours','CPI','Real Investment','SP500'};
 lags    = 1;
 H       = 20; %irfs horizon
 mpc     = 2; %max number of principal components
@@ -230,9 +230,10 @@ dep_var = [100*DTFP_UTIL(loc_start+1:loc_end-2) 100*RealGDP(loc_start+1:loc_end-
 %stlp(y,x,u,fz(-1),lags,H); where y is the dep var, u is the shock, x are the controls
 for kk = 1:size(dep_var,2)
       [IR_E{kk}, IR_R{kk}, IR_L{kk}, res_uncond{kk}, Rsquared{kk}, ...
-            BL{kk}, regressor{kk},SE_store{kk},SEL_store{kk}] = stlp(dep_var(:,kk),...
-            pc(loc_start+1:loc_end-2,1:mpc),Ztilde(1:end-2),...
-            ProbRecession(loc_start:loc_end-1-2),lags,H,DTFP_UTIL(loc_start+1:loc_end-2));
+            BL{kk}, regressor{kk},SE_store{kk},SEL_store{kk},...
+            tuple_store{kk}] = stlp(dep_var(:,kk),pc(loc_start+1:loc_end-2,1:mpc),...
+            Ztilde(1:end-2),ProbRecession(loc_start:loc_end-1-2),...
+            lags,H,DTFP_UTIL(loc_start+1:loc_end-2));
 end
 %pc(loc_start+1:loc_end-2,1:mpc)
 loc_Vix_vec = find(isnan(Vix));
@@ -241,32 +242,40 @@ loc_Vix = loc_Vix_vec(end);
 [IR_E{size(dep_var,2)+1}, IR_R{size(dep_var,2)+1}, IR_L{size(dep_var,2)+1}, ...
       res_uncond{size(dep_var,2)+1}, Rsquared{size(dep_var,2)+1}, BL{size(dep_var,2)+1}, ...
       regressor{size(dep_var,2)+1}, SE_store{size(dep_var,2)+1}, ...
-      SEL_store{size(dep_var,2)+1}] = stlp(Vix(loc_Vix+1:loc_end-2), ...
-      pc(loc_Vix+1:loc_end-2,1:mpc),...
+      SEL_store{size(dep_var,2)+1}, tuple_store{size(dep_var,2)+1}] = ...
+      stlp(Vix(loc_Vix+1:loc_end-2), pc(loc_Vix+1:loc_end-2,1:mpc),...
       Ztilde(length(Ztilde(1:end-2))-length(Vix(loc_Vix+1:loc_end-2))+1:end-2),...
-            ProbRecession(loc_Vix:loc_end-1-2),lags,H,DTFP_UTIL(loc_Vix+1:loc_end-2));
+      ProbRecession(loc_Vix:loc_end-1-2),lags,H,DTFP_UTIL(loc_Vix+1:loc_end-2));
+
+nsimul = 1000;
+for kk = 1:size(dep_var,2)
+      tuple_depvarkk = tuple_store{kk};
+      for hh = 1:H
+            tuple_depvarkk_horizonhh  = tuple_depvarkk{hh};
+            Y                         = tuple_depvarkk_horizonhh(:,1);
+            X                         = tuple_depvarkk_horizonhh(:,2:end);
+            [Yboot, Xboot]            = bootstrap_LP(Y,X,nsimul);
+            for isimul = 1:nsimul
+                B                         = Xboot(:,:,isimul)'*Xboot(:,:,isimul)\(Xboot(:,:,isimul)'*Yboot(:,isimul));
+                IRF_boot(kk,hh,isimul)    = B(1);
+            end
+      end
+end
+IRF_boot   = sort(IRF_boot,3);
+sig        = 0.05;
+up_bound   = floor(nsimul*sig); % the upper percentile of bootstrapped responses for CI
+low_bound  = ceil(nsimul*(1-sig)); % the lower percentile of bootstrapped responses for CI
+IRF_up     = IRF_boot(:,:,up_bound);
+IRF_low    = IRF_boot(:,:,low_bound);
 
 % Build a table for the Rsquared
 % This R-squared has to be interpreted as the variance explained by noise
 % shocks of macroeconomic variables at each specific horizon
 for kkk = 1:size(dep_var,2)+1 %Raws are time horizons, Columns are variables. Plus one for Vix
-      Rsquared_Table(:,kkk) = Rsquared{kkk}'; 
+      Rsquared_Table(:,kkk) = Rsquared{kkk}';
 end
 varlist;
 Rsquared_Table;
-
-% Block bootstrap
-nsimul = 5;
-which_correction = 'none';
-q = 10;
-Bbeta = BL{2};
-Bbeta = Bbeta(:,2);
-res_res = res_uncond{2}';
-res_res = res_res{2};
-reg_reg = regressor{2};
-reg_reg = reg_reg{2};
-dataset_boot = data_boot_local_projection(Bbeta,res_res,nsimul,which_correction,...
-      q,reg_reg);
 
 %Impulse Response Functions using Local Projection
 nvar     = length(varlist);
@@ -281,8 +290,10 @@ for j = 1:length(varlist)
       s = subplot(n_row,n_col,j);
       hold on
       if j >= 0 %Be careful if j >= 1 No variables are cumulated!
-            h1 = plot([1:H]',IR_L{j}+1.64*SEL_store{j}, '--k','linewidth', 2);
-            h2 = plot([1:H]',IR_L{j}-1.64*SEL_store{j}, '--k','linewidth', 2);
+            %h1 = plot([1:H]',IR_L{j}+1.64*SEL_store{j}, '--k','linewidth', 2);
+            %h2 = plot([1:H]',IR_L{j}-1.64*SEL_store{j}, '--k','linewidth', 2);
+            h1  = plot([1:H]',IRF_low(j,:), '--k','linewidth', 2);
+            h1  = plot([1:H]',IRF_up(j,:), '--k','linewidth', 2);
             q = plot([1:H]',IR_L{j}, 'k', 'linewidth', 3);
             %h = plot([1:H]',IR_R{j}, '--b','linewidth', 3);
             %l = plot([1:H]',IR_L{j}, '-ok','linewidth', 3);
@@ -290,8 +301,8 @@ for j = 1:length(varlist)
             set(gca,'TickLabelInterpreter','latex')
             title(varlist{j},'interpreter', 'latex', 'fontsize', 12);
       else
-           % h1 = plot([1:H]',cumsum(IR_L{j}+1.96*SEL_store{j}), '.k','linewidth', 2);
-           % h2 = plot([1:H]',cumsum(IR_L{j}-1.96*SEL_store{j}), '.k','linewidth', 2);
+            % h1 = plot([1:H]',cumsum(IR_L{j}+1.96*SEL_store{j}), '.k','linewidth', 2);
+            % h2 = plot([1:H]',cumsum(IR_L{j}-1.96*SEL_store{j}), '.k','linewidth', 2);
             q = plot([1:H]',cumsum(IR_E{j}), '-r', 'linewidth', 3);
             h = plot([1:H]',cumsum(IR_R{j}), '--b','linewidth', 3);
             l = plot([1:H]',cumsum(IR_L{j}), '-ok','linewidth', 3);
@@ -309,7 +320,7 @@ end
 %set(l, 'box','off', 'FontSize',30,'Orientation','horizontal','Position',[0.3 0.015 0.40 0.01]);
 
 % Print figure automatically if "export_figure1 = 1"
-export_figure2 = 1;
+export_figure2 = 0;
 if export_figure2 == 1
       % Create the correct path
       base_path = pwd;
