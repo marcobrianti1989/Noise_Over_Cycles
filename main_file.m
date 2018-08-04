@@ -236,14 +236,14 @@ for kk = 1:size(dep_var,2)
             loc_start2 = loc;
             [IR_E{kk}, IR_R{kk}, IR_L{kk}, res_uncond{kk}, Rsquared{kk}, ...
                   BL{kk}, regressor{kk},SE_store{kk},SEL_store{kk},...
-                  tuple_store{kk}] = stlp(dep_var(loc_start2+1:end,kk),...
+                  tuple_store{kk}, tuple_store_conditional{kk}] = stlp(dep_var(loc_start2+1:end,kk),...
                   pc(loc_start2+loc_start+1:loc_end-2,1:mpc),...
                   Ztilde(loc_start2+1:end-2),ProbRecession(loc_start+loc_start2:loc_end-1-2),...
                   lags,H,DTFP_UTIL(loc_start2+loc_start+1:loc_end-2));
       else
             [IR_E{kk}, IR_R{kk}, IR_L{kk}, res_uncond{kk}, Rsquared{kk}, ...
                   BL{kk}, regressor{kk},SE_store{kk},SEL_store{kk},...
-                  tuple_store{kk}] = stlp(dep_var(:,kk),pc(loc_start+1:loc_end-2,1:mpc),...
+                  tuple_store{kk}, tuple_store_conditional{kk}] = stlp(dep_var(:,kk),pc(loc_start+1:loc_end-2,1:mpc),...
                   Ztilde(1:end-2),ProbRecession(loc_start:loc_end-1-2),...
                   lags,H,DTFP_UTIL(loc_start+1:loc_end-2));
       end
@@ -251,24 +251,38 @@ end
 
 nsimul = 1000;
 for kk = 1:size(dep_var,2)
-      tuple_depvarkk = tuple_store{kk};
+      tuple_depvarkk        = tuple_store{kk};
+      tuple_depvarkk_cond   = tuple_store_conditional{kk};
       for hh = 1:H
-            tuple_depvarkk_horizonhh  = tuple_depvarkk{hh};
-            Y                         = tuple_depvarkk_horizonhh(:,1);
-            X                         = tuple_depvarkk_horizonhh(:,2:end);
-            [Yboot, Xboot]            = bb_bootstrap_LP(Y,X,nsimul,lags);
+            tuple_depvarkk_horizonhh        = tuple_depvarkk{hh};
+            tuple_depvarkk_horizonhh_cond   = tuple_depvarkk_cond{hh};
+            Y                               = tuple_depvarkk_horizonhh(:,1);
+            Y_cond                          = tuple_depvarkk_horizonhh_cond(:,1);
+            X                               = tuple_depvarkk_horizonhh(:,2:end);
+            X_cond                          = tuple_depvarkk_horizonhh_cond(:,2:end);     
+            [Yboot, Xboot]                  = bb_bootstrap_LP(Y,X,nsimul,lags);
+            [Yboot_cond, Xboot_cond]        = bb_bootstrap_LP(Y_cond,X_cond,nsimul,lags);
             for isimul = 1:nsimul
-                  B                         = Xboot(:,:,isimul)'*Xboot(:,:,isimul)\(Xboot(:,:,isimul)'*Yboot(:,isimul));
-                  IRF_boot(kk,hh,isimul)    = B(1);
+                  B                             = Xboot(:,:,isimul)'*Xboot(:,:,isimul)\(Xboot(:,:,isimul)'*Yboot(:,isimul));
+                  B_cond                        = Xboot_cond(:,:,isimul)'*Xboot_cond(:,:,isimul)\(Xboot_cond(:,:,isimul)'*Yboot_cond(:,isimul));
+                  IRF_boot(kk,hh,isimul)        = B(1);
+                  IRF_boot_Exp(kk,hh,isimul)    = B_cond(1);
+                  IRF_boot_Rec(kk,hh,isimul)    = B_cond(1) + B_cond(2);
             end
       end
 end
-IRF_boot   = sort(IRF_boot,3);
-sig        = 0.05;
-up_bound   = floor(nsimul*sig); % the upper percentile of bootstrapped responses for CI
-low_bound  = ceil(nsimul*(1-sig)); % the lower percentile of bootstrapped responses for CI
-IRF_up     = IRF_boot(:,:,up_bound);
-IRF_low    = IRF_boot(:,:,low_bound);
+IRF_boot         = sort(IRF_boot,3);
+IRF_boot_Exp     = sort(IRF_boot_Exp,3);
+IRF_boot_Rec     = sort(IRF_boot_Rec,3);
+sig              = 0.05;
+up_bound         = floor(nsimul*sig); % the upper percentile of bootstrapped responses for CI
+low_bound        = ceil(nsimul*(1-sig)); % the lower percentile of bootstrapped responses for CI
+IRF_up           = IRF_boot(:,:,up_bound);
+IRF_up_Exp       = IRF_boot_Exp(:,:,up_bound);
+IRF_up_Rec       = IRF_boot_Rec(:,:,up_bound);
+IRF_low          = IRF_boot(:,:,low_bound);
+IRF_low_Exp      = IRF_boot_Exp(:,:,low_bound);
+IRF_low_Rec      = IRF_boot_Rec(:,:,low_bound);
 
 % Build a table for the Rsquared
 % This R-squared has to be interpreted as the variance explained by noise
@@ -291,12 +305,12 @@ end
 for j = 1:length(varlist)
       s = subplot(n_row,n_col,j);
       hold on
-      if j >= 100 %Be careful if j >= 1 No variables are cumulated!
-%             h1 = plot([1:H]',IR_L{j}+1.64*SEL_store{j}, '--k','linewidth', 2);
-%             h2 = plot([1:H]',IR_L{j}-1.64*SEL_store{j}, '--k','linewidth', 2);
-            h1  = plot([1:H]',IRF_low(j,:), '--k','linewidth', 2);
-            h1  = plot([1:H]',IRF_up(j,:), '--k','linewidth', 2);
-            q = plot([1:H]',IR_L{j}, 'k', 'linewidth', 3);
+      if j >= 0 %Be careful if j >= 1 No variables are cumulated!
+%           h1 = plot([1:H]',IR_L{j}+1.64*SEL_store{j}, '--k','linewidth', 2);
+%           h2 = plot([1:H]',IR_L{j}-1.64*SEL_store{j}, '--k','linewidth', 2);
+            h1  = plot([1:H]',IRF_low_Exp(j,:), '--k','linewidth', 2);
+            h1  = plot([1:H]',IRF_up_Exp(j,:), '--k','linewidth', 2);
+            q = plot([1:H]',IR_E{j}, 'k', 'linewidth', 3);
             %h = plot([1:H]',IR_R{j}, '--b','linewidth', 3);
             %l = plot([1:H]',IR_L{j}, '-ok','linewidth', 3);
             plot([1:H]', 0*[1:H]', ':k');
