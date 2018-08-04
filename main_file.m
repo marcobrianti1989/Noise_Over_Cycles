@@ -256,7 +256,7 @@ for kk = 1:size(dep_var,2)
             tuple_depvarkk_horizonhh  = tuple_depvarkk{hh};
             Y                         = tuple_depvarkk_horizonhh(:,1);
             X                         = tuple_depvarkk_horizonhh(:,2:end);
-            [Yboot, Xboot]            = bootstrap_LP(Y,X,nsimul);
+            [Yboot, Xboot]            = bb_bootstrap_LP(Y,X,nsimul,lags);
             for isimul = 1:nsimul
                   B                         = Xboot(:,:,isimul)'*Xboot(:,:,isimul)\(Xboot(:,:,isimul)'*Yboot(:,isimul));
                   IRF_boot(kk,hh,isimul)    = B(1);
@@ -291,11 +291,11 @@ end
 for j = 1:length(varlist)
       s = subplot(n_row,n_col,j);
       hold on
-      if j >= 0 %Be careful if j >= 1 No variables are cumulated!
-            h1 = plot([1:H]',IR_L{j}+1.64*SEL_store{j}, '--k','linewidth', 2);
-            h2 = plot([1:H]',IR_L{j}-1.64*SEL_store{j}, '--k','linewidth', 2);
-%             h1  = plot([1:H]',IRF_low(j,:), '--k','linewidth', 2);
-%             h1  = plot([1:H]',IRF_up(j,:), '--k','linewidth', 2);
+      if j >= 100 %Be careful if j >= 1 No variables are cumulated!
+%             h1 = plot([1:H]',IR_L{j}+1.64*SEL_store{j}, '--k','linewidth', 2);
+%             h2 = plot([1:H]',IR_L{j}-1.64*SEL_store{j}, '--k','linewidth', 2);
+            h1  = plot([1:H]',IRF_low(j,:), '--k','linewidth', 2);
+            h1  = plot([1:H]',IRF_up(j,:), '--k','linewidth', 2);
             q = plot([1:H]',IR_L{j}, 'k', 'linewidth', 3);
             %h = plot([1:H]',IR_R{j}, '--b','linewidth', 3);
             %l = plot([1:H]',IR_L{j}, '-ok','linewidth', 3);
