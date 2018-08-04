@@ -14,7 +14,7 @@ close all
 %Read main dataset
 filename                    = 'main_file';
 sheet                       = 'Sheet1';
-range                       = 'B1:AS300';
+range                       = 'B1:AU300';
 do_truncation               = 0; %Do not truncate data. You will have many NaN
 [dataset, var_names]        = read_data2(filename, sheet, range, do_truncation);
 dataset                     = real(dataset);
@@ -211,8 +211,8 @@ end
 %*************************************************************************%
 
 % Smooth Transition Local Projection
-varlist = {'TFP','Real GDP', 'Real Consumption',...
-      'Unemployment Rate','Real Wage','Hours','CPI','Real Investment','SP500'};
+varlist = {'TFP','Real GDP', 'Real Consumption','Unemployment Rate','Real Wage',...
+      'Hours','CPI','Real Investment','SP500','Vix','GZSpread','FFR'};
 lags    = 1;
 H       = 20; %irfs horizon
 mpc     = 2; %max number of principal components
@@ -225,27 +225,29 @@ dep_var = [100*DTFP_UTIL(loc_start+1:loc_end-2) 100*RealGDP(loc_start+1:loc_end-
       100*RealCons(loc_start+1:loc_end-2)  UnempRate(loc_start+1:loc_end-2) ...
       100*RealWage(loc_start+1:loc_end-2) 100*Hours(loc_start+1:loc_end-2) ...
       100*CPI(loc_start+1:loc_end-2) 100*RealInvestment(loc_start+1:loc_end-2) ...
-      100*SP500(loc_start+1:loc_end-2)];
+      100*SP500(loc_start+1:loc_end-2) 100*Vix(loc_start+1:loc_end-2) ...
+      100*GZ_Spread(loc_start+1:loc_end-2) 100*FFR(loc_start+1:loc_end-2)];
 
 %stlp(y,x,u,fz(-1),lags,H); where y is the dep var, u is the shock, x are the controls
 for kk = 1:size(dep_var,2)
-      [IR_E{kk}, IR_R{kk}, IR_L{kk}, res_uncond{kk}, Rsquared{kk}, ...
-            BL{kk}, regressor{kk},SE_store{kk},SEL_store{kk},...
-            tuple_store{kk}] = stlp(dep_var(:,kk),pc(loc_start+1:loc_end-2,1:mpc),...
-            Ztilde(1:end-2),ProbRecession(loc_start:loc_end-1-2),...
-            lags,H,DTFP_UTIL(loc_start+1:loc_end-2));
+      if sum(isnan(dep_var(:,kk))) > 0
+            threshold = -1/eps;
+            loc = find(dep_var(:,kk) > threshold, 1);
+            loc_start2 = loc;
+            [IR_E{kk}, IR_R{kk}, IR_L{kk}, res_uncond{kk}, Rsquared{kk}, ...
+                  BL{kk}, regressor{kk},SE_store{kk},SEL_store{kk},...
+                  tuple_store{kk}] = stlp(dep_var(loc_start2+1:end,kk),...
+                  pc(loc_start2+loc_start+1:loc_end-2,1:mpc),...
+                  Ztilde(loc_start2+1:end-2),ProbRecession(loc_start+loc_start2:loc_end-1-2),...
+                  lags,H,DTFP_UTIL(loc_start2+loc_start+1:loc_end-2));
+      else
+            [IR_E{kk}, IR_R{kk}, IR_L{kk}, res_uncond{kk}, Rsquared{kk}, ...
+                  BL{kk}, regressor{kk},SE_store{kk},SEL_store{kk},...
+                  tuple_store{kk}] = stlp(dep_var(:,kk),pc(loc_start+1:loc_end-2,1:mpc),...
+                  Ztilde(1:end-2),ProbRecession(loc_start:loc_end-1-2),...
+                  lags,H,DTFP_UTIL(loc_start+1:loc_end-2));
+      end
 end
-%pc(loc_start+1:loc_end-2,1:mpc)
-loc_Vix_vec = find(isnan(Vix));
-loc_Vix = loc_Vix_vec(end);
-
-[IR_E{size(dep_var,2)+1}, IR_R{size(dep_var,2)+1}, IR_L{size(dep_var,2)+1}, ...
-      res_uncond{size(dep_var,2)+1}, Rsquared{size(dep_var,2)+1}, BL{size(dep_var,2)+1}, ...
-      regressor{size(dep_var,2)+1}, SE_store{size(dep_var,2)+1}, ...
-      SEL_store{size(dep_var,2)+1}, tuple_store{size(dep_var,2)+1}] = ...
-      stlp(Vix(loc_Vix+1:loc_end-2), pc(loc_Vix+1:loc_end-2,1:mpc),...
-      Ztilde(length(Ztilde(1:end-2))-length(Vix(loc_Vix+1:loc_end-2))+1:end-2),...
-      ProbRecession(loc_Vix:loc_end-1-2),lags,H,DTFP_UTIL(loc_Vix+1:loc_end-2));
 
 nsimul = 1000;
 for kk = 1:size(dep_var,2)
@@ -256,8 +258,8 @@ for kk = 1:size(dep_var,2)
             X                         = tuple_depvarkk_horizonhh(:,2:end);
             [Yboot, Xboot]            = bootstrap_LP(Y,X,nsimul);
             for isimul = 1:nsimul
-                B                         = Xboot(:,:,isimul)'*Xboot(:,:,isimul)\(Xboot(:,:,isimul)'*Yboot(:,isimul));
-                IRF_boot(kk,hh,isimul)    = B(1);
+                  B                         = Xboot(:,:,isimul)'*Xboot(:,:,isimul)\(Xboot(:,:,isimul)'*Yboot(:,isimul));
+                  IRF_boot(kk,hh,isimul)    = B(1);
             end
       end
 end
@@ -271,7 +273,7 @@ IRF_low    = IRF_boot(:,:,low_bound);
 % Build a table for the Rsquared
 % This R-squared has to be interpreted as the variance explained by noise
 % shocks of macroeconomic variables at each specific horizon
-for kkk = 1:size(dep_var,2)+1 %Raws are time horizons, Columns are variables. Plus one for Vix
+for kkk = 1:size(dep_var,2) %Raws are time horizons, Columns are variables. 
       Rsquared_Table(:,kkk) = Rsquared{kkk}';
 end
 varlist;
@@ -290,10 +292,10 @@ for j = 1:length(varlist)
       s = subplot(n_row,n_col,j);
       hold on
       if j >= 0 %Be careful if j >= 1 No variables are cumulated!
-            %h1 = plot([1:H]',IR_L{j}+1.64*SEL_store{j}, '--k','linewidth', 2);
-            %h2 = plot([1:H]',IR_L{j}-1.64*SEL_store{j}, '--k','linewidth', 2);
-            h1  = plot([1:H]',IRF_low(j,:), '--k','linewidth', 2);
-            h1  = plot([1:H]',IRF_up(j,:), '--k','linewidth', 2);
+            h1 = plot([1:H]',IR_L{j}+1.64*SEL_store{j}, '--k','linewidth', 2);
+            h2 = plot([1:H]',IR_L{j}-1.64*SEL_store{j}, '--k','linewidth', 2);
+%             h1  = plot([1:H]',IRF_low(j,:), '--k','linewidth', 2);
+%             h1  = plot([1:H]',IRF_up(j,:), '--k','linewidth', 2);
             q = plot([1:H]',IR_L{j}, 'k', 'linewidth', 3);
             %h = plot([1:H]',IR_R{j}, '--b','linewidth', 3);
             %l = plot([1:H]',IR_L{j}, '-ok','linewidth', 3);
