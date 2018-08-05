@@ -9,8 +9,8 @@ function [Yboot Xboot] = bb_bootstrap_LP(Y,X,nsimul,lags)
 % CI is confidence interval. Say 95% for example
 
 
-T                  = length(Y); %this is 
-q                  = lags + 1; 
+T                  = length(Y); 
+q                  = size(X,2); 
 l                  = floor((T-q)^(1/3)); %quite arbitrary 
 
 % need to do for every h
