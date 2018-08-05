@@ -20,7 +20,7 @@ Yboot = nan(floor(T/l)*l,nsimul);
 Xboot = nan(floor(T/l)*l,size(X,2),nsimul);
 for isimul = 1:nsimul
     for j  = 1:floor(T/l)
-      draw               = randi(T-l+1,1); %check
+      draw                           = randi(T-l+1,1); %check
       Yboot(1+(j-1)*l:j*l,isimul)    = Y(draw:draw+l-1);
       Xboot(1+(j-1)*l:j*l,:,isimul)  = X(draw:draw+l-1,:);
     end
