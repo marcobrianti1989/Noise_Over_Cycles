@@ -299,11 +299,9 @@ Rsquared_Table;
 nvar     = length(varlist);
 n_row    = 2;
 n_col    = ceil(nvar/n_row); %plus one for Vix
-%figure('Position',[1 41 1920 963])
+figure('Position',[1 41 1920 963])
 set(gcf,'color','w');
-if export_figure1 == 0
-    figure(2)
-end
+
 for j = 1:length(varlist)
     s = subplot(n_row,n_col,j);
     hold on
@@ -352,7 +350,7 @@ if export_figure2 == 1
         addpath([base_path '/Export_Fig']) %for Mac
     end
     warning on
-    export_fig(['STLP_IRFs_Noise_Shocks_SPF_GDPgrowth_revisions_loglevel.pdf'])
+    export_fig(['STLP_IRFs_Noise_Shocks_SPF_GDPgrowth_revisions_logdiff_bootstrap.pdf'])
     close all
     cd(base_path) %back to the original path
 end
