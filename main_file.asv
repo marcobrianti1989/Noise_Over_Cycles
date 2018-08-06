@@ -249,7 +249,7 @@ for kk = 1:size(dep_var,2)
     end
 end
 
-nsimul = 1000;
+nsimul = 100;
 for kk = 1:size(dep_var,2)
     tuple_depvarkk        = tuple_store{kk};
     tuple_depvarkk_cond   = tuple_store_conditional{kk};
