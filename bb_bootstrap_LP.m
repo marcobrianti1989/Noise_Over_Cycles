@@ -8,7 +8,6 @@ function [Yboot Xboot] = bb_bootstrap_LP(Y,X,nsimul,lags)
 % As block_size we use approximately half of the dataset
 % CI is confidence interval. Say 95% for example
 
-
 T                  = length(Y); 
 q                  = size(X,2); 
 l                  = floor((T-q)^(1/3)); %quite arbitrary 
@@ -25,12 +24,5 @@ for isimul = 1:nsimul
       Xboot(1+(j-1)*l:j*l,:,isimul)  = X(draw:draw+l-1,:);
     end
 end
-
-
-
-
-
-
-
 
 end

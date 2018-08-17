@@ -14,5 +14,6 @@ for i_var_system2 = 1:n_var_system
 end
 truncation_point2 = min(loc2) - 1;
 data = data(1:truncation_point2,:);
+truncation_point2 = truncation_point + truncation_point2 - 1;
 
 end
