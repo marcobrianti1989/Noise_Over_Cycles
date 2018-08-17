@@ -149,10 +149,10 @@ controls          = [MUNI1Y, PDVMILY, HAMILTON3YP, RESID08, TAXNARRATIVE];
 trend             = 1:1:length(X); %Control for the time trend
 X                 = [X, trend', controls(loc_start+1:loc_end,:)];
 for i = 1:lag_tfp %Add lags of TFP - When i = 1 TFP is contemporaneous
-    X(:,end+1)  = DTFP_UTIL(loc_start+2-i:loc_end-i+1);
+    X(:,end+1)  = TFP(loc_start+2-i:loc_end-i+1);
 end
 for i = 1:lead_tfp %Add leads of TFP
-    X(:,end+1)  = DTFP_UTIL(loc_start+1+i:loc_end+i);
+    X(:,end+1)  = TFP(loc_start+1+i:loc_end+i);
 end
 for l = 1:lag %Add lags of controls
     X           = [X controls(loc_start+1-l:loc_end-l,:) pc(loc_start+1-l:loc_end-l,1:mpc)];
@@ -160,7 +160,7 @@ end
 Y                 = ZZ;
 [B,zhat,Ztilde]   = quick_ols(Y,X);
 for iii = 1:20
-    corr(Ztilde,DTFP_UTIL(loc_start+1+iii:loc_end+iii));
+    corr(Ztilde,TFP(loc_start+1+iii:loc_end+iii));
 end
 
 %Show the graph of Ztilde - Figure(1)
@@ -221,12 +221,12 @@ mpc     = 2; %max number of principal components
 Ztilde  = Ztilde/std(Ztilde);
 
 % Matrix of dependen variables
-dep_var = [100*DTFP_UTIL(loc_start+1:loc_end-2) 100*RealGDP(loc_start+1:loc_end-2) ...
+dep_var = [100*TFP(loc_start+1:loc_end-2) 100*RealGDP(loc_start+1:loc_end-2) ...
     100*RealCons(loc_start+1:loc_end-2)  UnempRate(loc_start+1:loc_end-2) ...
     100*RealWage(loc_start+1:loc_end-2) 100*Hours(loc_start+1:loc_end-2) ...
-    100*CPI(loc_start+1:loc_end-2) 100*RealInvestment(loc_start+1:loc_end-2) ...
+    100*CPIInflation(loc_start+1:loc_end-2) 100*RealInvestment(loc_start+1:loc_end-2) ...
     100*SP500(loc_start+1:loc_end-2) 100*Vix(loc_start+1:loc_end-2) ...
-    100*GZ_Spread(loc_start+1:loc_end-2) 100*FFR(loc_start+1:loc_end-2)];
+    100*GZSpread(loc_start+1:loc_end-2) 100*FFR(loc_start+1:loc_end-2)];
 
 %stlp(y,x,u,fz(-1),lags,H); where y is the dep var, u is the shock, x are the controls
 for kk = 1:size(dep_var,2)
@@ -239,13 +239,13 @@ for kk = 1:size(dep_var,2)
             tuple_store{kk}, tuple_store_conditional{kk}] = stlp(dep_var(loc_start2+1:end,kk),...
             pc(loc_start2+loc_start+1:loc_end-2,1:mpc),...
             Ztilde(loc_start2+1:end-2),ProbRecession(loc_start+loc_start2:loc_end-1-2),...
-            lags,H,DTFP_UTIL(loc_start2+loc_start+1:loc_end-2));
+            lags,H,TFP(loc_start2+loc_start+1:loc_end-2));
     else
         [IR_E{kk}, IR_R{kk}, IR_L{kk}, res_uncond{kk}, Rsquared{kk}, ...
             BL{kk}, regressor{kk},SE_store{kk},SEL_store{kk},...
             tuple_store{kk}, tuple_store_conditional{kk}] = stlp(dep_var(:,kk),pc(loc_start+1:loc_end-2,1:mpc),...
             Ztilde(1:end-2),ProbRecession(loc_start:loc_end-1-2),...
-            lags,H,DTFP_UTIL(loc_start+1:loc_end-2));
+            lags,H,TFP(loc_start+1:loc_end-2));
     end
 end
 

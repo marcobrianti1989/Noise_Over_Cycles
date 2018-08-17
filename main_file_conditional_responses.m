@@ -116,15 +116,19 @@ end
 %*************************************************************************%
 
 % Create Var List
+% varlist          = {'TFP','RealGDP', 'RealCons',...
+%       'UnempRate','RealWage','Hours','CPIInflation',...
+%       'RealInvestment','SP500','OilPrice','GZSpread','FFR',...
+% 'Vix','VXO','Inventories','LaborProductivity','Spread'};
 varlist          = {'TFP','RealGDP', 'RealCons',...
       'UnempRate','RealWage','Hours','CPIInflation',...
-      'RealInvestment','SP500','OilPrice','GZSpread','FFR',...
-'Vix','VXO','Inventories','LaborProductivity','Spread'};
+      'RealInvestment'};
 numberCPI        = strmatch('CPIInflation', varlist);
 numberGDP        = strmatch('RealGDP', varlist);
 numberC          = strmatch('RealCons', varlist);
 numberHours      = strmatch('Hours', varlist);
 numberInv        = strmatch('RealInvestment', varlist);
+
 %numberInflation  = strmatch('Inflation', varlist);
 lags             = 2;
 H                = 20; %irfs horizon
@@ -140,13 +144,13 @@ for i = 1:length(varlist)
       dep_var(:,i) = eval(varlist{i});
       if control_pop == 1
             if i == numberGDP || i == numberC || i == numberHours || i == numberInv
-                  dep_var(:,i) = dep_var(:,i)/Population;
+                  dep_var(:,i) = dep_var(:,i)./Population;
             end
       end
 end
 
 % Set up the transformation
-logdifferences = 1; 
+logdifferences = 1;
 if logdifferences == 1
       dep_var = [nan(1,size(dep_var,2)); diff(dep_var)];
 else
@@ -155,18 +159,23 @@ end
 for kk = 1:size(dep_var,2)
       % Define inputs for local_projection
       depvarkk                    = dep_var(:,kk);
-      [~, loc_start, loc_end]     = truncate_data([depvarkk Ztilde pc]);
+      [~, loc_start, loc_end]     = truncate_data([depvarkk Ztilde pc ProbRecession]);
       loc_start                   = loc_start + lags;
       depvarkk                    = depvarkk(loc_start:loc_end);
       Ztildekk                    = Ztilde(loc_start:loc_end);
       pckk                        = pc(loc_start:loc_end,1:mpc);
+      ProbRecessionkk             = ProbRecession(loc_start-1:loc_end-1);
+      TFPkk                       = TFP(loc_start:loc_end);
       % Run local_projection
-      [IR{kk},res{kk},Rsquared{kk},BL{kk},tuple{kk}] = ...
-            local_projection(depvarkk,pckk,Ztildekk,lags,H);
+      [IR_E{kk},IR_R{kk},res{kk},Rsquared{kk},BL{kk},tuple{kk}] = ...
+            smooth_transition_local_projection(depvarkk,pckk,Ztildekk,...
+            ProbRecessionkk,lags,H,TFPkk);
       if logdifferences == 0 || kk == numberCPI
-            IRF(kk,:) = IR{kk};
+            IRF_E(kk,:) = IR_E{kk};
+            IRF_R(kk,:) = IR_R{kk};
       else
-            IRF(kk,:) = cumsum(IR{kk});
+            IRF_E(kk,:) = cumsum(IR_E{kk});
+            IRF_R(kk,:) = cumsum(IR_R{kk});
       end
       % Initiate bootstrap
       nsimul         = 2000;
@@ -177,33 +186,35 @@ for kk = 1:size(dep_var,2)
             X                        = tuplekkhh(:,2:end);
             [Yboot, Xboot]           = bb_bootstrap_LP(Y,X,nsimul,lags);
             for isimul = 1:nsimul
-                  B                  = Xboot(:,:,isimul)'*Xboot(:,:,isimul)\...
-                        (Xboot(:,:,isimul)'*Yboot(:,isimul));
-                  IRF_boot(kk,hh,isimul) = B(1);
+                  B_boot                = Xboot(:,:,isimul)'*Xboot(:,:,isimul)\...
+(Xboot(:,:,isimul)'*Yboot(:,isimul));
+                  IRF_E_boot(kk,hh,isimul)        = B_boot(1); 
+                  IRF_R_boot(kk,hh,isimul)        = B_boot(1) + B_boot(2); 
             end
       end
 end
 
 % Select upper and lower bands
 for kk = 1:size(dep_var,2)
-      IRF_bootkk = IRF_boot(kk,:,:);
+      IRF_E_bootkk = IRF_E_boot(kk,:,:);
+      IRF_R_bootkk = IRF_R_boot(kk,:,:);
       if logdifferences == 0 || kk == numberCPI
-            IRF_boot(kk,:,:) = IRF_bootkk;
+            IRF_E_boot(kk,:,:) = IRF_E_bootkk;
+            IRF_R_boot(kk,:,:) = IRF_R_bootkk;
       else
-            IRF_boot(kk,:,:) = cumsum(IRF_bootkk,2);
+            IRF_E_boot(kk,:,:) = cumsum(IRF_E_bootkk,2);
+            IRF_R_boot(kk,:,:) = cumsum(IRF_R_bootkk,2);
       end
 end
-IRF_boot         = sort(IRF_boot,3);
-sig              = 0.05;
-sig2             = 0.16;
-up_bound         = floor(nsimul*sig); % the upper percentile of bootstrapped responses for CI
-up_bound2        = floor(nsimul*sig2); % the upper percentile of bootstrapped responses for CI
-low_bound        = ceil(nsimul*(1-sig)); % the lower percentile of bootstrapped responses for CI
-low_bound2       = ceil(nsimul*(1-sig2)); % the lower percentile of bootstrapped responses for CI
-IRF_up           = IRF_boot(:,:,up_bound);
-IRF_up2          = IRF_boot(:,:,up_bound2);
-IRF_low          = IRF_boot(:,:,low_bound);
-IRF_low2         = IRF_boot(:,:,low_bound2);
+IRF_E_boot         = sort(IRF_E_boot,3);
+IRF_R_boot         = sort(IRF_R_boot,3);
+sig                = 0.16;
+up_bound           = floor(nsimul*sig); % the upper percentile of bootstrapped responses for CI
+low_bound          = ceil(nsimul*(1-sig)); % the lower percentile of bootstrapped responses for CI
+IRF_E_up           = IRF_E_boot(:,:,up_bound);
+IRF_E_low          = IRF_E_boot(:,:,low_bound);
+IRF_R_up           = IRF_R_boot(:,:,up_bound);
+IRF_R_low          = IRF_R_boot(:,:,low_bound);
 
 % Build a table for the Rsquared
 % This R-squared has to be interpreted as the variance explained by noise
@@ -215,8 +226,9 @@ end
 %Show the graph of IRF - Figure(2)
 plot2    = 1; % if plot2 = 1, figure will be displayed
 n_row    = 3; % how many row in the figure
-unique   = 1; % if unique = 1 plot IRFs together, if = 1 plot each IRF separately
-plot_IRF_lp_unconditional(varlist,IRF_low,IRF_low2,IRF_up,IRF_up2,IRF,H,plot2,n_row,unique)
+unique   = 0; % if unique = 1 plot IRFs together, if = 1 plot each IRF separately
+plot_IRF_lp_conditional(varlist,IRF_E_low,IRF_E_up,IRF_E,...
+IRF_R_low,IRF_R_up,IRF_R,H,plot2,n_row,unique)
 
 % Print figure authomatically if "export_figure1 = 1"
 if plot2 == 1
