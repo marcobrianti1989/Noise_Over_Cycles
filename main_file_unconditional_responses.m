@@ -224,7 +224,7 @@ plot_IRF_lp_unconditional(varlist,IRF_low,IRF_low2,IRF_up,IRF_up2,IRF,H,plot2,n_
 
 % Print figure authomatically if "export_figure1 = 1"
 if plot2 == 1
-      export_fig2 = 1; % if export_fig1 = 1, figure will be saved
+      export_fig2 = 0; % if export_fig1 = 1, figure will be saved
       export_fig_IRF_lp_unconditional(export_fig2)
 end
 
