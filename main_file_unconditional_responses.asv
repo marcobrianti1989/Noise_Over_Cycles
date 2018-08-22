@@ -134,7 +134,7 @@ lags             = 2;
 H                = 20; %irfs horizon
 mpc              = 2; %max number of principal components
 
-% Standardize Ztilde to get one std dev shock
+%standardize Ztilde to get one std dev shock
 Ztilde  = Ztilde/std(Ztilde);
 Ztilde  = [nan(loc_start-1,1); Ztilde; nan(size(dataset,1)-loc_end,1)];
 
@@ -154,16 +154,16 @@ for ii = 1:length(dep_var)-4
       Inflation(ii) = dep_var(ii+4,numberCPI) - dep_var(ii,numberCPI);
 end
 Inflation = [NaN; NaN; NaN; NaN; Inflation'];
-dep_var = [dep_var(:,1:numberCPI-1) Inflation dep_var(:,numberCPI+1:end)];
+dep_var = dep_var(:,1:numberCPI-1)) Inflation difdep_var(:,numberCPI+1:end)
 
 % Set up the typology of transformation
-logdifferences = 0;
+logdifferences = 1;
 if logdifferences == 1
-      dep_var = [nan(1,size(dep_var,2)); diff(dep_var)];
+      dep_var = [nan(1,size(dep_var,2)); ...
+            diff(dep_var(:,1:numberCPI-1)) Inflation diff(dep_var(:,numberCPI+1:end))];
+else
+      dep_var(:,numberCPI) = [nan(1,1); Inflation];
 end
-% else
-%       dep_var(:,numberCPI) = [nan(1,1); Inflation];
-% end
 for kk = 1:size(dep_var,2)
       % Define inputs for local_projection
       depvarkk                    = dep_var(:,kk);
@@ -175,7 +175,7 @@ for kk = 1:size(dep_var,2)
       % Run local_projection
       [IR{kk},res{kk},Rsquared{kk},BL{kk},tuple{kk}] = ...
             local_projection(depvarkk,pckk,Ztildekk,lags,H);
-      if logdifferences == 0 %|| kk == numberCPI
+      if logdifferences == 0 || kk == numberCPI
             IRF(kk,:) = IR{kk};
       else
             IRF(kk,:) = cumsum(IR{kk});
@@ -199,7 +199,7 @@ end
 % Select upper and lower bands
 for kk = 1:size(dep_var,2)
       IRF_bootkk = IRF_boot(kk,:,:);
-      if logdifferences == 0 %|| kk == numberCPI
+      if logdifferences == 0 || kk == numberCPI
             IRF_boot(kk,:,:) = IRF_bootkk;
       else
             IRF_boot(kk,:,:) = cumsum(IRF_bootkk,2);
@@ -232,7 +232,7 @@ plot_IRF_lp_unconditional(varlist,IRF_low,IRF_low2,IRF_up,IRF_up2,IRF,H,plot2,n_
 
 % Print figure authomatically if "export_figure1 = 1"
 if plot2 == 1
-      export_fig2 = 0; % if export_fig1 = 1, figure will be saved
+      export_fig2 = 1; % if export_fig1 = 1, figure will be saved
       export_fig_IRF_lp_unconditional(export_fig2)
 end
 

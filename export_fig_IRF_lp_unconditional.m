@@ -16,7 +16,7 @@ if export_fig2 == 1
             addpath([base_path '/Export_Fig']) %for Mac
       end
       warning on
-      export_fig(['LocalProj_IRFs_Noise_Shocks_SPF_GDPgrowth_revisions_loglevels_bootstrap_68_90_CI_divide_population.pdf'])
+      export_fig(['LocalProj_IRFs_Noise_Shocks_SPF_GDPgrowth_revisions_logdifferences_bootstrap_68_90_CI_divide_population_year_on_year_inflation.pdf'])
       close all
       cd(base_path) %back to the original path
 
