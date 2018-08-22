@@ -149,13 +149,19 @@ for i = 1:length(varlist)
       end
 end
 
-% Set up the transformation
-logdifferences = 1;
+% Set up year on year inflation
+for ii = 1:length(dep_var)-4
+      Inflation(ii) = dep_var(ii+4,numberCPI) - dep_var(ii,numberCPI);
+end
+Inflation = [NaN; NaN; NaN; NaN; Inflation'];
+dep_var = [dep_var(:,1:numberCPI-1) Inflation dep_var(:,numberCPI+1:end)];
+
+% Set up the typology of transformation
+logdifferences = 0;
 if logdifferences == 1
       dep_var = [nan(1,size(dep_var,2)); diff(dep_var)];
-else
-      dep_var(:,numberCPI) = [nan(1,1); diff(dep_var(:,numberCPI))];
 end
+
 for kk = 1:size(dep_var,2)
       % Define inputs for local_projection
       depvarkk                    = dep_var(:,kk);
@@ -170,7 +176,7 @@ for kk = 1:size(dep_var,2)
       [IR_E{kk},IR_R{kk},res{kk},Rsquared{kk},BL{kk},tuple{kk}] = ...
             smooth_transition_local_projection(depvarkk,pckk,Ztildekk,...
             ProbRecessionkk,lags,H,TFPkk);
-      if logdifferences == 0 || kk == numberCPI
+      if logdifferences == 0 
             IRF_E(kk,:) = IR_E{kk};
             IRF_R(kk,:) = IR_R{kk};
       else
@@ -198,7 +204,7 @@ end
 for kk = 1:size(dep_var,2)
       IRF_E_bootkk = IRF_E_boot(kk,:,:);
       IRF_R_bootkk = IRF_R_boot(kk,:,:);
-      if logdifferences == 0 || kk == numberCPI
+      if logdifferences == 0 
             IRF_E_boot(kk,:,:) = IRF_E_bootkk;
             IRF_R_boot(kk,:,:) = IRF_R_bootkk;
       else
@@ -226,7 +232,7 @@ end
 %Show the graph of IRF - Figure(2)
 plot2    = 1; % if plot2 = 1, figure will be displayed
 n_row    = 3; % how many row in the figure
-unique   = 0; % if unique = 1 plot IRFs together, if = 1 plot each IRF separately
+unique   = 1; % if unique = 1 plot IRFs together, if = 1 plot each IRF separately
 plot_IRF_lp_conditional(varlist,IRF_E_low,IRF_E_up,IRF_E,...
 IRF_R_low,IRF_R_up,IRF_R,H,plot2,n_row,unique)
 

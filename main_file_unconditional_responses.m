@@ -161,9 +161,7 @@ logdifferences = 0;
 if logdifferences == 1
       dep_var = [nan(1,size(dep_var,2)); diff(dep_var)];
 end
-% else
-%       dep_var(:,numberCPI) = [nan(1,1); Inflation];
-% end
+
 for kk = 1:size(dep_var,2)
       % Define inputs for local_projection
       depvarkk                    = dep_var(:,kk);
@@ -175,7 +173,7 @@ for kk = 1:size(dep_var,2)
       % Run local_projection
       [IR{kk},res{kk},Rsquared{kk},BL{kk},tuple{kk}] = ...
             local_projection(depvarkk,pckk,Ztildekk,lags,H);
-      if logdifferences == 0 %|| kk == numberCPI
+      if logdifferences == 0 
             IRF(kk,:) = IR{kk};
       else
             IRF(kk,:) = cumsum(IR{kk});
@@ -199,7 +197,7 @@ end
 % Select upper and lower bands
 for kk = 1:size(dep_var,2)
       IRF_bootkk = IRF_boot(kk,:,:);
-      if logdifferences == 0 %|| kk == numberCPI
+      if logdifferences == 0 
             IRF_boot(kk,:,:) = IRF_bootkk;
       else
             IRF_boot(kk,:,:) = cumsum(IRF_bootkk,2);
