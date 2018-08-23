@@ -122,7 +122,7 @@ close
 % 'Vix','VXO','Inventories','LaborProductivity','Spread'};
 varlist          = {'TFP','RealGDP', 'RealCons',...
       'UnempRate','RealWage','Hours','CPIInflation',...
-      'RealInvestment'};
+      'RealInvestment','Inventories'};
 numberCPI        = strmatch('CPIInflation', varlist);
 numberGDP        = strmatch('RealGDP', varlist);
 numberC          = strmatch('RealCons', varlist);
@@ -157,7 +157,7 @@ Inflation = [NaN; NaN; NaN; NaN; Inflation'];
 dep_var = [dep_var(:,1:numberCPI-1) Inflation dep_var(:,numberCPI+1:end)];
 
 % Set up the typology of transformation
-logdifferences = 0;
+logdifferences = 1;
 if logdifferences == 1
       dep_var = [nan(1,size(dep_var,2)); diff(dep_var)];
 end
