@@ -14,7 +14,7 @@ close all
 %Read main dataset
 filename                    = 'main_file';
 sheet                       = 'Sheet1';
-range                       = 'B1:AY300';
+range                       = 'B1:BD300';
 do_truncation               = 0; %Do not truncate data. You will have many NaN
 [dataset, var_names]        = read_data2(filename, sheet, range, do_truncation);
 dataset                     = real(dataset);
@@ -120,14 +120,18 @@ close
 %       'UnempRate','RealWage','Hours','CPIInflation',...
 %       'RealInvestment','SP500','OilPrice','GZSpread','FFR',...
 % 'Vix','VXO','Inventories','LaborProductivity','Spread'};
-varlist          = {'TFP','RealGDP', 'RealCons',...
+varlist          = {'RealGDP', 'RealCons',...
       'UnempRate','RealWage','Hours','CPIInflation',...
-      'RealInvestment','Inventories'};
+      'RealInvestment','RealInventories','RealProfitsaT'};
 numberCPI        = strmatch('CPIInflation', varlist);
 numberGDP        = strmatch('RealGDP', varlist);
 numberC          = strmatch('RealCons', varlist);
 numberHours      = strmatch('Hours', varlist);
 numberInv        = strmatch('RealInvestment', varlist);
+numberProf       = strmatch('RealProfitsaT', varlist);
+numberInvent     = strmatch('RealInventories', varlist);
+
+
 
 %numberInflation  = strmatch('Inflation', varlist);
 lags             = 2;
@@ -143,8 +147,8 @@ control_pop = 1; % Divide GDP, Cons, Hours, Investment over population
 for i = 1:length(varlist)
       dep_var(:,i) = eval(varlist{i});
       if control_pop == 1
-            if i == numberGDP || i == numberC || i == numberHours || i == numberInv
-                  dep_var(:,i) = dep_var(:,i)./Population;
+            if i == numberGDP || i == numberC || i == numberHours || i == numberInv || i == numberInvent || i == numberInvent
+                  dep_var(:,i) = dep_var(:,i) - Population;
             end
       end
 end
@@ -221,7 +225,6 @@ IRF_low2         = IRF_boot(:,:,low_bound2);
 for kkk = 1:size(dep_var,2) %Raws are time horizons, Columns are variables.
       Rsquared_Table(:,kkk) = Rsquared{kkk}';
 end
-
 %Show the graph of IRF - Figure(2)
 plot2    = 1; % if plot2 = 1, figure will be displayed
 n_row    = 3; % how many row in the figure
@@ -233,6 +236,7 @@ if plot2 == 1
       export_fig2 = 0; % if export_fig1 = 1, figure will be saved
       export_fig_IRF_lp_unconditional(export_fig2)
 end
+
 
 
 

@@ -26,13 +26,13 @@ if plot2 == 1
             plot([0:H-1]',IRF(j,:), '-k', 'linewidth', 3);
             plot([0:H-1]',0*[1:H]',':k');
             set(gca,'TickLabelInterpreter','latex')
-            title(varlist{j},'interpreter', 'latex', 'fontsize', 14);
+            title(varlist{j},'interpreter', 'latex', 'fontsize', 24);
             if unique == 1 && j == 1
-                  xlabel('Quarter','interpreter','latex','fontsize',12);
-                  ylabel('\% deviation from s.s.','interpreter','latex','fontsize',12);
+                  xlabel('Quarter','interpreter','latex','fontsize',18);
+                  ylabel('\% deviation from s.s.','interpreter','latex','fontsize',18);
             elseif unique == 0
-                  xlabel('Quarter','interpreter','latex','fontsize',12);
-                  ylabel('\% deviation from s.s.','interpreter','latex','fontsize',12);
+                  xlabel('Quarter','interpreter','latex','fontsize',18);
+                  ylabel('\% deviation from s.s.','interpreter','latex','fontsize',18);
             end
             if unique == 1
                   set(s,'xlim',[1,H],'ylim', ylim);
