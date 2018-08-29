@@ -29,9 +29,9 @@ for h = 1:H
       Rsquared(h)        = 1 - var(res{h})/var(Y);
       B_store(:,h)       = B; 
       
-      % Var(Y|all the shocks) - just eliminate the trend and the past
-      Xcontrols          = X(:,2:end);
-      Bcontrols          = Xcontrols'*Xcontrols\(Xcontrols'*Y); 
-      VarY(h)            = var(Y - Xcontrols*Bcontrols);
+      % Var(Y|all the shocks) - just eliminate the trend
+      Btrend             = Xtrend'*Xtrend\(Xtrend'*Y); 
+      Xtrend             = trend;
+      VarY(h)            = Var(Y - Xtrend*Btrend);
       
 end
