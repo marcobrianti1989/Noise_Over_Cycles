@@ -14,7 +14,7 @@ close all
 %Read main dataset
 filename                    = 'main_file';
 sheet                       = 'Sheet1';
-range                       = 'B1:BD300';
+range                       = 'B1:BH300';
 do_truncation               = 0; %Do not truncate data. You will have many NaN
 [dataset, var_names]        = read_data2(filename, sheet, range, do_truncation);
 dataset                     = real(dataset);
@@ -63,7 +63,7 @@ Z3                  = [NaN; Delta_RINV_t(2:end) - Delta_RINV_t1(1:end-1)];
 ZZ                  = Z1; %Select GDP growth
 
 %Technical values to build Ztilde
-lag_tfp             = 8; %number of lags of TFP - cannot be zero since 1 include current TFP
+lag_tfp             = 4; %number of lags of TFP - cannot be zero since 1 include current TFP
 lead_tfp            = 16; %number of leads of TFP
 lag                 = 2;  %number of lags of control variables (other structural shocks)
 mpc                 = 2; %max number of principal components
@@ -120,10 +120,15 @@ close
 %       'UnempRate','RealWage','Hours','CPIInflation',...
 %       'RealInvestment','SP500','OilPrice','GZSpread','FFR',...
 % 'Vix','VXO','Inventories','LaborProductivity','Spread'};
-varlist          = {'RealGDP', 'RealCons',...
-      'UnempRate','RealWage','Hours','CPIInflation',...
-      'RealInvestment','RealInventories','RealProfitsaT'};
+varlist          = {'RealGDP', 'RealCons','UnempRate','Hours','RealInvestment',...
+      'RealInventories','RealProfitsaT','RealSales',...
+      'CPIInflation','PriceCPE','CPIDurables',... %All the nominal variables should be last
+      'CPINonDurables'};
 numberCPI        = strmatch('CPIInflation', varlist);
+numberCPE        = strmatch('PriceCPE', varlist);
+numberCPID       = strmatch('CPIDurables', varlist);
+numberCPIND      = strmatch('CPINonDurables', varlist);
+numberCPIS       = strmatch('CPIServices', varlist);
 numberGDP        = strmatch('RealGDP', varlist);
 numberC          = strmatch('RealCons', varlist);
 numberHours      = strmatch('Hours', varlist);
@@ -132,9 +137,9 @@ numberProf       = strmatch('RealProfitsaT', varlist);
 numberInvent     = strmatch('RealInventories', varlist);
 
 %numberInflation  = strmatch('Inflation', varlist);
-lags             = 2;
+lags             = 3;
 H                = 20; %irfs horizon
-mpc              = 4; %max number of principal components
+mpc              = 3; %max number of principal components
 
 % Standardize Ztilde to get one std dev shock
 Ztilde  = Ztilde/std(Ztilde);
@@ -155,10 +160,19 @@ end
 use_Inflation = 1;
 if use_Inflation == 1
       for ii = 1:length(dep_var)-4
-            Inflation(ii) = dep_var(ii+4,numberCPI) - dep_var(ii,numberCPI);
+            CPI(ii)       = dep_var(ii+4,numberCPI) - dep_var(ii,numberCPI);
+            CPE(ii)       = dep_var(ii+4,numberCPE) - dep_var(ii,numberCPE);
+            CPID(ii)      = dep_var(ii+4,numberCPID) - dep_var(ii,numberCPID);
+            CPIND(ii)     = dep_var(ii+4,numberCPIND) - dep_var(ii,numberCPIND);
+            %CPIS(ii)      = dep_var(ii+4,numberCPIS) - dep_var(ii,numberCPIS);
       end
-      Inflation = [NaN; NaN; NaN; NaN; Inflation'];
-      dep_var = [dep_var(:,1:numberCPI-1) Inflation dep_var(:,numberCPI+1:end)];
+      CPI     = [NaN; NaN; NaN; NaN; CPI'];
+      CPE     = [NaN; NaN; NaN; NaN; CPE'];
+      CPID    = [NaN; NaN; NaN; NaN; CPID'];
+      CPIND   = [NaN; NaN; NaN; NaN; CPIND'];
+      %CPIS    = [NaN; NaN; NaN; NaN; CPIS'];
+      loc     = min([numberCPI numberCPE numberCPID numberCPIND numberCPIS]);
+      dep_var = [dep_var(:,1:loc-1) CPI CPE CPID CPIND]; %CPIS];
 end
 
 % Set up the typology of transformation
