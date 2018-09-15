@@ -1,11 +1,11 @@
 {\rtf1\ansi\ansicpg1252\cocoartf1561\cocoasubrtf600
 {\fonttbl\f0\fswiss\fcharset0 Helvetica;}
-{\colortbl;\red255\green255\blue255;\red127\green0\blue128;}
-{\*\expandedcolortbl;;\csgenericrgb\c49804\c0\c50196;}
+{\colortbl;\red255\green255\blue255;\red127\green0\blue128;\red128\green0\blue128;}
+{\*\expandedcolortbl;;\csgenericrgb\c49804\c0\c50196;\cssrgb\c57919\c12801\c57269;}
 {\*\listtable{\list\listtemplateid1\listhybrid{\listlevel\levelnfc23\levelnfcn23\leveljc0\leveljcn0\levelfollow0\levelstartat1\levelspace360\levelindent0{\*\levelmarker \{disc\}}{\leveltext\leveltemplateid1\'01\uc0\u8226 ;}{\levelnumbers;}\fi-360\li720\lin720 }{\listname ;}\listid1}
 {\list\listtemplateid2\listhybrid{\listlevel\levelnfc0\levelnfcn0\leveljc0\leveljcn0\levelfollow0\levelstartat1\levelspace360\levelindent0{\*\levelmarker \{decimal\}.}{\leveltext\leveltemplateid101\'02\'00.;}{\levelnumbers\'01;}\fi-360\li720\lin720 }{\listname ;}\listid2}}
 {\*\listoverridetable{\listoverride\listid1\listoverridecount0\ls1}{\listoverride\listid2\listoverridecount0\ls2}}
-\margl1440\margr1440\vieww27520\viewh16140\viewkind1\viewscale115
+\margl1440\margr1440\vieww27820\viewh16440\viewkind1\viewscale114
 \deftab720
 \pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardeftab720\ri0\partightenfactor0
 
@@ -24,9 +24,8 @@
 \
 - Feve Guay 2018 EJ: empirical paper, identification similar to LPN above but results are different (sentiment shocks not important). They use confidence measure, not forecasts. \
 \
-\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardeftab720\ri0\partightenfactor0
 
-\i \cf0 More theoretical literature:
+\i More theoretical literature:
 \i0 \
 - Angeletos Collard Dellas, \'85\
 \
@@ -41,7 +40,7 @@
 \
 \pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardeftab720\ri0\partightenfactor0
 
-\i\fs28 \cf0 \ul \ulc0 Problems with survey data
+\i\fs28 \cf0 \ul Problems with survey data
 \i0 \
 \
 \pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardeftab720\ri0\partightenfactor0
@@ -83,7 +82,7 @@ when we analyse the irf to a shock we do not take a one std deviation shock but 
 \
 \pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardeftab720\ri0\partightenfactor0
 
-\i \cf0 \ul \ulc0 Data treatment\
+\i \cf0 \ul Data treatment\
 \
 	
 \i0 \ulnone - Since we are not interested in long run changes due to demographics, labor market composition, etc. we should remove the long run trends as in Stock and Watson (2016, replication files available) using a biweight filter with bandwidth of 100 quarters. The detrending is done on a integrated of order \ul zero\ulnone  series (requires truncation at the ends of the sample, see p 61). (Baxter-King filter gives similar results).\
@@ -130,11 +129,12 @@ It is a technical survey on IV on LP.\
 Three points are interesting for us:\
 \
 \pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardeftab720\li720\fi-360\ri0\partightenfactor0
-\ls2\ilvl0\cf0 1.	In the second stage regression is useful to control for other variables because it increases the Rsquared and shrinks the CI.\
-2.	Exposure of a serious method to calculate variance decomposition.\
+\ls2\ilvl0\cf0 1.	In the second stage regression is useful to control for other variables because it increases the Rsquared and shrinks the CI. \'97 \cf3 in short, improve econometric efficiency\
+\ls2\ilvl0\cf0 2.	Exposure of a serious method to calculate variance decomposition.\
 3.	We need to find a formal normalization for our noise shock. They provide some tips.\
 \
 \
 Suppose the forecast revision only happens when GDP was expected to decrease\
 \
+\ls2\ilvl0\cf3 Crucially, news shocks and noise shocks may be not identifiable without rotating the residuals in the future. We overcome this issue by imposing restrictions directly on future TFP - it echoes Charhour and Jurado procedure without having to estimate a VAR. \cf0 \
 }

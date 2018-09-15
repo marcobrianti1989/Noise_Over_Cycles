@@ -122,12 +122,14 @@ end
 % 'Vix','VXO','Inventories','LaborProductivity','Spread'};
 varlist          = {'TFP','RealGDP', 'RealCons',...
       'UnempRate','RealWage','Hours','CPIInflation',...
-      'RealInvestment'};
+      'RealInvestment','RealInventories'};
 numberCPI        = strmatch('CPIInflation', varlist);
 numberGDP        = strmatch('RealGDP', varlist);
 numberC          = strmatch('RealCons', varlist);
 numberHours      = strmatch('Hours', varlist);
 numberInv        = strmatch('RealInvestment', varlist);
+numberInvent     = strmatch('RealInventories', varlist);
+
 
 %numberInflation  = strmatch('Inflation', varlist);
 lags             = 2;
@@ -139,7 +141,7 @@ Ztilde  = Ztilde/std(Ztilde);
 Ztilde  = [nan(loc_start-1,1); Ztilde; nan(size(dataset,1)-loc_end,1)];
 
 % Matrix of dependen variables - All the variables are in log levels
-control_pop = 1; % Divide GDP, Cons, Hours, Investment over population
+control_pop = 0; % Divide GDP, Cons, Hours, Investment over population
 for i = 1:length(varlist)
       dep_var(:,i) = eval(varlist{i});
       if control_pop == 1
@@ -157,7 +159,7 @@ Inflation = [NaN; NaN; NaN; NaN; Inflation'];
 dep_var = [dep_var(:,1:numberCPI-1) Inflation dep_var(:,numberCPI+1:end)];
 
 % Set up the typology of transformation
-logdifferences = 0;
+logdifferences = 1;
 if logdifferences == 1
       dep_var = [nan(1,size(dep_var,2)); diff(dep_var)];
 end
