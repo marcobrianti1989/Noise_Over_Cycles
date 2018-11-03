@@ -14,7 +14,7 @@ close all
 %Read main dataset
 filename                    = 'main_file';
 sheet                       = 'Sheet1';
-range                       = 'B1:BH300';
+range                       = 'B1:BJ300';
 do_truncation               = 0; %Do not truncate data. You will have many NaN
 [dataset, var_names]        = read_data2(filename, sheet, range, do_truncation);
 dataset                     = real(dataset);
@@ -102,13 +102,20 @@ Y                 = ZZ;
 %Show the graph of Ztilde - Figure(1)
 plot1 = 1; % if plot = 1, figure will be displayed
 plot_Ztilde(Ztilde,Time,NBERDates,loc_start,loc_end,plot1)
+
+%Correlation with Barsky and Sims 2011
+
+news = BarskySims_News(loc_start:loc_end);
+corr_ztilde_news = corr(Ztilde,news);
+
 asd
 % Print figure authomatically if "export_figure1 = 1"
 if plot1 == 1
       export_fig1 = 0; % if export_fig1 = 1, figure will be saved
       export_fig_Ztilde(export_fig1)
 end
-close
+
+
 %*************************************************************************%
 %                                                                         %
 %          2nd stage - Smooth Transition Local Projections                %
