@@ -79,7 +79,7 @@ horizon         = 40;
 
 % Create dataset from bootstrap
 nburn             = 0;
-nsimul            = 2;
+nsimul            = 200;
 which_correction  = 'none';
 blocksize         = 4;
 [beta_tilde, data_boot2, beta_tilde_star,nonstationarities] ...
@@ -142,7 +142,7 @@ grid on
 
 %xlswrite('Barsky_Sims_2011_News_Shock_Series',[Time(nlags+1:end) ss2])
 
-
+asdf
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
