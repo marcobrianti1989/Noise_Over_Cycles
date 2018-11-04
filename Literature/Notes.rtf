@@ -6,7 +6,7 @@
 {\*\listtable{\list\listtemplateid1\listhybrid{\listlevel\levelnfc23\levelnfcn23\leveljc0\leveljcn0\levelfollow0\levelstartat1\levelspace360\levelindent0{\*\levelmarker \{disc\}}{\leveltext\leveltemplateid1\'01\uc0\u8226 ;}{\levelnumbers;}\fi-360\li720\lin720 }{\listname ;}\listid1}
 {\list\listtemplateid2\listhybrid{\listlevel\levelnfc0\levelnfcn0\leveljc0\leveljcn0\levelfollow0\levelstartat1\levelspace360\levelindent0{\*\levelmarker \{decimal\}.}{\leveltext\leveltemplateid101\'02\'00.;}{\levelnumbers\'01;}\fi-360\li720\lin720 }{\listname ;}\listid2}}
 {\*\listoverridetable{\listoverride\listid1\listoverridecount0\ls1}{\listoverride\listid2\listoverridecount0\ls2}}
-\margl1440\margr1440\vieww28120\viewh16580\viewkind1\viewscale113
+\margl1440\margr1440\vieww24980\viewh16580\viewkind1\viewscale113
 \deftab720
 \pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardeftab720\ri0\partightenfactor0
 
@@ -22,6 +22,7 @@
 \f1\i0 from Livingston Survey. Monetary policy tightens in expectations of good times. Check that results are robust if they use the Michigan Survey.\
 \
 - Levchenko Pandalai-Nayar 2018 JEEA: identify sentiment shocks as those that are orthogonal to surprise and TFP news shocks and that maximize the short run forecast error variance of either GDP forecast or Consumer confidence index. Note that we depart from them at least in 2 aspects: 1) the identification procedure is substantially different. 2) we orthogonalize relatively to the TFP path which is a weaker condition than news and surprise shock. In principle the belief shock can be correlated with news and surprise in a way that it has no effect on TFP.\
+They obtain inflationary noise shocks \
 \
 - Feve Guay 2018 EJ: empirical paper, identification similar to LPN above but results are different (sentiment shocks not important). They use confidence measure, not forecasts. \
 \
@@ -110,7 +111,8 @@ when we analyse the irf to a shock we do not take a one std deviation shock but 
 \fs36 \
 
 \fs28 \
-	- one could rationalise the effects on prices via investors expectations on the borrowing costs. When a sentiment shock hits the economy investors require a lower rate of return that leads to a reduction of marginal costs which in turn leads to a reduction of prices together with a boom. \cf0 \
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardeftab720\partightenfactor0
+\cf2 	- one could rationalise the effects on prices via investors expectations on the borrowing costs. When a sentiment shock hits the economy investors require a lower rate of return that leads to a reduction of marginal costs which in turn leads to a reduction of prices together with a boom. \cf0 \
 \pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardeftab720\ri0\partightenfactor0
 
 \fs36 \cf0 \
@@ -142,4 +144,20 @@ Suppose the forecast revision only happens when GDP was expected to decrease\
 \
 \ls2\ilvl0\cf3 Crucially, news shocks and noise shocks may be not identifiable without rotating the residuals in the future. We overcome this issue by imposing restrictions directly on future TFP - it echoes Charhour and Jurado procedure without having to estimate a VAR. \cf0 \
 \
-Note that we significantly diverge from the idea that TFP can be endogenous so that sentiment shocks can be self-fulfilling (on TFP) as in Beaudry Nam and Wang 2012, in that our sentiment shock is orthogonal to future TFP. (Beaudry et al is not a good citation in the sense of Arias Ramirez Waggoner 2018)}
+Note that we significantly diverge from the idea that TFP can be endogenous so that sentiment shocks can be self-fulfilling (on TFP) as in Beaudry Nam and Wang 2012, in that our sentiment shock is orthogonal to future TFP. (Beaudry et al is not a good citation in the sense of Arias Ramirez Waggoner 2018)\
+\
+\
+Vito & Marco - November 4\
+\
+Thoughts:\
+\
+- Estimated News shocks are the expected value of future fundamentals given the observed signal at time t. Thus they comprise the noise shocks. \
+		- Pierre argues that the concept of realized vs expected movements should not be associated to noise shocks. This is because all shocks - unanticipated and anticipated - are of this kind. I believe that is a valuable comment and that we need to think along the lines of what model we have in mind, how persistent processes are, and what the literature has focused on. \
+\
+- Sentiment shocks pertain to the broader concept of sunspot shocks, thus not necessarily related to expectations on future technology. Hence as we are interested in the estimation of this broader category of noise shocks, following Barsky and Sims to extract noise would be fallacious. \
+\
+- Deflationary noise shocks are consistent with a model of customer capital or a model with sticky prices a la Calvo.\
+\
+- Crucially we need a VAR that encompasses both news and noise shocks together with their effect on inflation. We expect that the effect on inflation is milder for noise shocks.\
+\
+}
