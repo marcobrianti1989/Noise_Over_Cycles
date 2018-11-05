@@ -28,13 +28,13 @@ options  = optimset('fmincon');
 options  = optimset(options, 'TolFun', 1e-9, 'display', 'none');
 
 %Constraint that News shocks have no contemporaneous effect on TFP
-Me3       = 1; %  Me = no. of equality constraints
-Beq3      = zeros(Me3,1); % Beq is (Me x 1) where
-Aeq3      = zeros(Me3,1*nvar); % Aeq is (Me x (nshock*nvar)) - nshock is 1 at this step
-Aeq3(1,1) = 1; %zero-impact of news on TFP
+% Me3       = 1; %  Me = no. of equality constraints
+% Beq3      = zeros(Me3,1); % Beq is (Me x 1) where
+% Aeq3      = zeros(Me3,1*nvar); % Aeq is (Me x (nshock*nvar)) - nshock is 1 at this step
+% Aeq3(1,1) = 1; %zero-impact of news on TFP
 
 % Optimization
-[gam1_opt] = fmincon(obj1, gam1_zero,[],[],Aeq3,Beq3,[],[],...
+[gam1_opt] = fmincon(obj1, gam1_zero,[],[],[],[],[],[],...
       @(gam1) constraint_orthogonality(gam1),options);
 %fmincon(FUN,X0,A,B,Aeq,Beq,LB,UB,NONLCON,OPTIONS)
 
