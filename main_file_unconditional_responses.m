@@ -108,7 +108,7 @@ plot_Ztilde(Ztilde,Time,NBERDates,loc_start,loc_end,plot1)
 news = BarskySims_News(loc_start:loc_end);
 corr_ztilde_news = corr(Ztilde,news);
 
-asd
+
 % Print figure authomatically if "export_figure1 = 1"
 if plot1 == 1
       export_fig1 = 0; % if export_fig1 = 1, figure will be saved
