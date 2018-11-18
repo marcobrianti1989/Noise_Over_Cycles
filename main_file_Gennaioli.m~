@@ -50,8 +50,8 @@ Delta_RGDP_t                = Delta_RGDP_t(loc_start:loc_end);
 FE                          = [NaN; NaN; NaN; NaN; RGDPG(1+4:end) - Delta_RGDP_t(1:end-4)];
 
 % Run OLS of forecast error on the forecast revision
-[B, Yhat, res]  = quick_ols(FE(1+4:end),ZZ(1:end-4));
-LM              = fitlm(ZZ(1:end-4),FE(1+4:end),'linear')
+[B, Yhat, res]  = quick_ols(FE,ZZ(1:end-4));
+LM              = fitlm(ZZ(1:end-4),FE,'linear')
 % scatter(RGDPG(1+4:end),Delta_RGDP_t(1:end-4))
-scatter(FE(1+4:end),ZZ(1:end-4))
+scatter(FE,ZZ(1:end-4))
 

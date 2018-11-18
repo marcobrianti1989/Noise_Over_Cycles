@@ -65,7 +65,7 @@ ZZ                  = Z1; %Select GDP growth
 %Technical values to build Ztilde
 lag_tfp             = 4; %number of lags of TFP - cannot be zero since 1 include current TFP
 lead_tfp            = 16; %number of leads of TFP
-lag                 = 2;  %number of lags of control variables (other structural shocks)
+lag                 = 0;  %number of lags of control variables (other structural shocks)
 mpc                 = 2; %max number of principal components
 threshold           = -1/eps; %Remove all the NaN values
 
@@ -192,7 +192,7 @@ for kk = 1:size(dep_var,2)
       % Define inputs for local_projection
       depvarkk                    = dep_var(:,kk);
       [~, loc_start, loc_end]     = truncate_data([depvarkk Ztilde pc]);
-      loc_start                   = loc_start + lags;
+      loc_start                   = loc_start; %+ lags;
       depvarkk                    = depvarkk(loc_start:loc_end);
       Ztildekk                    = Ztilde(loc_start:loc_end);
       pckk                        = pc(loc_start:loc_end,1:mpc);
@@ -212,7 +212,7 @@ for kk = 1:size(dep_var,2)
             VarExplained(kk,ih) = sum(IRF(kk,1:ih).^2)/VarYY;
       end
       % Initiate bootstrap
-      nsimul         = 2000;
+      nsimul         = 200;
       tuplekk        = tuple{kk};
       for hh = 1:H
             tuplekkhh = tuplekk{hh}; % Fix a specific horizon
