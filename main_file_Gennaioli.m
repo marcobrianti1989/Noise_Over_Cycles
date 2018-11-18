@@ -58,7 +58,7 @@ RGDPG                       = [NaN; NaN; NaN; NaN; RealGDP(1+4:end) - RealGDP(1:
 %Technical values to build Ztilde
 lag_tfp             = 4; %number of lags of TFP - cannot be zero since 1 include current TFP
 lead_tfp            = 16; %number of leads of TFP
-lag                 = 2;  %number of lags of control variables (other structural shocks)
+lag                 = 0;  %number of lags of control variables (other structural shocks)
 mpc                 = 2; %max number of principal components
 threshold           = -1/eps; %Remove all the NaN values
 
@@ -98,7 +98,7 @@ FE                = [NaN; NaN; NaN; NaN; RGDPG(1+4:end) - Delta_RGDP_t(2:end-3)]
 
 % Run OLS of forecast error on the forecast revision
 [B, Yhat, res]  = quick_ols(FE(1+4:end),[ones(length(ZZ)-4,1) Ztilde(2:end-3)]);
-LM              = fitlm(Ztilde(2:end-3),FE(1+4:end),'linear')
+LM              = fitlm(Ztilde(2:end-3),abs(FE(1+4:end)),'linear')
 % scatter(RGDPG(1+4:end),Delta_RGDP_t(1:end-4))
 % scatter(FE(1+4:end),ZZ(1:end-4))
 
