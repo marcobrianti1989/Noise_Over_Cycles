@@ -65,7 +65,7 @@ ZZ                  = Z1; %Select GDP growth
 %Technical values to build Ztilde
 lag_tfp             = 4; %number of lags of TFP - cannot be zero since 1 include current TFP
 lead_tfp            = 16; %number of leads of TFP
-lag                 = 0;  %number of lags of control variables (other structural shocks)
+lag                 = 2;  %number of lags of control variables (other structural shocks)
 mpc                 = 2; %max number of principal components
 threshold           = -1/eps; %Remove all the NaN values
 
@@ -104,7 +104,6 @@ plot1 = 1; % if plot = 1, figure will be displayed
 plot_Ztilde(Ztilde,Time,NBERDates,loc_start,loc_end,plot1)
 
 %Correlation with Barsky and Sims 2011
-
 news = BarskySims_News(loc_start:loc_end);
 corr_ztilde_news = corr(Ztilde,news);
 
@@ -114,7 +113,6 @@ if plot1 == 1
       export_fig1 = 0; % if export_fig1 = 1, figure will be saved
       export_fig_Ztilde(export_fig1)
 end
-
 
 %*************************************************************************%
 %                                                                         %
@@ -212,7 +210,7 @@ for kk = 1:size(dep_var,2)
             VarExplained(kk,ih) = sum(IRF(kk,1:ih).^2)/VarYY;
       end
       % Initiate bootstrap
-      nsimul         = 200;
+      nsimul         = 500;
       tuplekk        = tuple{kk};
       for hh = 1:H
             tuplekkhh = tuplekk{hh}; % Fix a specific horizon
