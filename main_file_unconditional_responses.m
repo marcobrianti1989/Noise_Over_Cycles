@@ -125,8 +125,9 @@ end
 %       'UnempRate','RealWage','Hours','CPIInflation',...
 %       'RealInvestment','SP500','OilPrice','GZSpread','FFR',...
 % 'Vix','VXO','Inventories','LaborProductivity','Spread'};
-varlist          = {'RealGDP', 'RealCons','UnempRate','Hours','RealInvestment',...
-      'RealInventories','RealProfitsaT','RealSales',...
+SP500            = SP500 - GDPDefl;
+varlist          = {'RealGDP', 'RealCons','SP500','Hours','RealInvestment',...
+      'RealInventories','RealProfitsaT','Mich5Y',...
       'CPIInflation','PriceCPE','CPIDurables',... %All the nominal variables should be last
       'CPINonDurables'};
 numberCPI        = strmatch('CPIInflation', varlist);
@@ -163,18 +164,19 @@ end
 
 % Set up year on year inflation
 use_Inflation = 1;
+ninfl = 1;
 if use_Inflation == 1
-      for ii = 1:length(dep_var)-4
-            CPI(ii)       = dep_var(ii+4,numberCPI) - dep_var(ii,numberCPI);
-            CPE(ii)       = dep_var(ii+4,numberCPE) - dep_var(ii,numberCPE);
-            CPID(ii)      = dep_var(ii+4,numberCPID) - dep_var(ii,numberCPID);
-            CPIND(ii)     = dep_var(ii+4,numberCPIND) - dep_var(ii,numberCPIND);
+      for ii = 1:length(dep_var)-ninfl
+            CPI(ii)       = dep_var(ii+ninfl,numberCPI) - dep_var(ii,numberCPI);
+            CPE(ii)       = dep_var(ii+ninfl,numberCPE) - dep_var(ii,numberCPE);
+            CPID(ii)      = dep_var(ii+ninfl,numberCPID) - dep_var(ii,numberCPID);
+            CPIND(ii)     = dep_var(ii+ninfl,numberCPIND) - dep_var(ii,numberCPIND);
             %CPIS(ii)      = dep_var(ii+4,numberCPIS) - dep_var(ii,numberCPIS);
       end
-      CPI     = [NaN; NaN; NaN; NaN; CPI'];
-      CPE     = [NaN; NaN; NaN; NaN; CPE'];
-      CPID    = [NaN; NaN; NaN; NaN; CPID'];
-      CPIND   = [NaN; NaN; NaN; NaN; CPIND'];
+      CPI     = [NaN(ninfl,1); CPI'];
+      CPE     = [NaN(ninfl,1); CPE'];
+      CPID    = [NaN(ninfl,1); CPID'];
+      CPIND   = [NaN(ninfl,1); CPIND'];
       %CPIS    = [NaN; NaN; NaN; NaN; CPIS'];
       loc     = min([numberCPI numberCPE numberCPID numberCPIND numberCPIS]);
       dep_var = [dep_var(:,1:loc-1) CPI CPE CPID CPIND]; %CPIS];
