@@ -164,7 +164,7 @@ end
 
 % Set up year on year inflation
 use_Inflation = 1;
-ninfl = 1;
+ninfl = 4;
 if use_Inflation == 1
       for ii = 1:length(dep_var)-ninfl
             CPI(ii)       = dep_var(ii+ninfl,numberCPI) - dep_var(ii,numberCPI);
@@ -181,7 +181,7 @@ if use_Inflation == 1
       loc     = min([numberCPI numberCPE numberCPID numberCPIND numberCPIS]);
       dep_var = [dep_var(:,1:loc-1) CPI CPE CPID CPIND]; %CPIS];
 end
-
+asdf
 % Set up the typology of transformation
 logdifferences = 0;
 if logdifferences == 1
