@@ -195,12 +195,10 @@ for kk = 1:size(dep_var,2)
       [~, loc_start, loc_end]     = truncate_data([depvarkk Ztilde pc]);
       loc_start                   = loc_start; %+ lags;
       depvarkk                    = depvarkk(loc_start:loc_end);
-      for i = 1:length(depvarkk)-3
-          [trendHP, depvarkki]         = hpfilter(depvarkk(1:3+i),1600); %XXX HPFILTER XXX
-          depvarkkii(i)                = depvarkki(end);
+      for i = 1:length(depvarkk)
+          [trendHP, depvarkki(i)]         = hpfilter(depvarkk(+i),1600); %XXX HPFILTER XXX
       end
-      
-      depvarkk                    = [NaN(3,1); depvarkkii'];
+      depvarkk                    = [NaN(1,3); depvarkki'];
       Ztildekk                    = Ztilde(loc_start:loc_end);
       pckk                        = pc(loc_start:loc_end,1:mpc);
       % Run local_projection
