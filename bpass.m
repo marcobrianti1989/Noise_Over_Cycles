@@ -1,4 +1,4 @@
-function [fX] = bandpass(X,pl,pu)
+function [fX] = bpass(X,pl,pu)
 %
 %	MATLAB COMMAND FOR BAND PASS FILTER: fX = bpass(X,pl,pu)
 %

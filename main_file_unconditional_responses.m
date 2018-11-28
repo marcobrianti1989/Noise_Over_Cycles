@@ -129,8 +129,8 @@ end
 SP500            = SP500 - GDPDefl;
 varlist          = {'RealGDP', 'RealCons','SP500','Hours','RealInvestment',...
       'RealInventories','RealProfitsaT','Mich5Y',...
-      'CPIInflation','PriceCPE','CPIDurables',... %All the nominal variables should be last
-      'CPINonDurables'};
+      'UnempRate','RealSales',... %All the nominal variables should be last
+      'RealWage','PriceCPE'};
 numberCPI        = strmatch('CPIInflation', varlist);
 numberCPE        = strmatch('PriceCPE', varlist);
 numberCPID       = strmatch('CPIDurables', varlist);
@@ -157,7 +157,7 @@ control_pop = 0; % Divide GDP, Cons, Hours, Investment over population
 for i = 1:length(varlist)
       dep_var(:,i) = eval(varlist{i});
       if control_pop == 1
-            if i == numberGDP || i == numberC || i == numberHours || i == numberInv || i == numberInvent 
+            if i == numberGDP || i == numberC || i == numberHours || i == numberInv || i == numberInvent
                   dep_var(:,i) = dep_var(:,i) - Population;
             end
       end
@@ -168,19 +168,19 @@ use_Inflation = 1;
 ninfl = 4;
 if use_Inflation == 1
       for ii = 1:length(dep_var)-ninfl
-            CPI(ii)       = dep_var(ii+ninfl,numberCPI) - dep_var(ii,numberCPI);
+            %CPI(ii)       = dep_var(ii+ninfl,numberCPI) - dep_var(ii,numberCPI);
             CPE(ii)       = dep_var(ii+ninfl,numberCPE) - dep_var(ii,numberCPE);
-            CPID(ii)      = dep_var(ii+ninfl,numberCPID) - dep_var(ii,numberCPID);
-            CPIND(ii)     = dep_var(ii+ninfl,numberCPIND) - dep_var(ii,numberCPIND);
+%             CPID(ii)      = dep_var(ii+ninfl,numberCPID) - dep_var(ii,numberCPID);
+%             CPIND(ii)     = dep_var(ii+ninfl,numberCPIND) - dep_var(ii,numberCPIND);
             %CPIS(ii)      = dep_var(ii+4,numberCPIS) - dep_var(ii,numberCPIS);
       end
-      CPI     = [NaN(ninfl,1); CPI'];
+      %CPI     = [NaN(ninfl,1); CPI'];
       CPE     = [NaN(ninfl,1); CPE'];
-      CPID    = [NaN(ninfl,1); CPID'];
-      CPIND   = [NaN(ninfl,1); CPIND'];
+      %CPID    = [NaN(ninfl,1); CPID'];
+      %CPIND   = [NaN(ninfl,1); CPIND'];
       %CPIS    = [NaN; NaN; NaN; NaN; CPIS'];
-      loc     = min([numberCPI numberCPE numberCPID numberCPIND numberCPIS]);
-      dep_var = [dep_var(:,1:loc-1) CPI CPE CPID CPIND]; %CPIS];
+      %loc     = min([numberCPI numberCPE numberCPID numberCPIND numberCPIS]);
+      dep_var = [dep_var(:,1:end-1) CPE];% CPE CPID CPIND]; %CPIS];
 end
 
 % Set up the typology of transformation
@@ -189,140 +189,142 @@ if logdifferences == 1
       dep_var = [nan(1,size(dep_var,2)); diff(dep_var)];
 end
 
+HPfilter = 0;
+BPfilter = 1;
 for kk = 1:size(dep_var,2)
       % Define inputs for local_projection
       depvarkk                    = dep_var(:,kk);
       [~, loc_start, loc_end]     = truncate_data([depvarkk Ztilde pc]);
       loc_start                   = loc_start; %+ lags;
       depvarkk                    = depvarkk(loc_start:loc_end);
-      for i = 1:length(depvarkk)-3
-          [trendHP, depvarkki]         = hpfilter(depvarkk(1:3+i),1600); %XXX HPFILTER XXX
-          depvarkkii(i)                = depvarkki(end);
+      if HPfilter == 1
+            [~, depvarkk]         = hpfilter(depvarkk,1600);
       end
-      
-      depvarkk                    = [NaN(3,1); depvarkkii'];
-      Ztildekk                    = Ztilde(loc_start:loc_end);
-      pckk                        = pc(loc_start:loc_end,1:mpc);
-      % Run local_projection
-      [IR{kk},res{kk},Rsquared{kk},BL{kk},tuple{kk},VarY{kk}] = ...
-            local_projection(depvarkk,pckk,Ztildekk,lags,H);
-      if logdifferences == 0
-            IRF(kk,:) = IR{kk};
-      else
-            IRF(kk,:) = cumsum(IR{kk});
+      if BPfilter == 1
+            depvarkk = bpass(depvarkk,2,32);
       end
-      % Build a table for the Variance Explained by Ztilde - Following  Stock,
-      % Watson (2018) - The Economic Journal, page 928 Eq. (15)
-      VarY_ih = VarY{kk};
-      for ih = 1:H
-            VarYY    = VarY_ih(ih);
-            VarExplained(kk,ih) = sum(IRF(kk,1:ih).^2)/VarYY;
-      end
-      % Initiate bootstrap
-      nsimul         = 500;
-      tuplekk        = tuple{kk};
-      for hh = 1:H
-            tuplekkhh = tuplekk{hh}; % Fix a specific horizon
-            Y                             = tuplekkhh(:,1);
-            X                             = tuplekkhh(:,2:end);
-            XControl                      = tuplekkhh(:,3:end);
-            [Yboot, Xboot]                = bb_bootstrap_LP(Y,X,nsimul,lags);
-            [YbootC, XbootC]              = bb_bootstrap_LP(Y,XControl,nsimul,lags);
-            for isimul = 1:nsimul
-                  B                       = Xboot(:,:,isimul)'*Xboot(:,:,isimul)\...
-                        (Xboot(:,:,isimul)'*Yboot(:,isimul));
-                  BC                      = XbootC(:,:,isimul)'*XbootC(:,:,isimul)\...
-                        (XbootC(:,:,isimul)'*YbootC(:,isimul));
-                  IRF_boot(kk,hh,isimul)  = B(1);
-                  VarYBoot(kk,hh,isimul)  = var(YbootC(:,isimul) - XbootC(:,:,isimul)*BC);
+            Ztildekk                    = Ztilde(loc_start:loc_end);
+            pckk                        = pc(loc_start:loc_end,1:mpc);
+            % Run local_projection
+            [IR{kk},res{kk},Rsquared{kk},BL{kk},tuple{kk},VarY{kk}] = ...
+                  local_projection(depvarkk,pckk,Ztildekk,lags,H);
+            if logdifferences == 0
+                  IRF(kk,:) = IR{kk};
+            else
+                  IRF(kk,:) = cumsum(IR{kk});
+            end
+            % Build a table for the Variance Explained by Ztilde - Following  Stock,
+            % Watson (2018) - The Economic Journal, page 928 Eq. (15)
+            VarY_ih = VarY{kk};
+            for ih = 1:H
+                  VarYY    = VarY_ih(ih);
+                  VarExplained(kk,ih) = sum(IRF(kk,1:ih).^2)/VarYY;
+            end
+            % Initiate bootstrap
+            nsimul         = 500;
+            tuplekk        = tuple{kk};
+            for hh = 1:H
+                  tuplekkhh = tuplekk{hh}; % Fix a specific horizon
+                  Y                             = tuplekkhh(:,1);
+                  X                             = tuplekkhh(:,2:end);
+                  XControl                      = tuplekkhh(:,3:end);
+                  [Yboot, Xboot]                = bb_bootstrap_LP(Y,X,nsimul,lags);
+                  [YbootC, XbootC]              = bb_bootstrap_LP(Y,XControl,nsimul,lags);
+                  for isimul = 1:nsimul
+                        B                       = Xboot(:,:,isimul)'*Xboot(:,:,isimul)\...
+                              (Xboot(:,:,isimul)'*Yboot(:,isimul));
+                        BC                      = XbootC(:,:,isimul)'*XbootC(:,:,isimul)\...
+                              (XbootC(:,:,isimul)'*YbootC(:,isimul));
+                        IRF_boot(kk,hh,isimul)  = B(1);
+                        VarYBoot(kk,hh,isimul)  = var(YbootC(:,isimul) - XbootC(:,:,isimul)*BC);
+                  end
             end
       end
-end
-
-% Select upper and lower bands
-for kk = 1:size(dep_var,2)
-      IRF_bootkk = IRF_boot(kk,:,:);
-      VarYbootkk = VarYBoot(kk,:,:);
-      if logdifferences == 0
-            IRF_boot(kk,:,:)  = IRF_bootkk;
-            VarY_boot(kk,:,:) = VarYbootkk;
-      else
-            IRF_boot(kk,:,:)  = cumsum(IRF_bootkk,2);
-            VarY_boot(kk,:,:) = cumsum(VarYbootkk,2);
+      
+      % Select upper and lower bands
+      for kk = 1:size(dep_var,2)
+            IRF_bootkk = IRF_boot(kk,:,:);
+            VarYbootkk = VarYBoot(kk,:,:);
+            if logdifferences == 0
+                  IRF_boot(kk,:,:)  = IRF_bootkk;
+                  VarY_boot(kk,:,:) = VarYbootkk;
+            else
+                  IRF_boot(kk,:,:)  = cumsum(IRF_bootkk,2);
+                  VarY_boot(kk,:,:) = cumsum(VarYbootkk,2);
+            end
       end
-end
-IRF_boot         = sort(IRF_boot,3);
-VarY_boot        = sort(VarY_boot,3);
-sig              = 0.05;
-sig2             = 0.16;
-up_bound         = floor(nsimul*sig); % the upper percentile of bootstrapped responses for CI
-up_bound2        = floor(nsimul*sig2); % the upper percentile of bootstrapped responses for CI
-low_bound        = ceil(nsimul*(1-sig)); % the lower percentile of bootstrapped responses for CI
-low_bound2       = ceil(nsimul*(1-sig2)); % the lower percentile of bootstrapped responses for CI
-IRF_up           = IRF_boot(:,:,up_bound);
-VarY_up          = VarY_boot(:,:,up_bound);
-IRF_up2          = IRF_boot(:,:,up_bound2);
-VarY_up2         = VarY_boot(:,:,up_bound2);
-IRF_low          = IRF_boot(:,:,low_bound);
-VarY_low         = VarY_boot(:,:,low_bound);
-IRF_low2         = IRF_boot(:,:,low_bound2);
-VarY_low2        = VarY_boot(:,:,low_bound2);
-
-% Confidence Intervals for Variance Explained
-for kk = 1:size(dep_var,2)
-      VarYup   = VarY_up(kk,:);
-      VarYup2  = VarY_up2(kk,:);
-      VarYlow  = VarY_low(kk,:);
-      VarYlow2 = VarY_low2(kk,:);
-      for ih = 1:H
-            VarYYup   = VarYup(ih);
-            VarYYup2  = VarYup2(ih);
-            VarYYlow  = VarYlow(ih);
-            VarYYlow2 = VarYlow2(ih);
-            VarExplainedup(kk,ih)   = sum(IRF_up(kk,1:ih).^2)/VarYYup;
-            VarExplainedlow(kk,ih)  = sum(IRF_low(kk,1:ih).^2)/VarYYlow;
-            VarExplainedup2(kk,ih)  = sum(IRF_up2(kk,1:ih).^2)/VarYYup2;
-            VarExplainedlow2(kk,ih) = sum(IRF_low2(kk,1:ih).^2)/VarYYlow2;
+      IRF_boot         = sort(IRF_boot,3);
+      VarY_boot        = sort(VarY_boot,3);
+      sig              = 0.05;
+      sig2             = 0.16;
+      up_bound         = floor(nsimul*sig); % the upper percentile of bootstrapped responses for CI
+      up_bound2        = floor(nsimul*sig2); % the upper percentile of bootstrapped responses for CI
+      low_bound        = ceil(nsimul*(1-sig)); % the lower percentile of bootstrapped responses for CI
+      low_bound2       = ceil(nsimul*(1-sig2)); % the lower percentile of bootstrapped responses for CI
+      IRF_up           = IRF_boot(:,:,up_bound);
+      VarY_up          = VarY_boot(:,:,up_bound);
+      IRF_up2          = IRF_boot(:,:,up_bound2);
+      VarY_up2         = VarY_boot(:,:,up_bound2);
+      IRF_low          = IRF_boot(:,:,low_bound);
+      VarY_low         = VarY_boot(:,:,low_bound);
+      IRF_low2         = IRF_boot(:,:,low_bound2);
+      VarY_low2        = VarY_boot(:,:,low_bound2);
+      
+      % Confidence Intervals for Variance Explained
+      for kk = 1:size(dep_var,2)
+            VarYup   = VarY_up(kk,:);
+            VarYup2  = VarY_up2(kk,:);
+            VarYlow  = VarY_low(kk,:);
+            VarYlow2 = VarY_low2(kk,:);
+            for ih = 1:H
+                  VarYYup   = VarYup(ih);
+                  VarYYup2  = VarYup2(ih);
+                  VarYYlow  = VarYlow(ih);
+                  VarYYlow2 = VarYlow2(ih);
+                  VarExplainedup(kk,ih)   = sum(IRF_up(kk,1:ih).^2)/VarYYup;
+                  VarExplainedlow(kk,ih)  = sum(IRF_low(kk,1:ih).^2)/VarYYlow;
+                  VarExplainedup2(kk,ih)  = sum(IRF_up2(kk,1:ih).^2)/VarYYup2;
+                  VarExplainedlow2(kk,ih) = sum(IRF_low2(kk,1:ih).^2)/VarYYlow2;
+            end
       end
-end
-
-%Show the graph of IRF - Figure(2)
-plot2    = 1; % if plot2 = 1, figure will be displayed
-n_row    = 3; % how many row in the figure
-unique   = 1; % if unique = 1 plot IRFs together, if = 1 plot each IRF separately
-plot_IRF_lp_unconditional(varlist,IRF_low,IRF_low2,IRF_up,IRF_up2,IRF,H,plot2,n_row,unique)
-
-% Print figure authomatically if "export_figure1 = 1"
-if plot2 == 1
-      export_fig2 = 0; % if export_fig1 = 1, figure will be saved
-      export_fig_IRF_lp_unconditional(export_fig2)
-end
-
-%Show the variance Explained - Figure(3)
-plot3    = 1; % if plot2 = 1, figure will be displayed
-n_row    = 3; % how many row in the figure
-unique   = 1; % if unique = 1 plot IRFs together, if = 1 plot each IRF separately
-plot_IRF_lp_unconditional(varlist,VarExplained,VarExplained,VarExplained,...
-      VarExplained,VarExplained,H,plot3,n_row,unique)
-
-% Print figure authomatically if "export_figure1 = 1"
-if plot3 == 1
-      export_fig3 = 0; % if export_fig1 = 1, figure will be saved
-      export_fig_IRF_lp_unconditional(export_fig3)
-end
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+      
+      %Show the graph of IRF - Figure(2)
+      plot2    = 1; % if plot2 = 1, figure will be displayed
+      n_row    = 2; % how many row in the figure
+      unique   = 1; % if unique = 1 plot IRFs together, if = 1 plot each IRF separately
+      plot_IRF_lp_unconditional(varlist(7:end),100.*IRF_low(7:end,:,:),100.*IRF_low2(7:end,:,:),100.*IRF_up(7:end,:,:),100.*IRF_up2(7:end,:,:),100.*IRF(7:end,:),H,plot2,n_row,unique)
+      
+      %Print figure authomatically if "export_figure1 = 1"
+      if plot2 == 1
+            export_fig2 = 1; % if export_fig1 = 1, figure will be saved
+            export_fig_IRF_lp_unconditional(export_fig2)
+      end
+      
+      %Show the variance Explained - Figure(3)
+      plot3    = 1; % if plot2 = 1, figure will be displayed
+      n_row    = 3; % how many row in the figure
+      unique   = 1; % if unique = 1 plot IRFs together, if = 1 plot each IRF separately
+      plot_IRF_lp_unconditional(varlist,VarExplained,VarExplained,VarExplained,...
+            VarExplained,VarExplained,H,plot3,n_row,unique)
+      
+      % Print figure authomatically if "export_figure1 = 1"
+      if plot3 == 1
+            export_fig3 = 0; % if export_fig1 = 1, figure will be saved
+            export_fig_IRF_lp_unconditional(export_fig3)
+      end
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
