@@ -28,4 +28,4 @@
 \headcommand {\beamer@subsectionpages {1}{13}}
 \headcommand {\beamer@sectionpages {1}{13}}
 \headcommand {\beamer@documentpages {13}}
-\headcommand {\def \inserttotalframenumber {13}}
+\headcommand {\gdef \inserttotalframenumber {13}}
