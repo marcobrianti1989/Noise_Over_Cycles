@@ -14,7 +14,7 @@ close all
 %Read main dataset
 filename                    = 'main_file';
 sheet                       = 'Sheet1';
-range                       = 'B1:BJ300';
+range                       = 'B1:BK300';
 do_truncation               = 0; %Do not truncate data. You will have many NaN
 [dataset, var_names]        = read_data2(filename, sheet, range, do_truncation);
 dataset                     = real(dataset);
@@ -78,36 +78,35 @@ X                 = const;
 %Structural shocks from Ramey narrative approach, Hamilton, Romer and
 %Romer, Military government spending...
 controls                    = [MUNI1Y,PDVMILY,HAMILTON3YP,RESID08,TAXNARRATIVE];
-trend                       = 1:1:length(X); %Control for the time trend
-X                           = [X, trend', controls];
-[data, loc_start, loc_end]  = truncate_data([ZZ X]);
+%trend                       = 1:1:length(X); %Control for the time trend
+%X                           = [X, trend'];%, controls];
+X                           = [X(1:end-lead_tfp,:); NaN(lead_tfp,size(X,2))];
+DTFP                        = [NaN; diff(TFP)];
+[data, loc_start, loc_end]  = truncate_data([ZZ X DTFP]);
 loc_start                   = loc_start + lag;
 ZZ                          = data(lag+1:end,1);
 X                           = data(lag+1:end,2:end);
-DTFP                        = [NaN; diff(TFP)];
 
 %Control for TFP
-for i = 1:lag_tfp %Add lags of TFP - When i = 1 TFP is contemporaneous
-      X(:,end+1)  = DTFP(loc_start+1-i:loc_end-i+1);
-end
-for i = 1:lead_tfp %Add leads of TFP
-      X(:,end+1)  = DTFP(loc_start+i:loc_end+i);
-end
+% for i = 1:lag_tfp %Add lags of TFP - When i = 1 TFP is contemporaneous
+%       X(:,end+1)  = DTFP(loc_start+1-i:loc_end-i+1);
+% end
+% for i = 1:lead_tfp %Add leads of TFP
+%       X(:,end+1)  = DTFP(loc_start+i:loc_end+i);
+% end
 for l = 1:lag %Add lags of controls
-      X           = [X controls(loc_start-l:loc_end-l,:) ...
-            pc(loc_start-l:loc_end-l,1:mpc)];
+      X           = [X pc(loc_start-l:loc_end-l,1:mpc)]; %controls(loc_start-l:loc_end-l,:)
 end
 Y                 = ZZ;
-[B,zhat,Ztilde]   = quick_ols(Y,X);
+[B,zhat,Ztilde]   = quick_ols(Y(1:end-8),X(1:end-8,:));
 
 %Show the graph of Ztilde - Figure(1)
 plot1 = 1; % if plot = 1, figure will be displayed
-plot_Ztilde(Ztilde,Time,NBERDates,loc_start,loc_end,plot1)
+%plot_Ztilde(Ztilde,Time,NBERDates,loc_start,loc_end,plot1)
 
 %Correlation with Barsky and Sims 2011
-news = BarskySims_News(loc_start:loc_end);
-corr_ztilde_news = corr(Ztilde,news);
-
+%news = BarskySims_News(loc_start:loc_end);
+%corr_ztilde_news = corr(Ztilde,news);
 
 % Print figure authomatically if "export_figure1 = 1"
 if plot1 == 1
@@ -127,7 +126,7 @@ end
 %       'RealInvestment','SP500','OilPrice','GZSpread','FFR',...
 % 'Vix','VXO','Inventories','LaborProductivity','Spread'};
 SP500            = SP500 - GDPDefl;
-varlist          = {'RealGDP', 'RealCons','SP500','Hours','RealInvestment',...
+varlist          = {'RealGDP', 'RealCons','SP500Futures','Hours','RealInvestment',...
       'RealInventories','RealProfitsaT','Mich5Y',...
       'UnempRate','RealSales',... %All the nominal variables should be last
       'RealWage','PriceCPE'};
@@ -149,8 +148,9 @@ H                = 20; %irfs horizon
 mpc              = 3; %max number of principal components
 
 % Standardize Ztilde to get one std dev shock
-Ztilde  = Ztilde/std(Ztilde);
-Ztilde  = [nan(loc_start-1,1); Ztilde; nan(size(dataset,1)-loc_end,1)];
+Ztilde  = [NaN; diff(TFP)];
+%Ztilde  = Ztilde/std(Ztilde);
+%Ztilde  = [nan(loc_start-1,1); Ztilde; nan(size(dataset,1)-loc_end+8,1)];
 
 % Matrix of dependen variables - All the variables are in log levels
 control_pop = 0; % Divide GDP, Cons, Hours, Investment over population
@@ -194,7 +194,7 @@ BPfilter = 1;
 for kk = 1:size(dep_var,2)
       % Define inputs for local_projection
       depvarkk                    = dep_var(:,kk);
-      [~, loc_start, loc_end]     = truncate_data([depvarkk Ztilde pc]);
+      [~, loc_start, loc_end]     = truncate_data([depvarkk Ztilde pc(:,1:mpc)]);
       loc_start                   = loc_start; %+ lags;
       depvarkk                    = depvarkk(loc_start:loc_end);
       if HPfilter == 1
@@ -292,7 +292,7 @@ for kk = 1:size(dep_var,2)
       plot2    = 1; % if plot2 = 1, figure will be displayed
       n_row    = 2; % how many row in the figure
       unique   = 1; % if unique = 1 plot IRFs together, if = 1 plot each IRF separately
-      plot_IRF_lp_unconditional(varlist(7:end),100.*IRF_low(7:end,:,:),100.*IRF_low2(7:end,:,:),100.*IRF_up(7:end,:,:),100.*IRF_up2(7:end,:,:),100.*IRF(7:end,:),H,plot2,n_row,unique)
+      plot_IRF_lp_unconditional(varlist,100.*IRF_low,100.*IRF_low2,100.*IRF_up,100.*IRF_up2,100.*IRF,H,plot2,n_row,unique)
       
       %Print figure authomatically if "export_figure1 = 1"
       if plot2 == 1
