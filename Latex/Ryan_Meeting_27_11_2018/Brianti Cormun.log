@@ -1,10 +1,10 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.19 (TeX Live 2018) (preloaded format=pdflatex 2018.8.9)  28 NOV 2018 15:33
+This is pdfTeX, Version 3.14159265-2.6-1.40.19 (TeX Live 2018) (preloaded format=pdflatex 2018.8.9)  28 NOV 2018 17:26
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
  %&-line parsing enabled.
-**meeting.tex
-(./meeting.tex
+**"Brianti Cormun.tex"
+(./Brianti Cormun.tex
 LaTeX2e <2018-04-01> patch level 2
 Babel <3.18> and hyphenation patterns for 84 language(s) loaded.
 (/usr/local/texlive/2018/texmf-dist/tex/latex/beamer/beamer.cls
@@ -896,8 +896,8 @@ aTeX to use the Fira fonts on input line 95.
 Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
 (hyperref)                removing `\\' on input line 24.
 
-(./meeting.aux)
-\openout1 = `meeting.aux'.
+(./Brianti Cormun.aux)
+\openout1 = `"Brianti Cormun.aux"'.
 
 LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 29.
 LaTeX Font Info:    ... okay on input line 29.
@@ -915,7 +915,8 @@ LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 29.
 LaTeX Font Info:    ... okay on input line 29.
 LaTeX Font Info:    Try loading font information for OT1+lmss on input line 29.
 
- (/usr/local/texlive/2018/texmf-dist/tex/latex/lm/ot1lmss.fd
+
+(/usr/local/texlive/2018/texmf-dist/tex/latex/lm/ot1lmss.fd
 File: ot1lmss.fd 2009/10/30 v1.6 Font defs for Latin Modern
 )
 *geometry* driver: auto-detecting
@@ -998,9 +999,9 @@ LaTeX Info: Redefining \ref on input line 29.
 LaTeX Info: Redefining \pageref on input line 29.
 LaTeX Info: Redefining \nameref on input line 29.
 
-(./meeting.out) (./meeting.out)
+(./Brianti Cormun.out) (./Brianti Cormun.out)
 \@outlinefile=\write5
-\openout5 = `meeting.out'.
+\openout5 = `"Brianti Cormun.out"'.
 
 LaTeX Font Info:    Overwriting symbol font `operators' in version `normal'
 (Font)                  OT1/lmr/m/n --> OT1/cmss/m/n on input line 29.
@@ -1072,7 +1073,7 @@ Dictionary: translator-numbers-dictionary, Language: English
 (/usr/local/texlive/2018/texmf-dist/tex/latex/translator/translator-theorem-dic
 tionary-English.dict
 Dictionary: translator-theorem-dictionary, Language: English 
-) (./meeting.nav)
+) (./Brianti Cormun.nav)
 Overfull \vbox (39.70624pt too high) detected at line 35
  []
 
@@ -1232,21 +1233,21 @@ Overfull \hbox (8.91818pt too wide) in paragraph at lines 231--231
 
 ]
 \tf@nav=\write6
-\openout6 = `meeting.nav'.
+\openout6 = `"Brianti Cormun.nav"'.
 
 \tf@toc=\write7
-\openout7 = `meeting.toc'.
+\openout7 = `"Brianti Cormun.toc"'.
 
 \tf@snm=\write8
-\openout8 = `meeting.snm'.
+\openout8 = `"Brianti Cormun.snm"'.
 
 Package atveryend Info: Empty hook `BeforeClearDocument' on input line 259.
 Package atveryend Info: Empty hook `AfterLastShipout' on input line 259.
 
-(./meeting.aux)
+(./Brianti Cormun.aux)
 Package atveryend Info: Empty hook `AtVeryEndDocument' on input line 259.
 Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 259.
-Package rerunfilecheck Info: File `meeting.out' has not changed.
+Package rerunfilecheck Info: File `"Brianti Cormun".out' has not changed.
 (rerunfilecheck)             Checksum: D41D8CD98F00B204E9800998ECF8427E;0.
 
 
@@ -1255,12 +1256,12 @@ LaTeX Font Warning: Some font shapes were not available, defaults substituted.
  ) 
 Here is how much of TeX's memory you used:
  21024 strings out of 492649
- 419875 string characters out of 6129623
- 485843 words of memory out of 5000000
+ 419982 string characters out of 6129623
+ 485866 words of memory out of 5000000
  24365 multiletter control sequences out of 15000+600000
  48012 words of font info for 53 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 56i,14n,88p,1802b,797s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 56i,14n,88p,1811b,797s stack positions out of 5000i,500n,10000p,200000b,80000s
 {/usr/local/texlive/2018/texmf-dist/fonts/enc/dvips/lm/lm-mathit.enc}{/usr/lo
 cal/texlive/2018/texmf-dist/fonts/enc/dvips/lm/lm-mathex.enc}{/usr/local/texliv
 e/2018/texmf-dist/fonts/enc/dvips/lm/lm-rm.enc}{/usr/local/texlive/2018/texmf-d
@@ -1276,7 +1277,7 @@ t/fonts/type1/public/lm/lmsso10.pfb></usr/local/texlive/2018/texmf-dist/fonts/t
 ype1/public/lm/lmsso12.pfb></usr/local/texlive/2018/texmf-dist/fonts/type1/publ
 ic/lm/lmsso8.pfb></usr/local/texlive/2018/texmf-dist/fonts/type1/public/lm/lmsy
 10.pfb></usr/local/texlive/2018/texmf-dist/fonts/type1/public/lm/lmsy8.pfb>
-Output written on meeting.pdf (13 pages, 596965 bytes).
+Output written on "Brianti Cormun.pdf" (13 pages, 597181 bytes).
 PDF statistics:
  169 PDF objects out of 1000 (max. 8388607)
  126 compressed objects within 2 object streams
