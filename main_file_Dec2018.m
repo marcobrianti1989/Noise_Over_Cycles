@@ -11,6 +11,10 @@
 clear
 close all
 
+fprintf('\n')
+disp('Reading Data and Compute Ztilde')
+fprintf('\n')
+
 % Read main dataset
 filename                    = 'main_file';
 sheet                       = 'Sheet1';
@@ -56,7 +60,7 @@ Y                           = Z;
       X_contemporaneous);
 
 %Show the graph of Ztilde - Figure(1)
-plot1 = 1; % if plot = 1, figure will be displayed
+plot1 = 0; % if plot = 1, figure will be displayed
 plot_Ztilde(Ztilde,Time(1+lags:end-leads),NBERDates(1+lags:end-leads),plot1)
 
 % Print figure authomatically if "export_figure1 = 1"
@@ -84,6 +88,7 @@ CPIServices     = create_inflation(CPIServices,ninfl);
 % Per capita adjustment
 control_pop = 0; % Divide GDP, Cons, Hours, Investment over population
 if control_pop == 1
+      disp('Variables are normalized by population.')
       RealGDP                 = RealGDP - Population;
       RealCons                = RealCons - Population;
       RealInvestment          = RealInvestment - Population;
@@ -111,6 +116,7 @@ end
 % Set up the typology of transformation
 logdifferences = 0;
 if logdifferences == 1
+      disp('Local projection is on differentiaced variables and then cumulated for IRFs.')
       dep_var = [nan(1,size(dep_var,2)); diff(dep_var)];
 end
 
@@ -122,10 +128,16 @@ PC               = PC(1+lags:end-leads,:);
 H                = 20; %irfs horizon
 HPfilter         = 0;
 BPfilter         = 1;
+if HPfilter == 1 && BPfilter == 1
+      HPfilter = 0;
+      disp('You cannot filter for both HP and BP. Authomatically set only BandPass filter.')
+      fprintf('\n')
+end
 sdZtilde         = nanstd(Ztilde);
 Ztilde           = Ztilde/sdZtilde;
 
 for kk = 1:size(dep_var,2)
+      disp(['Running local projection for ', varlist{kk}])
       % Define inputs for local_projection
       depvarkk                    = dep_var(:,kk);
       [~, loc_start, loc_end]     = truncate_data([depvarkk Ztilde PC]);
