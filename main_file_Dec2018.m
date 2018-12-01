@@ -9,7 +9,7 @@
 %*************************************************************************%
 
 clear
-%close all
+close all
 
 % Read main dataset
 filename                    = 'main_file';
@@ -43,7 +43,7 @@ leads                = 16; %number of leads of TFP
 
 %Structural shocks from Ramey narrative approach, Hamilton, Romer and Romer, Military government spending...
 [TFP_trunc, trunc1, trunc2] = truncate_data(TFP);
-TFPBP                       = bpass(TFP_trunc,2,32);
+TFPBP                       = bpass(TFP_trunc,4,32);
 TFPBP                       = [TFPBP; NaN(length(TFP) - length(TFPBP),1)];
 PC                          = [PC1 PC2 PC3];
 X_contemporaneous           = [TFPBP MUNI1Y PDVMILY HAMILTON3YP RESID08 TAXNARRATIVE];
@@ -96,12 +96,16 @@ end
 SP500            = SP500 - GDPDefl;
 varlist          = {'RealGDP', 'RealCons','SP500',...
       'Hours','RealInvestment','RealInventories',...
-      'TFP','UnempRate','RealSales',... 
-      'RealWage','CPIInflation','PriceCPE'};
+      'TFP','UnempRate','RealSales',...
+      'Ztilde','CPIInflation','PriceCPE'};
 
 % Matrix of dependen variables - All the variables are in log levels
 for i = 1:length(varlist)
-      dep_var(:,i) = eval(varlist{i});
+      if strcmp(varlist{i},'Ztilde') == 1
+            dep_var(:,i) = [NaN(lags,1); eval(varlist{i}); NaN(leads,1)];
+      else
+            dep_var(:,i) = eval(varlist{i});
+      end
 end
 
 % Set up the typology of transformation
@@ -130,7 +134,7 @@ for kk = 1:size(dep_var,2)
             [~, depvarkk]         = hpfilter(depvarkk,1600);
       end
       if BPfilter == 1
-            depvarkk              = bpass(depvarkk,2,32);
+            depvarkk              = bpass(depvarkk,4,32);
       end
       Ztildekk                    = Ztilde(loc_start:loc_end);
       pckk                        = PC(loc_start:loc_end,:);
@@ -233,7 +237,7 @@ asdf
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Variance Decomposition - Need to be checked! 
+% Variance Decomposition - Need to be checked!
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %Show the variance Explained - Figure(3)

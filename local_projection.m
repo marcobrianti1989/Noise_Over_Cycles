@@ -20,8 +20,8 @@ for h = 1:H
             end
       end
       % Add linear trend - [1:1:length(Y)]'
-      trend              = [1:1:length(Y)]';      
-      X                  = [X, ones(length(Y),1), trend];
+      %trend              = [1:1:length(Y)]';      
+      X                  = [X, ones(length(Y),1)];%, trend];
       tuple_store{h}     = [Y X];    
       B                  = X'*X\(X'*Y); 
       IRF(h)             = B(1); 

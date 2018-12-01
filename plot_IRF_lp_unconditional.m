@@ -37,6 +37,6 @@ if plot2 == 1
             if unique == 1
                   set(s,'xlim',[1,H],'ylim', ylim);
             end
-            
+            axis tight          
       end
 end
