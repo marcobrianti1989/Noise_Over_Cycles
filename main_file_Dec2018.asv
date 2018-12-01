@@ -39,16 +39,17 @@ Z                   = [NaN; Delta_RGDP_t(2:end) - Delta_RDGP_t1(1:end-1)];
 
 %Technical values to build Ztilde
 lags                 = 4; %number of lags of TFP - cannot be zero since 1 include current TFP
-leads                = 16; %number of leads of TFP
+leads                = 15; %number of leads of TFP
 
 %Structural shocks from Ramey narrative approach, Hamilton, Romer and Romer, Military government spending...
 [TFP_trunc, trunc1, trunc2] = truncate_data(TFP);
-TFPBP                       = bpass(TFP_trunc,2,32);
+TFPBP                       = bpass(TFP_trunc,4,32);
 TFPBP                       = [TFPBP; NaN(length(TFP) - length(TFPBP),1)];
+dtfp                        = [NaN; diff(TFP)];
 PC                          = [PC1 PC2 PC3];
-X_contemporaneous           = [TFPBP MUNI1Y PDVMILY HAMILTON3YP RESID08 TAXNARRATIVE];
-X_lag                       = [TFPBP PC MUNI1Y PDVMILY HAMILTON3YP RESID08 TAXNARRATIVE];
-X_lead                      = TFPBP;
+X_contemporaneous           = [dtfp MUNI1Y PDVMILY HAMILTON3YP RESID08 TAXNARRATIVE];
+X_lag                       = [dtfp PC MUNI1Y PDVMILY HAMILTON3YP RESID08 TAXNARRATIVE];
+X_lead                      = dtfp;
 Y                           = Z;
 
 % Control Regression
@@ -109,7 +110,6 @@ logdifferences = 0;
 if logdifferences == 1
       dep_var = [nan(1,size(dep_var,2)); diff(dep_var)];
 end
-
 % Align the timing - It is important!
 dep_var          = dep_var(1+lags:end-leads,:);
 PC               = PC(1+lags:end-leads,:);
@@ -117,20 +117,22 @@ PC               = PC(1+lags:end-leads,:);
 % Technical Parameters
 H                = 20; %irfs horizon
 HPfilter         = 0;
-BPfilter         = 1;
+BPfilter         = 0;
 sdZtilde         = nanstd(Ztilde);
 Ztilde           = Ztilde/sdZtilde;
 
 for kk = 1:size(dep_var,2)
       % Define inputs for local_projection
       depvarkk                    = dep_var(:,kk);
-      [~, loc_start, loc_end]     = truncate_data([depvarkk Ztilde PC]);
+      [~, loc_start, loc_end]     = truncate_data([depvarkk Ztilde PC(1:end-leads-lags,:)]);
+      loc_start                   = loc_start; %+ lags;
       depvarkk                    = depvarkk(loc_start:loc_end);
+      
       if HPfilter == 1
             [~, depvarkk]         = hpfilter(depvarkk,1600);
       end
       if BPfilter == 1
-            depvarkk              = bpass(depvarkk,2,32);
+            depvarkk              = bpass(depvarkk,4,32);
       end
       Ztildekk                    = Ztilde(loc_start:loc_end);
       pckk                        = PC(loc_start:loc_end,:);

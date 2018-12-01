@@ -1,17 +1,17 @@
-function [B, Yhat, res] = lead_lag_matrix_regression(Y,X_lead,leads,...
+function [B, Yhat, res, XX] = lead_lag_matrix_regression(Y,X_lead,leads,...
       X_lag,lags,X_contemporaneous)
 
 % Rearrange data to run a lead-lag regression
-% X_lead is also using contemporaneous data
-% X_lags is not using contemporaneous data
+% X_lead is not using contemporaneous data, only leads
+% X_lags is not using contemporaneous data, only lags
 % X_contemporaneous uses only contemporaneous data
 % if leads = 0 and lags = 0 then just contemporaneous
 
 YY = Y(1+lags:end-leads);
 
 if lags > 0
-      XX_lag = X_lag(1+lags:end-leads,:); % contemporaneous
-      for i = 1:lags
+      XX_lag = X_lag(1+lags-1:end-leads-1,:); % Contemporaneous
+      for i = 2:lags
             if size(X_lag,2) > 1
                   XX_lag = [XX_lag X_lag(1-i+lags:end-i-leads,:)];
             else
@@ -53,6 +53,7 @@ end
 
 
 [B,Yhat,res]   = regress(YY,XX);
+tuple          = [YY XX];
 
 
 end

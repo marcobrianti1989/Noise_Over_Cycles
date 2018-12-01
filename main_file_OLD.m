@@ -3,7 +3,7 @@
 %
 % NOTE describe variables (especially SHOCKS) in dataset
 %
-% last change 11/30/2018
+% last change 8/17/2018
 %
 % Code by Brianti, Marco e Cormun, Vito
 %*************************************************************************%
@@ -11,58 +11,107 @@
 clear
 %close all
 
-% Read main dataset
+%Read main dataset
 filename                    = 'main_file';
 sheet                       = 'Sheet1';
-range                       = 'B1:BU300';
+range                       = 'B1:BJ300';
 do_truncation               = 0; %Do not truncate data. You will have many NaN
 [dataset, var_names]        = read_data2(filename, sheet, range, do_truncation);
-nNaN                        = 20; % adding some NaN at the end to have space for leads
-dataset                     = [dataset; NaN(nNaN,size(dataset,2))];
-% Assess name to each variable
+dataset                     = real(dataset);
+
+% numberTFP                   = strmatch('DTFP_UTIL', var_names);
+%Assess names to each variable
 for i = 1:size(dataset,2)
-      eval([var_names{i} ' = dataset(:,i);']);
+      eval([var_names{i} ' = dataset(:,i);']);   
 end
+
+%Read dataset_PC for PC analysis
+filename_PC                                = 'Dataset_test_PC';
+sheet_PC                                   = 'Quarterly';
+range_PC                                   = 'B2:DA300';
+do_truncation_PC                           = 1; %Do truncate data.
+[dataset_PC, var_names_PC]                 = read_data2(filename_PC, sheet_PC, range_PC, do_truncation_PC);
+dataset_PC                                 = real(dataset_PC);
+date_start_PC                              = dataset_PC(1,1);
+dataset_PC                                 = dataset_PC(:,2:end); %Removing time before PC analysis
+Zscore                                     = 1; %Standardize data before taking PC
+PC                                         = get_principal_components(dataset_PC,Zscore);
+pc                                         = nan(size(dataset,1),size(dataset_PC,2));
+loc_time_PC                                = find(Time == date_start_PC);
+pc(loc_time_PC:loc_time_PC+size(PC,1)-1,:) = PC;
 
 %*************************************************************************%
 %                                                                         %
-%          1st stage - Deriving sentimentcks                              %
+%          1st stage - Deriving noise shocks                              %
 %                                                                         %
 %*************************************************************************%
 
 %Building Zt
 %Step 1 - Getting the forecasted growth rates
+%Real GDP
 Delta_RGDP_t        = log(RGDP5_SPF) - log(RGDP1_SPF);
 Delta_RDGP_t1       = log(RGDP6_SPF) - log(RGDP2_SPF);
+%Industrial Production
+Delta_INDPROD_t     = log(dataset(:,22)) - log(dataset(:,20));
+Delta_INDPROD_t1    = log(dataset(:,23)) - log(dataset(:,21));
+%Investment is the sum between residential and non residential investment
+Delta_RINV_t        = log(dataset(:,14) + dataset(:,18)) - log(dataset(:,12) + dataset(:,16));
+Delta_RINV_t1       = log(dataset(:,15) + dataset(:,19)) - log(dataset(:,13) + dataset(:,17));
+
 %Step 2 - Revision in forecast growth rates
-Z                   = [NaN; Delta_RGDP_t(2:end) - Delta_RDGP_t1(1:end-1)];
+Z1                  = [NaN; Delta_RGDP_t(2:end) - Delta_RDGP_t1(1:end-1)];
+Z2                  = [NaN; Delta_INDPROD_t(2:end) - Delta_INDPROD_t1(1:end-1)];
+Z3                  = [NaN; Delta_RINV_t(2:end) - Delta_RINV_t1(1:end-1)];
+ZZ                  = Z1; %Select GDP growth
 
 %Technical values to build Ztilde
-lags                 = 4; %number of lags of TFP - cannot be zero since 1 include current TFP
-leads                = 16; %number of leads of TFP
+lag_tfp             = 5; %number of lags of TFP - cannot be zero since 1 include current TFP
+lead_tfp            = 16; %number of leads of TFP
+lag                 = 4;  %number of lags of control variables (other structural shocks)
+mpc                 = 3; %max number of principal components
+threshold           = -1/eps; %Remove all the NaN values
 
-%Structural shocks from Ramey narrative approach, Hamilton, Romer and Romer, Military government spending...
-[TFP_trunc, trunc1, trunc2] = truncate_data(TFP);
-TFPBP                       = bpass(TFP_trunc,2,32);
-TFPBP                       = [TFPBP; NaN(length(TFP) - length(TFPBP),1)];
-PC                          = [PC1 PC2 PC3];
-X_contemporaneous           = [TFPBP MUNI1Y PDVMILY HAMILTON3YP RESID08 TAXNARRATIVE];
-X_lag                       = [TFPBP PC MUNI1Y PDVMILY HAMILTON3YP RESID08 TAXNARRATIVE];
-X_lead                      = TFPBP;
-Y                           = Z;
+%Runniong OLS to obtain Ztilde
+T                 = size(ZZ,1);
+const             = ones(T,1);
+X                 = const;
 
-% Control Regression
-[~, ~, Ztilde,regressor] = lead_lag_matrix_regression(Y,X_lead,leads,X_lag,lags,...
-      X_contemporaneous);
+%Structural shocks from Ramey narrative approach, Hamilton, Romer and
+%Romer, Military government spending...
+controls                    = [MUNI1Y,PDVMILY,HAMILTON3YP,RESID08,TAXNARRATIVE];
+%trend                       = 1:1:length(X); %Control for the time trend
+X                           = [X controls]; %trend];
+[data, loc_start, loc_end]  = truncate_data([ZZ X]);
+loc_start                   = loc_start + lag;
+ZZ                          = data(lag+1:end,1);
+X                           = data(lag+1:end,2:end);
+DTFP                        = [NaN; diff(TFP)];
+
+%Control for TFP
+for i = 1:lag_tfp %Add lags of TFP - When i = 1 TFP is contemporaneous
+      X(:,end+1)  = DTFP(loc_start+1-i:loc_end-i+1); 
+end
+for i = 1:lead_tfp %Add leads of TFP
+      X(:,end+1)  = DTFP(loc_start+i:loc_end+i);
+end
+for l = 1:lag %Add lags of controls     
+      X           = [X controls(loc_start-l:loc_end-l,:) ...
+            pc(loc_start-l:loc_end-l,1:mpc)];     
+end
+Y                 = ZZ;
+[B,zhat,Ztilde]   = quick_ols(Y,X);
 
 %Show the graph of Ztilde - Figure(1)
-plot1 = 1; % if plot = 1, figure will be displayed
-plot_Ztilde(Ztilde,Time(1+lags:end-leads),NBERDates(1+lags:end-leads),plot1)
+plot1 = 0; % if plot = 1, figure will be displayed
+plot_Ztilde(Ztilde,Time(loc_start:loc_end),NBERDates(loc_start:loc_end),plot1)
+%Correlation with Barsky and Sims 2011
+%news = BarskySims_News(loc_start:loc_end);
+%corr_ztilde_news = corr(Ztilde,news);
 
 % Print figure authomatically if "export_figure1 = 1"
-if plot1 == 1
-      export_fig1 = 0; % if export_fig1 = 1, figure will be saved
-      export_fig_Ztilde(export_fig1)
+if plot1 == 1     
+      export_fig1 = 0; % if export_fig1 = 1, figure will be saved     
+      export_fig_Ztilde(export_fig1)     
 end
 
 %*************************************************************************%
@@ -71,37 +120,66 @@ end
 %                                                                         %
 %*************************************************************************%
 
-% Preparing Data Dependent Variables
-
-% Create Inflation from Price Indexes
-ninfl = 4;
-PriceCPE        = create_inflation(PriceCPE,ninfl);
-CPIInflation    = create_inflation(CPIInflation,ninfl);
-CPIDurables     = create_inflation(CPIDurables,ninfl);
-CPINonDurables  = create_inflation(CPINonDurables,ninfl);
-CPIServices     = create_inflation(CPIServices,ninfl);
-
-% Per capita adjustment
-control_pop = 0; % Divide GDP, Cons, Hours, Investment over population
-if control_pop == 1
-      RealGDP                 = RealGDP - Population;
-      RealCons                = RealCons - Population;
-      RealInvestment          = RealInvestment - Population;
-      Hours                   = Hours + Employment - Population;
-      RealInventories         = RealInventories - Population;
-      RealSales               = RealSales - Population;
-end
-
 % Create Var List
+% varlist          = {'TFP','RealGDP', 'RealCons',...
+%       'UnempRate','RealWage','Hours','CPIInflation',...
+%       'RealInvestment','SP500','OilPrice','GZSpread','FFR',...
+% 'Vix','VXO','Inventories','LaborProductivity','Spread'};
 SP500            = SP500 - GDPDefl;
-varlist          = {'RealGDP', 'RealCons','SP500',...
-      'Hours','RealInvestment','RealInventories',...
-      'TFP','UnempRate','RealSales',... 
-      'RealWage','CPIInflation','PriceCPE'};
+varlist          = {'RealGDP', 'RealCons','SP500','Hours','RealInvestment',...
+      'RealInventories','RealProfitsaT','Mich5Y',...
+      'UnempRate','RealSales',... %All the nominal variables should be last
+      'RealWage','PriceCPE'};
+numberCPI        = strmatch('CPIInflation', varlist);
+numberCPE        = strmatch('PriceCPE', varlist);
+numberCPID       = strmatch('CPIDurables', varlist);
+numberCPIND      = strmatch('CPINonDurables', varlist);
+numberCPIS       = strmatch('CPIServices', varlist);
+numberGDP        = strmatch('RealGDP', varlist);
+numberC          = strmatch('RealCons', varlist);
+numberHours      = strmatch('Hours', varlist);
+numberInv        = strmatch('RealInvestment', varlist);
+numberProf       = strmatch('RealProfitsaT', varlist);
+numberInvent     = strmatch('RealInventories', varlist);
+
+%numberInflation  = strmatch('Inflation', varlist);
+lags             = 4;
+H                = 20; %irfs horizon
+mpc              = 3; %max number of principal components
+
+% Standardize Ztilde to get one std dev shock
+Ztilde  = Ztilde/std(Ztilde);
+Ztilde  = [nan(loc_start-1,1); Ztilde; nan(size(dataset,1)-loc_end,1)];
 
 % Matrix of dependen variables - All the variables are in log levels
+control_pop = 0; % Divide GDP, Cons, Hours, Investment over population
 for i = 1:length(varlist)
       dep_var(:,i) = eval(varlist{i});
+      if control_pop == 1
+            if i == numberGDP || i == numberC || i == numberHours || i == numberInv || i == numberInvent
+                  dep_var(:,i) = dep_var(:,i) - Population;
+            end
+      end
+end
+
+% Set up year on year inflation
+use_Inflation = 1;
+ninfl = 4;
+if use_Inflation == 1
+      for ii = 1:length(dep_var)-ninfl
+            %CPI(ii)       = dep_var(ii+ninfl,numberCPI) - dep_var(ii,numberCPI);
+            CPE(ii)       = dep_var(ii+ninfl,numberCPE) - dep_var(ii,numberCPE);
+            %             CPID(ii)      = dep_var(ii+ninfl,numberCPID) - dep_var(ii,numberCPID);
+            %             CPIND(ii)     = dep_var(ii+ninfl,numberCPIND) - dep_var(ii,numberCPIND);
+            %CPIS(ii)      = dep_var(ii+4,numberCPIS) - dep_var(ii,numberCPIS);
+      end
+      %CPI     = [NaN(ninfl,1); CPI'];
+      CPE     = [NaN(ninfl,1); CPE'];
+      %CPID    = [NaN(ninfl,1); CPID'];
+      %CPIND   = [NaN(ninfl,1); CPIND'];
+      %CPIS    = [NaN; NaN; NaN; NaN; CPIS'];
+      %loc     = min([numberCPI numberCPE numberCPID numberCPIND numberCPIS]);
+      dep_var = [dep_var(:,1:end-1) CPE];% CPE CPID CPIND]; %CPIS];
 end
 
 % Set up the typology of transformation
@@ -110,38 +188,35 @@ if logdifferences == 1
       dep_var = [nan(1,size(dep_var,2)); diff(dep_var)];
 end
 
-% Align the timing - It is important!
-dep_var          = dep_var(1+lags:end-leads,:);
-PC               = PC(1+lags:end-leads,:);
-
-% Technical Parameters
-H                = 20; %irfs horizon
-HPfilter         = 0;
-BPfilter         = 1;
-sdZtilde         = nanstd(Ztilde);
-Ztilde           = Ztilde/sdZtilde;
-
+HPfilter = 0;
+BPfilter = 1;
 for kk = 1:size(dep_var,2)
       % Define inputs for local_projection
       depvarkk                    = dep_var(:,kk);
-      [~, loc_start, loc_end]     = truncate_data([depvarkk Ztilde PC]);
+      [~, loc_start, loc_end]     = truncate_data([depvarkk Ztilde pc]);
+      loc_start                   = loc_start; %+ lags;
       depvarkk                    = depvarkk(loc_start:loc_end);
+      
       if HPfilter == 1
             [~, depvarkk]         = hpfilter(depvarkk,1600);
       end
       if BPfilter == 1
-            depvarkk              = bpass(depvarkk,2,32);
+            depvarkk = bpass(depvarkk,2,32);
       end
+      
       Ztildekk                    = Ztilde(loc_start:loc_end);
-      pckk                        = PC(loc_start:loc_end,:);
+      pckk                        = pc(loc_start:loc_end,1:mpc);
+      
       % Run local_projection
       [IR{kk},res{kk},Rsquared{kk},BL{kk},tuple{kk},VarY{kk}] = ...
             local_projection(depvarkk,pckk,Ztildekk,lags,H);
+      
       if logdifferences == 0
             IRF(kk,:) = IR{kk};
       else
             IRF(kk,:) = cumsum(IR{kk});
       end
+      
       % Build a table for the Variance Explained by Ztilde - Following  Stock,
       % Watson (2018) - The Economic Journal, page 928 Eq. (15)
       VarY_ih = VarY{kk};
@@ -182,6 +257,7 @@ for kk = 1:size(dep_var,2)
             VarY_boot(kk,:,:) = cumsum(VarYbootkk,2);
       end
 end
+
 IRF_boot         = sort(IRF_boot,3);
 VarY_boot        = sort(VarY_boot,3);
 sig              = 0.05;
@@ -222,19 +298,12 @@ plot2    = 1; % if plot2 = 1, figure will be displayed
 n_row    = 2; % how many row in the figure
 unique   = 1; % if unique = 1 plot IRFs together, if = 1 plot each IRF separately
 plot_IRF_lp_unconditional(varlist,100.*IRF_low,100.*IRF_low2,100.*IRF_up,100.*IRF_up2,100.*IRF,H,plot2,n_row,unique)
-
+asdfg
 %Print figure authomatically if "export_figure1 = 1"
 if plot2 == 1
       export_fig2 = 0; % if export_fig1 = 1, figure will be saved
       export_fig_IRF_lp_unconditional(export_fig2)
 end
-
-asdf
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Variance Decomposition - Need to be checked! 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %Show the variance Explained - Figure(3)
 plot3    = 1; % if plot2 = 1, figure will be displayed
@@ -248,19 +317,3 @@ if plot3 == 1
       export_fig3 = 0; % if export_fig1 = 1, figure will be saved
       export_fig_IRF_lp_unconditional(export_fig3)
 end
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

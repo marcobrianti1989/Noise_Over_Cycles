@@ -22,6 +22,9 @@ end
 
 % Reading Excel
 [numbers, variables]   = xlsread(filename,sheet,range);
+if isreal(numbers) == 0
+      warning('Some data are complex value.')
+end
 variables              = variables(1,:); %Strings with the names of the variables
 transformations        = numbers(1,:); %Numbers which represents which transformation to apply
 In_or_out              = numbers(2,:); %Zero: variable out of the system, one: variables inside
