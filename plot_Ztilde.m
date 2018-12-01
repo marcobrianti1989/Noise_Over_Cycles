@@ -1,9 +1,7 @@
-function plot_Ztilde(Ztilde,Time,NBERDates,loc_start,loc_end,plotYes)
+function plot_Ztilde(Ztilde,Time,NBERDates,plotYes)
 
 if plotYes == 1
       Ztilde_graph   = 0.8*Ztilde + .05;
-      Time           = Time(loc_start:loc_end);
-      NBERDates      = NBERDates(loc_start:loc_end);
       figure('Position', [-1919 41 1920 963])
       figure(1)
       set(gcf,'color','w');

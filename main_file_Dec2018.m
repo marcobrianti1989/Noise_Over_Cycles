@@ -3,42 +3,28 @@
 %
 % NOTE describe variables (especially SHOCKS) in dataset
 %
-% last change 8/17/2018
+% last change 11/30/2018
 %
 % Code by Brianti, Marco e Cormun, Vito
 %*************************************************************************%
 
 clear
-close all
+%close all
 
 %Read main dataset
 filename                    = 'main_file';
 sheet                       = 'Sheet1';
-range                       = 'B1:BK300';
+range                       = 'B1:BT300';
 do_truncation               = 0; %Do not truncate data. You will have many NaN
 [dataset, var_names]        = read_data2(filename, sheet, range, do_truncation);
 dataset                     = real(dataset);
-
+nNaN                        = 20;
+dataset                     = [dataset; NaN(nNaN,size(dataset,2))]; 
 % numberTFP                   = strmatch('DTFP_UTIL', var_names);
 %Assess names to each variable
 for i = 1:size(dataset,2)
       eval([var_names{i} ' = dataset(:,i);']);
 end
-
-%Read dataset_PC for PC analysis
-filename_PC                                = 'Dataset_test_PC';
-sheet_PC                                   = 'Quarterly';
-range_PC                                   = 'B2:DA300';
-do_truncation_PC                           = 1; %Do truncate data.
-[dataset_PC, var_names_PC]                 = read_data2(filename_PC, sheet_PC, range_PC, do_truncation_PC);
-dataset_PC                                 = real(dataset_PC);
-date_start_PC                              = dataset_PC(1,1);
-dataset_PC                                 = dataset_PC(:,2:end); %Removing time before PC analysis
-Zscore                                     = 1; %Standardize data before taking PC
-PC                                         = get_principal_components(dataset_PC,Zscore);
-pc                                         = nan(size(dataset,1),size(dataset_PC,2));
-loc_time_PC                                = find(Time == date_start_PC);
-pc(loc_time_PC:loc_time_PC+size(PC,1)-1,:) = PC;
 
 %*************************************************************************%
 %                                                                         %
@@ -61,52 +47,28 @@ Delta_RINV_t1       = log(dataset(:,15) + dataset(:,19)) - log(dataset(:,13) + d
 Z1                  = [NaN; Delta_RGDP_t(2:end) - Delta_RDGP_t1(1:end-1)];
 Z2                  = [NaN; Delta_INDPROD_t(2:end) - Delta_INDPROD_t1(1:end-1)];
 Z3                  = [NaN; Delta_RINV_t(2:end) - Delta_RINV_t1(1:end-1)];
-ZZ                  = Z1; %Select GDP growth
-
+Y                   = Z1;
 %Technical values to build Ztilde
-lag_tfp             = 1; %number of lags of TFP - cannot be zero since 1 include current TFP
-lead_tfp            = 1; %number of leads of TFP
-lag                 = 1;  %number of lags of control variables (other structural shocks)
-mpc                 = 3; %max number of principal components
-threshold           = -1/eps; %Remove all the NaN values
-
-%Runniong OLS to obtain Ztilde
-T                 = size(ZZ,1);
-const             = ones(T,1);
-X                 = const;
+lags                 = 2; %number of lags of TFP - cannot be zero since 1 include current TFP
+leads                = 16; %number of leads of TFP
 
 %Structural shocks from Ramey narrative approach, Hamilton, Romer and
 %Romer, Military government spending...
-%controls                    = [MUNI1Y,PDVMILY,HAMILTON3YP,RESID08,TAXNARRATIVE];
-%trend                       = 1:1:length(X); %Control for the time trend
-%X                           = [X, controls];
-%X                           = [X(1:end-lead_tfp,:); NaN(lead_tfp,size(X,2))];
-DTFP                        = [NaN; diff(TFP)];
-[data, loc_start, loc_end]  = truncate_data([ZZ X DTFP]);
-loc_start                   = loc_start + lag+1;
-ZZ                          = data(lag+1:end,1);
-X                           = data(lag+1:end,2:end);
+[TFP_trunc, trunc1, trunc2] = truncate_data(TFP);
+TFPBP                       = bpass(TFP_trunc,2,32);
+TFPBP                       = [TFPBP; NaN(length(TFP) - length(TFPBP),1)]; 
+PC                          = [NaN NaN NaN; PC1(2:end) PC2(2:end) PC3(2:end)];
+%dtfp                        = [NaN; diff(TFP)]; 
+X_contemporaneous           = 0; %[MUNI1Y,PDVMILY,HAMILTON3YP,RESID08,TAXNARRATIVE];
+X_lag                       = [TFPBP PC MUNI1Y PDVMILY HAMILTON3YP RESID08 TAXNARRATIVE];
+X_lead                      = TFPBP;
 
-%Control for TFP
-for i = 1:lag_tfp %Add lags of TFP - When i = 1 TFP is contemporaneous
-      X(:,end+1)  = DTFP(loc_start+1-i:loc_end-i+1);
-end
-for i = 1:lead_tfp %Add leads of TFP
-      X(:,end+1)  = DTFP(loc_start+i:loc_end+i);
-end
-% for l = 1:lag %Add lags of controls
-%       X           = [X pc(loc_start-l:loc_end-l,1:mpc) controls(loc_start-l:loc_end-l,:)]; %controls(loc_start-l:loc_end-l,:)
-% end
-Y                 = ZZ; bene
-[B,zhat,Ztilde]   = regress(Y,X);
+[~, ~, Ztilde] = lead_lag_matrix_regression(Y,X_lead,leads,X_lag,lags,...
+      X_contemporaneous);
 
 %Show the graph of Ztilde - Figure(1)
 plot1 = 1; % if plot = 1, figure will be displayed
-plot_Ztilde(Ztilde,Time,NBERDates,loc_start,loc_end,plot1)
-
-%Correlation with Barsky and Sims 2011
-%news = BarskySims_News(loc_start:loc_end);
-%corr_ztilde_news = corr(Ztilde,news);
+plot_Ztilde(Ztilde,Time(1+lags:end-leads),NBERDates(1+lags:end-leads),plot1)
 
 % Print figure authomatically if "export_figure1 = 1"
 if plot1 == 1
@@ -121,14 +83,9 @@ end
 %*************************************************************************%
 
 % Create Var List
-% varlist          = {'TFP','RealGDP', 'RealCons',...
-%       'UnempRate','RealWage','Hours','CPIInflation',...
-%       'RealInvestment','SP500','OilPrice','GZSpread','FFR',...
-% 'Vix','VXO','Inventories','LaborProductivity','Spread'};
 SP500            = SP500 - GDPDefl;
-varlist          = {'RealGDP', 'RealCons','SP500Futures','Hours','RealInvestment',...
-      'RealInventories','TFP','Mich5Y',...
-      'UnempRate','RealSales',... %All the nominal variables should be last
+varlist          = {'RealGDP', 'RealCons','SP500','Hours','RealInvestment',...
+      'RealInventories','TFP','UnempRate','RealSales',... %All the nominal variables should be last
       'RealWage','PriceCPE'};
 numberCPI        = strmatch('CPIInflation', varlist);
 numberCPE        = strmatch('PriceCPE', varlist);
@@ -142,16 +99,8 @@ numberInv        = strmatch('RealInvestment', varlist);
 numberProf       = strmatch('RealProfitsaT', varlist);
 numberInvent     = strmatch('RealInventories', varlist);
 
-%numberInflation  = strmatch('Inflation', varlist);
-lags             = 3;
-H                = 20; %irfs horizon
-mpc              = 3; %max number of principal components
 
-% Standardize Ztilde to get one std dev shock
-%Ztilde  = [NaN; diff(TFP)];
-%Ztilde = BarskySims_News;
-%Ztilde  = Ztilde/std(Ztilde);
-Ztilde  = [nan(loc_start-1,1); Ztilde; nan(size(dataset,1)-loc_end,1)];
+H                = 20; %irfs horizon
 
 % Matrix of dependen variables - All the variables are in log levels
 control_pop = 0; % Divide GDP, Cons, Hours, Investment over population
@@ -195,7 +144,7 @@ BPfilter = 1;
 for kk = 1:size(dep_var,2)
       % Define inputs for local_projection
       depvarkk                    = dep_var(:,kk);
-      [~, loc_start, loc_end]     = truncate_data([depvarkk Ztilde pc(:,1:mpc)]);
+      [~, loc_start, loc_end]     = truncate_data([depvarkk(1+lags:end-leads) Ztilde PC1(1+lags:end-leads) PC2(1+lags:end-leads) PC3(1+lags:end-leads)]);
       loc_start                   = loc_start; %+ lags;
       depvarkk                    = depvarkk(loc_start:loc_end);
       if HPfilter == 1
@@ -205,7 +154,7 @@ for kk = 1:size(dep_var,2)
             depvarkk = bpass(depvarkk,2,32);
       end
             Ztildekk                    = Ztilde(loc_start:loc_end);
-            pckk                        = pc(loc_start:loc_end,1:mpc);
+            pckk                        = PC1(loc_start:loc_end);
             % Run local_projection
             [IR{kk},res{kk},Rsquared{kk},BL{kk},tuple{kk},VarY{kk}] = ...
                   local_projection(depvarkk,pckk,Ztildekk,lags,H);
