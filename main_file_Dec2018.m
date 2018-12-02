@@ -121,7 +121,7 @@ PC               = PC(1+lags:end-leads,:);
 % Technical Parameters
 H                = 20; %irfs horizon
 HPfilter         = 0;
-BPfilter         = 1;
+BPfilter         = 0;
 sdZtilde         = nanstd(Ztilde);
 Ztilde           = Ztilde/sdZtilde;
 
