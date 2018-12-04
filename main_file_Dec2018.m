@@ -41,6 +41,11 @@ Delta_RDGP_t1       = log(RGDP6_SPF) - log(RGDP2_SPF);
 %Step 2 - Revision in forecast growth rates
 Z                   = [NaN; Delta_RGDP_t(2:end) - Delta_RDGP_t1(1:end-1)];
 
+% Building the Forecast Error of
+%RGDP_known_t        = log(RGDP1_SPF(2:end)); % from 2 as it is RGDP at t, infoset (t+1)
+%RGDP_forec          = log(RGDP5_SPF(1:end-1)); % infoset at t, Forecast t+3
+FE                  = [NaN(3,1); log(RGDP1_SPF(1+4:end)) - log(RGDP5_SPF(1:end-4)); NaN];
+
 %Technical values to build Ztilde
 lags                 = 4; %number of lags of TFP - cannot be zero since 1 include current TFP
 leads                = 16; %number of leads of TFP
@@ -79,7 +84,7 @@ end
 
 % Create Inflation from Price Indexes
 ninfl = 4;
-PriceCPE        = create_inflation(PriceCPE,ninfl);
+PCEInflation    = create_inflation(PriceCPE,ninfl);
 CPIInflation    = create_inflation(CPIInflation,ninfl);
 CPIDurables     = create_inflation(CPIDurables,ninfl);
 CPINonDurables  = create_inflation(CPINonDurables,ninfl);
@@ -102,7 +107,7 @@ SP500            = SP500 - GDPDefl;
 varlist          = {'RealGDP', 'RealCons','SP500',...
       'Hours','RealInvestment','RealInventories',...
       'TFP','UnempRate','RealSales',...
-      'Ztilde','CPIInflation','PriceCPE'};
+      'FE','CPIInflation','PCEInflation'};
 
 % Matrix of dependen variables - All the variables are in log levels
 for i = 1:length(varlist)
@@ -126,6 +131,7 @@ PC               = PC(1+lags:end-leads,:);
 
 % Technical Parameters
 H                = 20; %irfs horizon
+lags             = 4;
 HPfilter         = 0;
 BPfilter         = 1;
 if HPfilter == 1 && BPfilter == 1
@@ -143,10 +149,18 @@ for kk = 1:size(dep_var,2)
       [~, loc_start, loc_end]     = truncate_data([depvarkk Ztilde PC]);
       depvarkk                    = depvarkk(loc_start:loc_end);
       if HPfilter == 1
-            [~, depvarkk]         = hpfilter(depvarkk,1600);
+            if strcmp('FE',varlist{kk}) == 1
+                  disp('FE is not HP filtered')
+            else
+                  [~, depvarkk]         = hpfilter(depvarkk,1600);
+            end
       end
       if BPfilter == 1
-            depvarkk              = bpass(depvarkk,4,32);
+            if strcmp('FE',varlist{kk}) == 1
+                  disp('FE is not BP filtered')
+            else
+                  depvarkk              = bpass(depvarkk,4,32);
+            end
       end
       Ztildekk                    = Ztilde(loc_start:loc_end);
       pckk                        = PC(loc_start:loc_end,:);
