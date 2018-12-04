@@ -4,6 +4,10 @@
 % NOTE describe variables (especially SHOCKS) in dataset
 %
 % last change 11/30/2018
+% TODO: 
+% - do not filter Inflation, add GDP deflator
+% - Variance decomposition
+% - State dependent effects
 %
 % Code by Brianti, Marco e Cormun, Vito
 %*************************************************************************%
@@ -127,7 +131,7 @@ PC               = PC(1+lags:end-leads,:);
 H                = 20; %irfs horizon
 lags             = 4;
 HPfilter         = 0;
-BPfilter         = 0;
+BPfilter         = 1;
 sdZtilde         = nanstd(Ztilde);
 Ztilde           = Ztilde/sdZtilde;
 
