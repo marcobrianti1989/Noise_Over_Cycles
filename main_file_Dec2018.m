@@ -46,6 +46,12 @@ Z                   = [NaN; Delta_RGDP_t(2:end) - Delta_RDGP_t1(1:end-1)];
 %RGDP_forec          = log(RGDP5_SPF(1:end-1)); % infoset at t, Forecast t+3
 FE                  = [NaN(3,1); log(RGDP1_SPF(1+4:end)) - log(RGDP5_SPF(1:end-4)); NaN];
 
+% Coibon Gorodnichenko Regression
+% [B,BINT,R,RINT,STATS] = regress(Y,X);
+YZ  = Z(1:end-3);
+XFE = FE(1+3:end);
+[B,BINT,R,RINT,STATS] = regress(YZ,XFE);
+
 %Technical values to build Ztilde
 lags                 = 4; %number of lags of TFP - cannot be zero since 1 include current TFP
 leads                = 16; %number of leads of TFP
