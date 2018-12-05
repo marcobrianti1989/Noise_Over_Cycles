@@ -18,9 +18,10 @@ close all
 % Read main dataset
 filename                    = 'main_file';
 sheet                       = 'Sheet1';
-range                       = 'B1:BU300';
+range                       = 'B1:CG300';
 do_truncation               = 0; %Do not truncate data. You will have many NaN
 [dataset, var_names]        = read_data2(filename, sheet, range, do_truncation);
+
 nNaN                        = 20; % adding some NaN at the end to have space for leads
 dataset                     = [dataset; NaN(nNaN,size(dataset,2))];
 % Assess name to each variable
@@ -36,21 +37,46 @@ end
 
 %Building Zt
 %Step 1 - Getting the forecasted growth rates
-Delta_RGDP_t        = log(RGDP5_SPF) - log(RGDP1_SPF);
-Delta_RDGP_t1       = log(RGDP6_SPF) - log(RGDP2_SPF);
+% Delta_RGDP_t        = log(RGDP5_SPF) - log(RGDP1_SPF);
+% Delta_RDGP_t1       = log(RGDP6_SPF) - log(RGDP2_SPF);
+%Step 1 - Getting the forecasted growth rates
+Delta_RGDP_t        = RGDP5_SPF./RGDP1_SPF - ones(length(RGDP1_SPF),1);
+Delta_RDGP_t1       = RGDP6_SPF./RGDP2_SPF - ones(length(RGDP1_SPF),1);
+% Nominal GDP
+Delta_NGDP_t        = NGDP5_SPF./NGDP1_SPF - ones(length(NGDP1_SPF),1);
+Delta_NDGP_t1       = NGDP6_SPF./NGDP2_SPF - ones(length(NGDP1_SPF),1);
+% Real Cons
+Delta_RCONS_t        = RCONS5_SPF./RCONS1_SPF - ones(length(RCONS1_SPF),1);
+Delta_RCONS_t1       = RCONS6_SPF./RCONS2_SPF - ones(length(RCONS1_SPF),1);
+%Industrial Production
+Delta_INDPROD_t     = log(dataset(:,22)) - log(dataset(:,20));
+Delta_INDPROD_t1    = log(dataset(:,23)) - log(dataset(:,21));
+%Investment is the sum between residential and non residential investment
+Delta_RINV_t        = log(dataset(:,14) + dataset(:,18)) - log(dataset(:,12) + dataset(:,16));
+Delta_RINV_t1       = log(dataset(:,15) + dataset(:,19)) - log(dataset(:,13) + dataset(:,17));
 %Step 2 - Revision in forecast growth rates
-Z                   = [NaN; Delta_RGDP_t(2:end) - Delta_RDGP_t1(1:end-1)];
+Z1                  = [NaN; Delta_RGDP_t(2:end) - Delta_RDGP_t1(1:end-1)];
+Z2                  = [NaN; Delta_NGDP_t(2:end) - Delta_NDGP_t1(1:end-1)];
+Z3                  = [NaN; Delta_RCONS_t(2:end) - Delta_RCONS_t1(1:end-1)];
+Z4                  = [NaN; Delta_INDPROD_t(2:end) - Delta_INDPROD_t1(1:end-1)];
+Z5                  = [NaN; Delta_RINV_t(2:end) - Delta_RINV_t1(1:end-1)];
+Z                   = Z1; %Select GDP growth
 
 % Building the Forecast Error of
 %RGDP_known_t        = log(RGDP1_SPF(2:end)); % from 2 as it is RGDP at t, infoset (t+1)
 %RGDP_forec          = log(RGDP5_SPF(1:end-1)); % infoset at t, Forecast t+3
-FE                  = [NaN(3,1); log(RGDP1_SPF(1+4:end)) - log(RGDP5_SPF(1:end-4)); NaN];
+
+
+FE                  = [NaN(3,1); (RCONS1_SPF(1+4:end) - RCONS5_SPF(1:end-4))./RCONS1_SPF(2:end-3); NaN];
+
+
+%FE                  = [NaN(3,1); RGDP1_SPF(1+4:end)./RGDP5_SPF(1:end-4); NaN];
 
 % Coibon Gorodnichenko Regression
 % [B,BINT,R,RINT,STATS] = regress(Y,X);
-YZ  = Z(1:end-3);
-XFE = FE(1+3:end);
-[B,BINT,R,RINT,STATS] = regress(YZ,XFE);
+YFE = FE(1+3:end);
+XZ  = [ones(length(YFE),1) , Z3(1:end-3)];
+[B,BINT,~,~,STATS] = regress(YFE,XZ);
 
 %Technical values to build Ztilde
 lags                 = 4; %number of lags of TFP - cannot be zero since 1 include current TFP
@@ -61,9 +87,9 @@ leads                = 16; %number of leads of TFP
 TFPBP                       = bpass(TFP_trunc,4,32);
 TFPBP                       = [TFPBP; NaN(length(TFP) - length(TFPBP),1)];
 PC                          = [PC1 PC2 PC3];
-X_contemporaneous           = [TFPBP MUNI1Y PDVMILY HAMILTON3YP RESID08 TAXNARRATIVE];
+X_contemporaneous           = [TFPBP MUNI1Y PDVMILY HAMILTON3YP RESID08 TAXNARRATIVE]; %TFPBP 
 X_lag                       = [TFPBP PC MUNI1Y PDVMILY HAMILTON3YP RESID08 TAXNARRATIVE];
-X_lead                      = TFPBP;
+X_lead                      = TFPBP; %TFPBP;
 Y                           = Z;
 
 % Control Regression
@@ -109,10 +135,10 @@ end
 
 % Create Var List
 SP500            = SP500 - GDPDefl;
-varlist          = {'RealGDP', 'RealCons','SP500',...
-      'Hours','RealInvestment','RealInventories',...
-      'TFP','UnempRate','RealSales',...
-      'FE','CPIInflation','PCEInflation'};
+varlist          = {'RealGDP', 'RealCons','UnempRate',...
+      'FE','RealInvestment','RealInventories'};%,...
+      %'TFP','UnempRate','RealSales',...
+      %'FE','CPIInflation','PCEInflation'};
 
 % Matrix of dependen variables - All the variables are in log levels
 for i = 1:length(varlist)
@@ -147,14 +173,14 @@ for kk = 1:size(dep_var,2)
       [~, loc_start, loc_end]     = truncate_data([depvarkk Ztilde PC]);
       depvarkk                    = depvarkk(loc_start:loc_end);
       if HPfilter == 1
-            if strcmp('FE',varlist{kk}) == 1
+            if strcmp('FE',varlist{kk}) == 1 || strcmp('Ztilde',varlist{kk}) == 1 || strcmp('BarskySimsNews',varlist{kk}) == 1 || strcmp('FFR',varlist{kk}) == 1
                   disp('FE is not HP filtered')
             else
                   [~, depvarkk]         = hpfilter(depvarkk,1600);
             end
       end
       if BPfilter == 1
-            if strcmp('FE',varlist{kk}) == 1
+            if strcmp('FE',varlist{kk}) == 1 || strcmp('Ztilde',varlist{kk}) == 1 || strcmp('BarskySimsNews',varlist{kk}) == 1 || strcmp('FFR',varlist{kk}) == 1
                   disp('FE is not BP filtered')
             else
                   depvarkk              = bpass(depvarkk,4,32);

@@ -31,7 +31,7 @@ for h = 1:H
       
       % Var(Y|all the shocks) - just eliminate the trend and the past
       Xcontrols          = X(:,2:end);
-      Bcontrols          = Xcontrols'*Xcontrols\(Xcontrols'*Y); 
+      Bcontrols          = B(2:end,1); 
       VarY(h)            = var(Y - Xcontrols*Bcontrols);
       
 end
