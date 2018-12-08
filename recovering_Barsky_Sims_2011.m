@@ -62,8 +62,8 @@ else
 end
 
 % Define the system1
-system_names  = {'TFPUtil','SP5002','GDP','Consumption',...
-      'Investment','Hours','GDPDef'};
+system_names  = {'TFPUtil','GDP','Consumption',...
+      'Investment'};%,'Hours','GDPDef'};
 
 for i = 1:length(system_names)
       system(:,i) = eval(system_names{i});
@@ -71,7 +71,7 @@ end
 TFPposition   = find(strcmp('TFPUtil', system_names));
 
 % Cholesky decomposition
-nlags           = 4;
+nlags           = 16;
 [A,B,res,sigma] = sr_var(system, nlags);
 
 horizon         = 40;
@@ -79,7 +79,7 @@ horizon         = 40;
 
 % Create dataset from bootstrap
 nburn             = 0;
-nsimul            = 200;
+nsimul            = 20;
 which_correction  = 'none';
 blocksize         = 4;
 [beta_tilde, data_boot2, beta_tilde_star,nonstationarities] ...
@@ -113,7 +113,7 @@ which_shocks      = [1 2]; %[Uposition];
 shocknames        = {'Surprise TFP Shock','News TFP Shock'};
 plot_IRFs_2CIs(IRFs,ub1,lb1,ub2,lb2,H,which_shocks,shocknames,...
       system_names,which_ID,print_figs,use_current_time,base_path)
-
+return
 % Get variance Decomposition
 N = null(gamma');
 D_null = [gamma N];

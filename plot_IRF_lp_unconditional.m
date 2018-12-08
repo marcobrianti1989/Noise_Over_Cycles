@@ -34,9 +34,9 @@ if plot2 == 1
                   xlabel('Quarter','interpreter','latex','fontsize',20);
                   ylabel('\% deviation from s.s.','interpreter','latex','fontsize',18);
             end
-            if unique == 1
-                  set(s,'xlim',[1,H],'ylim', ylim);
-            end
+%             if unique == 1
+%                   set(s,'xlim',[1,H],'ylim', ylim);
+%             end
             axis tight          
       end
 end

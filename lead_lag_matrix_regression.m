@@ -54,7 +54,8 @@ elseif sum(sum(abs(X_contemporaneous))) == 0 && lags == 0 && leads == 0
 end
 
 
-[B,Yhat,res]   = regress(YY,XX);
+[B,Bint,res]   = regress(YY,XX);
+Yhat           = YY - res;
 tuple          = [YY XX];
 
 

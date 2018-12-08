@@ -4,7 +4,7 @@
 % NOTE describe variables (especially SHOCKS) in dataset
 %
 % last change 11/30/2018
-% TODO: 
+% TODO:
 % - do not filter Inflation, add GDP deflator
 % - Variance decomposition
 % - State dependent effects
@@ -34,11 +34,13 @@ end
 %          1st stage - Deriving sentimentcks                              %
 %                                                                         %
 %*************************************************************************%
+fprintf('\n')
+fprintf('\n')
+disp('First Step: Building Ztilde')
+fprintf('\n')
+fprintf('\n')
 
 %Building Zt
-%Step 1 - Getting the forecasted growth rates
-% Delta_RGDP_t        = log(RGDP5_SPF) - log(RGDP1_SPF);
-% Delta_RDGP_t1       = log(RGDP6_SPF) - log(RGDP2_SPF);
 %Step 1 - Getting the forecasted growth rates
 Delta_RGDP_t        = RGDP5_SPF./RGDP1_SPF - ones(length(RGDP1_SPF),1);
 Delta_RDGP_t1       = RGDP6_SPF./RGDP2_SPF - ones(length(RGDP1_SPF),1);
@@ -46,58 +48,80 @@ Delta_RDGP_t1       = RGDP6_SPF./RGDP2_SPF - ones(length(RGDP1_SPF),1);
 Delta_NGDP_t        = NGDP5_SPF./NGDP1_SPF - ones(length(NGDP1_SPF),1);
 Delta_NDGP_t1       = NGDP6_SPF./NGDP2_SPF - ones(length(NGDP1_SPF),1);
 % Real Cons
-Delta_RCONS_t        = RCONS5_SPF./RCONS1_SPF - ones(length(RCONS1_SPF),1);
-Delta_RCONS_t1       = RCONS6_SPF./RCONS2_SPF - ones(length(RCONS1_SPF),1);
+Delta_RCONS_t       = RCONS5_SPF./RCONS1_SPF - ones(length(RCONS1_SPF),1);
+Delta_RCONS_t1      = RCONS6_SPF./RCONS2_SPF - ones(length(RCONS1_SPF),1);
 %Industrial Production
-Delta_INDPROD_t     = log(dataset(:,22)) - log(dataset(:,20));
-Delta_INDPROD_t1    = log(dataset(:,23)) - log(dataset(:,21));
+Delta_INDPROD_t     = INDPROD5_SPF./INDPROD1_SPF - ones(length(INDPROD1_SPF),1);
+Delta_INDPROD_t1    = INDPROD6_SPF./INDPROD2_SPF - ones(length(INDPROD1_SPF),1);
 %Investment is the sum between residential and non residential investment
-Delta_RINV_t        = log(dataset(:,14) + dataset(:,18)) - log(dataset(:,12) + dataset(:,16));
-Delta_RINV_t1       = log(dataset(:,15) + dataset(:,19)) - log(dataset(:,13) + dataset(:,17));
+Delta_RINV_t        = (RRESINV5_SPF + RNRESIN5_SPF)./(RRESINV1_SPF + RNRESIN1_SPF)  - ones(length(RRESINV1_SPF),1);
+Delta_RINV_t1       = (RRESINV6_SPF + RNRESIN6_SPF)./(RRESINV2_SPF + RNRESIN2_SPF)  - ones(length(RRESINV1_SPF),1);
 %Step 2 - Revision in forecast growth rates
 Z1                  = [NaN; Delta_RGDP_t(2:end) - Delta_RDGP_t1(1:end-1)];
 Z2                  = [NaN; Delta_NGDP_t(2:end) - Delta_NDGP_t1(1:end-1)];
 Z3                  = [NaN; Delta_RCONS_t(2:end) - Delta_RCONS_t1(1:end-1)];
 Z4                  = [NaN; Delta_INDPROD_t(2:end) - Delta_INDPROD_t1(1:end-1)];
 Z5                  = [NaN; Delta_RINV_t(2:end) - Delta_RINV_t1(1:end-1)];
-Z                   = Z1; %Select GDP growth
 
-% Building the Forecast Error of
-%RGDP_known_t        = log(RGDP1_SPF(2:end)); % from 2 as it is RGDP at t, infoset (t+1)
-%RGDP_forec          = log(RGDP5_SPF(1:end-1)); % infoset at t, Forecast t+3
+% Choose which SPF variable
+which_Z             = '1';
+eval(['Z = Z', which_Z,';']);
+disp(['Z',which_Z, ' is used as forecast revision variable'])
+fprintf('\n')
 
+% Building the Forecast Errors
+FE1                  = [NaN(3,1); (RGDP1_SPF(1+4:end) - RGDP5_SPF(1:end-4))./RGDP1_SPF(2:end-3); NaN];
+FE2                  = [NaN(3,1); (NGDP1_SPF(1+4:end) - NGDP5_SPF(1:end-4))./NGDP1_SPF(2:end-3); NaN];
+FE3                  = [NaN(3,1); (RCONS1_SPF(1+4:end) - RCONS5_SPF(1:end-4))./RCONS1_SPF(2:end-3); NaN];
+FE4                  = [NaN(3,1); (INDPROD1_SPF(1+4:end) - INDPROD5_SPF(1:end-4))./INDPROD1_SPF(2:end-3); NaN];
+FE5                  = [NaN(3,1); (RRESINV1_SPF(1+4:end) + RNRESIN1_SPF(1+4:end) - RRESINV5_SPF(1:end-4) - RNRESIN5_SPF(1:end-4))./(RRESINV1_SPF(2:end-3) + RNRESIN1_SPF(2:end-3)); NaN];
+eval(['FE = FE', which_Z,';']);
+disp(['FE',which_Z, ' is used as forecast error variable'])
+fprintf('\n')
 
-FE                  = [NaN(3,1); (RCONS1_SPF(1+4:end) - RCONS5_SPF(1:end-4))./RCONS1_SPF(2:end-3); NaN];
-
-
-%FE                  = [NaN(3,1); RGDP1_SPF(1+4:end)./RGDP5_SPF(1:end-4); NaN];
 
 % Coibon Gorodnichenko Regression
 % [B,BINT,R,RINT,STATS] = regress(Y,X);
-YFE = FE(1+3:end);
-XZ  = [ones(length(YFE),1) , Z3(1:end-3)];
-[B,BINT,~,~,STATS] = regress(YFE,XZ);
+% YFE = FE(1+3:end);
+% XZ  = [ones(length(YFE),1) , Z3(1:end-3)];
+% [B,BINT,~,~,STATS] = regress(YFE,XZ);
 
 %Technical values to build Ztilde
 lags                 = 4; %number of lags of TFP - cannot be zero since 1 include current TFP
+disp(['Number of lags used is ',num2str(lags)])
+fprintf('\n')
 leads                = 16; %number of leads of TFP
+disp(['Number of leads used is ',num2str(leads)])
+fprintf('\n')
 
 %Structural shocks from Ramey narrative approach, Hamilton, Romer and Romer, Military government spending...
 [TFP_trunc, trunc1, trunc2] = truncate_data(TFP);
 TFPBP                       = bpass(TFP_trunc,4,32);
 TFPBP                       = [TFPBP; NaN(length(TFP) - length(TFPBP),1)];
 PC                          = [PC1 PC2 PC3];
-X_contemporaneous           = [TFPBP MUNI1Y PDVMILY HAMILTON3YP RESID08 TAXNARRATIVE]; %TFPBP 
+X_contemporaneous           = [TFPBP MUNI1Y PDVMILY HAMILTON3YP RESID08 TAXNARRATIVE];
 X_lag                       = [TFPBP PC MUNI1Y PDVMILY HAMILTON3YP RESID08 TAXNARRATIVE];
-X_lead                      = TFPBP; %TFPBP;
+X_lead                      = TFPBP;
 Y                           = Z;
+if sum(sum(abs(X_contemporaneous))) == 0
+      disp('No contemporaneous controls for Z')
+      fprintf('\n')
+end
+if sum(sum(abs(X_lag))) == 0 || lags == 0
+      disp('No past controls for Z')
+      fprintf('\n')
+end
+if sum(sum(abs(X_lag))) == 0 || leads == 0
+      disp('No future controls for Z')
+      fprintf('\n')
+end
 
 % Control Regression
-[~, ~, Ztilde,regressor] = lead_lag_matrix_regression(Y,X_lead,leads,X_lag,lags,...
+[~, Zhat, Ztilde,regressor] = lead_lag_matrix_regression(Y,X_lead,leads,X_lag,lags,...
       X_contemporaneous);
 
 %Show the graph of Ztilde - Figure(1)
-plot1 = 1; % if plot = 1, figure will be displayed
+plot1 = 0; % if plot = 1, figure will be displayed
 plot_Ztilde(Ztilde,Time(1+lags:end-leads),NBERDates(1+lags:end-leads),plot1)
 
 % Print figure authomatically if "export_figure1 = 1"
@@ -106,11 +130,18 @@ if plot1 == 1
       export_fig_Ztilde(export_fig1)
 end
 
+%Ztilde = BarskySimsNews(1+lags:end-leads);
+
 %*************************************************************************%
 %                                                                         %
 %          2nd stage - Smooth Transition Local Projections                %
 %                                                                         %
 %*************************************************************************%
+fprintf('\n')
+fprintf('\n')
+disp('Second Step: Projecting endogenous variables on Ztilde')
+fprintf('\n')
+fprintf('\n')
 
 % Preparing Data Dependent Variables
 
@@ -136,9 +167,9 @@ end
 % Create Var List
 SP500            = SP500 - GDPDefl;
 varlist          = {'RealGDP', 'RealCons','UnempRate',...
-      'FE','RealInvestment','RealInventories'};%,...
-      %'TFP','UnempRate','RealSales',...
-      %'FE','CPIInflation','PCEInflation'};
+      'Mich1Y','RealInvestment','RealInventories',...
+      'FE','Z','RealSales','Mich5Y'};%,...
+%'FE','CPIInflation','PCEInflation'};
 
 % Matrix of dependen variables - All the variables are in log levels
 for i = 1:length(varlist)
@@ -153,6 +184,8 @@ end
 logdifferences = 0;
 if logdifferences == 1
       dep_var = [nan(1,size(dep_var,2)); diff(dep_var)];
+      disp('Endogenous variables are differentiated for locap projection')
+      fprintf('\n')
 end
 
 % Align the timing - It is important!
@@ -160,49 +193,57 @@ dep_var          = dep_var(1+lags:end-leads,:);
 PC               = PC(1+lags:end-leads,:);
 
 % Technical Parameters
-H                = 20; %irfs horizon
+H                = 40; %irfs horizon
 lags             = 4;
-HPfilter         = 0;
-BPfilter         = 1;
-sdZtilde         = nanstd(Ztilde);
-Ztilde           = Ztilde/sdZtilde;
+which_trend      = 'BPfilter'; %BPfilter, HPfilter, linear_time, quadratic_time
+disp(['Filter used is ',which_trend])
+fprintf('\n')
+standardize_Ztilde = 1;
+if standardize_Ztilde == 1
+      sdZtilde         = nanstd(Ztilde);
+      Ztilde           = Ztilde/sdZtilde;
+      sdZhat           = nanstd(Zhat);
+      Zhat             = Zhat/sdZhat;
+      disp('Variance of Ztilde is now one')
+      fprintf('\n')
+else
+      warning('Ztilde is not standardize. Variance Decomposition is wrong.')
+      fprintf('\n')
+end
 
+%Initializating the loop
 for kk = 1:size(dep_var,2)
       % Define inputs for local_projection
+      varnamekk                   = varlist{kk};
+      disp(['Projecting ',varnamekk,'.'])
+      fprintf('\n')
       depvarkk                    = dep_var(:,kk);
       [~, loc_start, loc_end]     = truncate_data([depvarkk Ztilde PC]);
       depvarkk                    = depvarkk(loc_start:loc_end);
-      if HPfilter == 1
-            if strcmp('FE',varlist{kk}) == 1 || strcmp('Ztilde',varlist{kk}) == 1 || strcmp('BarskySimsNews',varlist{kk}) == 1 || strcmp('FFR',varlist{kk}) == 1
-                  disp('FE is not HP filtered')
-            else
-                  [~, depvarkk]         = hpfilter(depvarkk,1600);
-            end
-      end
-      if BPfilter == 1
-            if strcmp('FE',varlist{kk}) == 1 || strcmp('Ztilde',varlist{kk}) == 1 || strcmp('BarskySimsNews',varlist{kk}) == 1 || strcmp('FFR',varlist{kk}) == 1
-                  disp('FE is not BP filtered')
-            else
-                  depvarkk              = bpass(depvarkk,4,32);
-            end
-      end
       Ztildekk                    = Ztilde(loc_start:loc_end);
       pckk                        = PC(loc_start:loc_end,:);
       % Run local_projection
-      [IR{kk},res{kk},Rsquared{kk},BL{kk},tuple{kk},VarY{kk}] = ...
-            local_projection(depvarkk,pckk,Ztildekk,lags,H);
+      if strcmp(varnamekk,'FE') == 1 || strcmp(varnamekk,'Ztilde') == 1 || strcmp(varnamekk,'Zhat') == 1 || strcmp(varnamekk,'Z') == 1
+            which_trend_final = 'none';
+            disp([varnamekk, ' has not been filtered'])
+            fprintf('\n')
+      else
+            which_trend_final = which_trend;
+      end
+      [IR{kk},res{kk},Rsquared{kk},BL{kk},tuple{kk},VD{kk}] = ...
+            local_projection(depvarkk,pckk,Ztildekk,lags,H,which_trend_final);
       if logdifferences == 0
             IRF(kk,:) = IR{kk};
       else
             IRF(kk,:) = cumsum(IR{kk});
       end
-      % Build a table for the Variance Explained by Ztilde - Following  Stock,
-      % Watson (2018) - The Economic Journal, page 928 Eq. (15)
-      VarY_ih = VarY{kk};
-      for ih = 1:H
-            VarYY    = VarY_ih(ih);
-            VarExplained(kk,ih) = sum(IRF(kk,1:ih).^2)/VarYY;
-      end
+%       % Build a table for the Variance Explained by Ztilde - Following  Stock,
+%       % Watson (2018) - The Economic Journal, page 928 Eq. (15)
+%       VarY_ih = VarY{kk};
+%       for ih = 1:H
+%             VarYY    = VarY_ih(ih);
+%             VarExplained(kk,ih) = sum(IRF(kk,1:ih).^2)/VarYY;
+%       end
       % Initiate bootstrap
       nsimul         = 500;
       tuplekk        = tuple{kk};
@@ -219,7 +260,7 @@ for kk = 1:size(dep_var,2)
                   BC                      = XbootC(:,:,isimul)'*XbootC(:,:,isimul)\...
                         (XbootC(:,:,isimul)'*YbootC(:,isimul));
                   IRF_boot(kk,hh,isimul)  = B(1);
-                  VarYBoot(kk,hh,isimul)  = var(YbootC(:,isimul) - XbootC(:,:,isimul)*BC);
+                  %VarYBoot(kk,hh,isimul)  = var(YbootC(:,isimul) - XbootC(:,:,isimul)*BC);
             end
       end
 end
@@ -227,17 +268,17 @@ end
 % Select upper and lower bands
 for kk = 1:size(dep_var,2)
       IRF_bootkk = IRF_boot(kk,:,:);
-      VarYbootkk = VarYBoot(kk,:,:);
+      %VarYbootkk = VarYBoot(kk,:,:);
       if logdifferences == 0
             IRF_boot(kk,:,:)  = IRF_bootkk;
-            VarY_boot(kk,:,:) = VarYbootkk;
+            %VarY_boot(kk,:,:) = VarYbootkk;
       else
             IRF_boot(kk,:,:)  = cumsum(IRF_bootkk,2);
-            VarY_boot(kk,:,:) = cumsum(VarYbootkk,2);
+            %VarY_boot(kk,:,:) = cumsum(VarYbootkk,2);
       end
 end
 IRF_boot         = sort(IRF_boot,3);
-VarY_boot        = sort(VarY_boot,3);
+%VarY_boot        = sort(VarY_boot,3);
 sig              = 0.05;
 sig2             = 0.16;
 up_bound         = floor(nsimul*sig); % the upper percentile of bootstrapped responses for CI
@@ -245,31 +286,31 @@ up_bound2        = floor(nsimul*sig2); % the upper percentile of bootstrapped re
 low_bound        = ceil(nsimul*(1-sig)); % the lower percentile of bootstrapped responses for CI
 low_bound2       = ceil(nsimul*(1-sig2)); % the lower percentile of bootstrapped responses for CI
 IRF_up           = IRF_boot(:,:,up_bound);
-VarY_up          = VarY_boot(:,:,up_bound);
+%VarY_up          = VarY_boot(:,:,up_bound);
 IRF_up2          = IRF_boot(:,:,up_bound2);
-VarY_up2         = VarY_boot(:,:,up_bound2);
+%VarY_up2         = VarY_boot(:,:,up_bound2);
 IRF_low          = IRF_boot(:,:,low_bound);
-VarY_low         = VarY_boot(:,:,low_bound);
+%VarY_low         = VarY_boot(:,:,low_bound);
 IRF_low2         = IRF_boot(:,:,low_bound2);
-VarY_low2        = VarY_boot(:,:,low_bound2);
+%VarY_low2        = VarY_boot(:,:,low_bound2);
 
 % Confidence Intervals for Variance Explained
-for kk = 1:size(dep_var,2)
-      VarYup   = VarY_up(kk,:);
-      VarYup2  = VarY_up2(kk,:);
-      VarYlow  = VarY_low(kk,:);
-      VarYlow2 = VarY_low2(kk,:);
-      for ih = 1:H
-            VarYYup   = VarYup(ih);
-            VarYYup2  = VarYup2(ih);
-            VarYYlow  = VarYlow(ih);
-            VarYYlow2 = VarYlow2(ih);
-            VarExplainedup(kk,ih)   = sum(IRF_up(kk,1:ih).^2)/VarYYup;
-            VarExplainedlow(kk,ih)  = sum(IRF_low(kk,1:ih).^2)/VarYYlow;
-            VarExplainedup2(kk,ih)  = sum(IRF_up2(kk,1:ih).^2)/VarYYup2;
-            VarExplainedlow2(kk,ih) = sum(IRF_low2(kk,1:ih).^2)/VarYYlow2;
-      end
-end
+% for kk = 1:size(dep_var,2)
+%       VarYup   = VarY_up(kk,:);
+%       VarYup2  = VarY_up2(kk,:);
+%       VarYlow  = VarY_low(kk,:);
+%       VarYlow2 = VarY_low2(kk,:);
+%       for ih = 1:H
+%             VarYYup   = VarYup(ih);
+%             VarYYup2  = VarYup2(ih);
+%             VarYYlow  = VarYlow(ih);
+%             VarYYlow2 = VarYlow2(ih);
+%             VarExplainedup(kk,ih)   = sum(IRF_up(kk,1:ih).^2)/VarYYup;
+%             VarExplainedlow(kk,ih)  = sum(IRF_low(kk,1:ih).^2)/VarYYlow;
+%             VarExplainedup2(kk,ih)  = sum(IRF_up2(kk,1:ih).^2)/VarYYup2;
+%             VarExplainedlow2(kk,ih) = sum(IRF_low2(kk,1:ih).^2)/VarYYlow2;
+%       end
+% end
 
 %Show the graph of IRF - Figure(2)
 plot2    = 1; % if plot2 = 1, figure will be displayed
