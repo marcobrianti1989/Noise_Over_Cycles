@@ -157,7 +157,7 @@ CPIServices     = create_inflation(CPIServices,ninfl);
 control_pop = 0; % Divide GDP, Cons, Hours, Investment over population
 if control_pop == 1
       RealGDP                 = RealGDP - Population;
-      RealCons                = RealCons - Population;
+      RealCons                = ServiceCons + No - Population;
       RealInvestment          = RealInvestment - Population;
       Hours                   = Hours + Employment - Population;
       RealInventories         = RealInventories - Population;
@@ -168,7 +168,7 @@ end
 SP500            = SP500 - GDPDefl;
 varlist          = {'RealGDP', 'RealCons','UnempRate',...
       'Mich1Y','RealInvestment','RealInventories',...
-      'RServiceCons','RNonDurableCons','RDurableCons','Mich5Y'};%,...
+      'FE','FFR','RealSales','Mich5Y'};%,...
 %'FE','CPIInflation','PCEInflation'};
 
 % Matrix of dependen variables - All the variables are in log levels
@@ -195,7 +195,7 @@ PC               = PC(1+lags:end-leads,:);
 % Technical Parameters
 H                = 20; %irfs horizon
 lags             = 4;
-which_trend      = 'quadratic_time'; %BPfilter, HPfilter, linear_time, quadratic_time
+which_trend      = 'linear_time'; %BPfilter, HPfilter, linear_time, quadratic_time
 disp(['Filter used is ',which_trend])
 fprintf('\n')
 standardize_Ztilde = 1;

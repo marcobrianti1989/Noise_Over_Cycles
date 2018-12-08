@@ -42,14 +42,12 @@ for h = 1:H
       Rsquared(h)        = 1 - var(res{h})/var(Y);
       B_store(:,h)       = B;
       
-      % Var(Y|all the shocks) - just eliminate the trend and the past
+      % Variance Decomposition
       NUM                = NUM + B(1)^2;
-      %       Den0               = var(resh) + Num;
-      %       Den1               = var(resh - IRF(1)*X(1+1:end,1)) + Num;
-      %       Den2               = var(resh - IRF(1)*X(1+2:end,1) - IRF(2)*X(1+1:end-1 ,1)) + Num;
+      %Den0 = var(resh) + Num; Den1 = var(resh - IRF(1)*X(1+1:end,1)) + Num; Den2 = var(resh - IRF(1)*X(1+2:end,1) - IRF(2)*X(1+1:end-1 ,1)) + Num;
       if h == 1
             Xstore       = u(lags+1:end-h+1,1);
-            DEN          = var(resh);
+            DEN          = var(resh) + NUM;
       else
             Xstore       = [u(lags+h:end,1) Xstore(1:end-1,:)];
             IRFrep       = repmat(IRF,[size(Xstore,1),1]);
