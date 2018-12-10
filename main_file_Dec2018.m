@@ -18,7 +18,7 @@ close all
 % Read main dataset
 filename                    = 'main_file';
 sheet                       = 'Sheet1';
-range                       = 'B1:CJ300';
+range                       = 'B1:CL300';
 do_truncation               = 0; %Do not truncate data. You will have many NaN
 [dataset, var_names]        = read_data2(filename, sheet, range, do_truncation);
 
@@ -167,8 +167,8 @@ end
 % Create Var List
 SP500            = SP500 - GDPDefl;
 varlist          = {'RealGDP', 'RealCons','UnempRate',...
-      'Mich1Y','RealInvestment','RealInventories',...
-      'RServiceCons','RNonDurableCons','RDurableCons','Mich5Y'};%,...
+      'MichIndexConfidence','RealInvestment','RealInventories',...
+      'RServiceCons','RNonDurableCons','RDurableCons','BusinessConfidenceEC'};%,...
 %'FE','CPIInflation','PCEInflation'};
 
 % Matrix of dependen variables - All the variables are in log levels
