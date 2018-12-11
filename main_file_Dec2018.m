@@ -18,7 +18,7 @@ close all
 % Read main dataset
 filename                    = 'main_file';
 sheet                       = 'Sheet1';
-range                       = 'B1:CL300';
+range                       = 'B1:CT300';
 do_truncation               = 0; %Do not truncate data. You will have many NaN
 [dataset, var_names]        = read_data2(filename, sheet, range, do_truncation);
 
@@ -56,12 +56,16 @@ Delta_INDPROD_t1    = INDPROD6_SPF./INDPROD2_SPF - ones(length(INDPROD1_SPF),1);
 %Investment is the sum between residential and non residential investment
 Delta_RINV_t        = (RRESINV5_SPF + RNRESIN5_SPF)./(RRESINV1_SPF + RNRESIN1_SPF)  - ones(length(RRESINV1_SPF),1);
 Delta_RINV_t1       = (RRESINV6_SPF + RNRESIN6_SPF)./(RRESINV2_SPF + RNRESIN2_SPF)  - ones(length(RRESINV1_SPF),1);
+% CPI
+Delta_CPI_t         = CPI5_SPF;% - CPI1_SPF;
+Delta_CPI_t1        = CPI6_SPF;% - CPI2_SPF;
 %Step 2 - Revision in forecast growth rates
 Z1                  = [NaN; Delta_RGDP_t(2:end) - Delta_RDGP_t1(1:end-1)];
 Z2                  = [NaN; Delta_NGDP_t(2:end) - Delta_NDGP_t1(1:end-1)];
 Z3                  = [NaN; Delta_RCONS_t(2:end) - Delta_RCONS_t1(1:end-1)];
 Z4                  = [NaN; Delta_INDPROD_t(2:end) - Delta_INDPROD_t1(1:end-1)];
 Z5                  = [NaN; Delta_RINV_t(2:end) - Delta_RINV_t1(1:end-1)];
+Z6                  = [NaN; Delta_CPI_t(2:end)];% - Delta_CPI_t1(1:end-1)];
 
 % Choose which SPF variable
 which_Z             = '1';
@@ -75,10 +79,10 @@ FE2                  = [NaN(3,1); (NGDP1_SPF(1+4:end) - NGDP5_SPF(1:end-4))./NGD
 FE3                  = [NaN(3,1); (RCONS1_SPF(1+4:end) - RCONS5_SPF(1:end-4))./RCONS1_SPF(2:end-3); NaN];
 FE4                  = [NaN(3,1); (INDPROD1_SPF(1+4:end) - INDPROD5_SPF(1:end-4))./INDPROD1_SPF(2:end-3); NaN];
 FE5                  = [NaN(3,1); (RRESINV1_SPF(1+4:end) + RNRESIN1_SPF(1+4:end) - RRESINV5_SPF(1:end-4) - RNRESIN5_SPF(1:end-4))./(RRESINV1_SPF(2:end-3) + RNRESIN1_SPF(2:end-3)); NaN];
+
 eval(['FE = FE', which_Z,';']);
 disp(['FE',which_Z, ' is used as forecast error variable'])
 fprintf('\n')
-
 
 % Coibon Gorodnichenko Regression
 % [B,BINT,R,RINT,STATS] = regress(Y,X);
@@ -153,6 +157,8 @@ CPIDurables     = create_inflation(CPIDurables,ninfl);
 CPINonDurables  = create_inflation(CPINonDurables,ninfl);
 CPIServices     = create_inflation(CPIServices,ninfl);
 
+FE6      = [NaN(4,1); CPIInflation(1+4:end)*100 - CPI6_SPF(1:end-4)];
+FEM       = [NaN(4,1); CPIInflation(1+4:end)*100 - MedianMichIndexCPI(1:end-4)];
 % Per capita adjustment
 control_pop = 0; % Divide GDP, Cons, Hours, Investment over population
 if control_pop == 1
@@ -166,9 +172,8 @@ end
 
 % Create Var List
 SP500            = SP500 - GDPDefl;
-varlist          = {'RealGDP', 'RealCons','UnempRate',...
-      'MichIndexConfidence','RealInvestment','RealInventories',...
-      'RServiceCons','RNonDurableCons','RDurableCons','BusinessConfidenceEC'};%,...
+varlist          = {'RealGDP', 'BusinessConfidenceEC','UnempRate','RealInvestment',...
+      'BloomFinDistress','RealCons'};%,...
 %'FE','CPIInflation','PCEInflation'};
 
 % Matrix of dependen variables - All the variables are in log levels
