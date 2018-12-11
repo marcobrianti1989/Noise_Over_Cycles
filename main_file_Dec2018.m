@@ -102,6 +102,7 @@ fprintf('\n')
 [TFP_trunc, trunc1, trunc2] = truncate_data(TFP);
 TFPBP                       = bpass(TFP_trunc,4,32);
 TFPBP                       = [TFPBP; NaN(length(TFP) - length(TFPBP),1)];
+dTFP                        = [NaN; diff(TFP)];
 PC                          = [PC1 PC2 PC3];
 X_contemporaneous           = [TFPBP MUNI1Y PDVMILY HAMILTON3YP RESID08 TAXNARRATIVE];
 X_lag                       = [TFPBP PC MUNI1Y PDVMILY HAMILTON3YP RESID08 TAXNARRATIVE];
@@ -172,9 +173,14 @@ end
 
 % Create Var List
 SP500            = SP500 - GDPDefl;
-varlist          = {'RealGDP', 'BusinessConfidenceEC','UnempRate','RealInvestment',...
-      'BloomFinDistress','RealCons'};%,...
-%'FE','CPIInflation','PCEInflation'};
+varlist          = {'UnempRate','RealInventories','RealSales','RealI2S'};
+
+
+%{'RealGDP','RealCons','RealInvestment','Hours'};
+% ,'UnempRate',...
+%       'RealInventories','RealSales','RealI2S','BusinessConfidenceEC',...
+%       'BloomFinDistress','RDurableCons','RNonDurableCons','RServiceCons',... %
+%     'CPIInflation','PCEInflation'};
 
 % Matrix of dependen variables - All the variables are in log levels
 for i = 1:length(varlist)
@@ -203,6 +209,8 @@ lags             = 4;
 which_trend      = 'quadratic_time'; %BPfilter, HPfilter, linear_time, quadratic_time
 disp(['Filter used is ',which_trend])
 fprintf('\n')
+Ztilde = Zhat;
+warning('Be careful Ztilde is now Zhat')
 standardize_Ztilde = 1;
 if standardize_Ztilde == 1
       sdZtilde         = nanstd(Ztilde);
@@ -292,10 +300,10 @@ plot_IRF_lp_unconditional(varlist,100.*IRF_low,100.*IRF_low2,100.*IRF_up,100.*IR
 
 %Print figure authomatically if "export_figure1 = 1"
 if plot2 == 1
-      export_fig2 = 0; % if export_fig1 = 1, figure will be saved
+      export_fig2 = 1; % if export_fig1 = 1, figure will be saved
       export_fig_IRF_lp_unconditional(export_fig2)
 end
-
+asd
 %Show the variance Explained - Figure(3)
 plot3    = 1; % if plot2 = 1, figure will be displayed
 n_row    = 3; % how many row in the figure
