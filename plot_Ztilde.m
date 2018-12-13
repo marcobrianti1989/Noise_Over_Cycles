@@ -13,7 +13,7 @@ if plotYes == 1
       %xlim([12 252])
       ylim([.038 .060])
       set(gca,'YTickLabel',[]);
-      lgd = legend('NBER recessions','Noise Shocks','Location',...
+      lgd = legend('NBER recessions','Sentiment Shocks','Location',...
             'SouthOutside','Orientation','horizontal');
       lgd.FontSize = 30;
       legend('boxoff')
