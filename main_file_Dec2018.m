@@ -126,7 +126,7 @@ end
       leads,X_lag,lags,X_contemporaneous);
 
 %Show the graph of Ztilde - Figure(1)
-plot1 = 1; % if plot = 1, figure will be displayed
+plot1 = 0; % if plot = 1, figure will be displayed
 plot_Ztilde(Ztilde,Time(1+lags:end-leads),NBERDates(1+lags:end-leads),plot1)
 
 % Print figure authomatically if "export_figure1 = 1"
@@ -136,7 +136,8 @@ if plot1 == 1
 end
 
 %Ztilde = BarskySimsNews(1+lags:end-leads);
-
+% Ztilde = Z1(1+lags:end-leads);
+% warning('Ztilde is replaced by another shock')
 %*************************************************************************%
 %                                                                         %
 %          2nd stage - Smooth Transition Local Projections                %
@@ -174,7 +175,7 @@ end
 % Create Var List
 SP500            = SP500 - GDPDefl;
 varlist          = {'RealGDP','RealCons','RealInvestment','Hours',...
-      'RealInventories','FFR','CPIInflation','BloomFinDistress',...
+      'RealInventories','FFR','UnempRate','BloomFinDistress',...
       'MichIndexConfidence'};
 
 
@@ -254,7 +255,7 @@ for kk = 1:size(dep_var,2)
       end
       VDkk(kk,:) = VD{kk};
       % Initiate bootstrap
-      nsimul         = 1000;
+      nsimul         = 500;
       tuplekk        = tuple{kk};
       for hh = 1:H
             tuplekkhh = tuplekk{hh}; % Fix a specific horizon
