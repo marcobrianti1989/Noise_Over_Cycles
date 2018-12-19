@@ -17,7 +17,6 @@ if export_fig2 == 1
       end
       warning on
       export_fig(['VitoPresentation_13Dec2018_Zhat.pdf'])
-      close all
       cd(base_path) %back to the original path
 
 end

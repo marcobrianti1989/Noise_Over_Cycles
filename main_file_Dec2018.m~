@@ -324,13 +324,9 @@ end
 % assume an AR(1)
 IRF_ar1 = 1;
 for j = 2: 20
-    IRF_ar1(j,:) = .9^j;
+    IRF_ar1(j) = IRF_ar1(j-1)^j;
 end
-sdensity = spectrum(IRF_ar1);
-
-sdensity = spectrum(IRF(3,:));
-figure;
-plot(sdensity);
+sdensity = spectrum(IRF(:,1));
 
 
 
