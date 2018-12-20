@@ -337,7 +337,7 @@ end
 [sdensity_ar1] = spectrum(IRF_ar1); %I normalize s.t. the spectral density evaluated btwn 0 and pi is equal to .5 - CHECK
 [sdensity, period] = spectrum(IRF_boot(3,:,:));
 
-figure(3);
+figure(3); %plot spectral density and its CI against the AR(1) counterpart
 plot(period(10:200)',sdensity(10:200,250),'Color','b','LineWidth',3); hold on; %step dependent 
 plot(period(10:200)',sdensity_ar1(10:200),'Color','k','LineWidth',3);
 
@@ -356,6 +356,7 @@ D_ar1 = D1_ar1./D2_ar1;
 pval = length(find(D<=D_ar1))/nsimul;
 disp(['P-value univariate:    ',num2str(pval)])
 
+%Need to perform LP on the AR(1)
 
 
 

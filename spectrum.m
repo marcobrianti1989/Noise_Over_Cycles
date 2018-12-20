@@ -17,7 +17,7 @@ omega = 0 : step: pi;
 for k = 1 : d
 for x = 1: size(omega,2)
     for j = 1 : H
-        one(:,j) = (IRF(j,:,k)*exp(-i*(j-1)*omega(1,x)));
+        one(:,j) = (IRF(j,:,k)*exp(-i*(j-1)*omega(1,x))); %CHECK (j-1)
         two(:,j) = (IRF(j,:,k)'*exp(i*(j-1)*omega(1,x))); %transpose is positive
     end
     sp(x,:)= (sum(one,2))*Sigma*(sum(two,2)); %CHECK
@@ -28,7 +28,7 @@ cn = 1/(2*sum(sp,1));
 spect(:,k) = sp.*cn;
 end
 periodicity = 2*pi./omega;
-%Normalize
+
 
 
 
