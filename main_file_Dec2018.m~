@@ -220,7 +220,7 @@ PC               = PC(1+lags:end-leads,:);
 
 disp(['Filter used is ',which_trend])
 fprintf('\n')
-% Ztilde = Zhat;
+ Ztilde = Zhat;
 % warning('Be careful Ztilde is now Zhat')
 standardize_Ztilde = 1;
 if standardize_Ztilde == 1
@@ -287,17 +287,25 @@ for kk = 1:size(dep_var,2)
             IRF_boot(kk,:,:)  = cumsum(IRF_bootkk,2);
       end
 end
-IRF_boot         = sort(IRF_boot,3);
-sig              = 0.05;
-sig2             = 0.16;
-up_bound         = floor(nsimul*sig); % the upper percentile of bootstrapped responses for CI
-up_bound2        = floor(nsimul*sig2); % the upper percentile of bootstrapped responses for CI
-low_bound        = ceil(nsimul*(1-sig)); % the lower percentile of bootstrapped responses for CI
-low_bound2       = ceil(nsimul*(1-sig2)); % the lower percentile of bootstrapped responses for CI
-IRF_up           = IRF_boot(:,:,up_bound);
-IRF_up2          = IRF_boot(:,:,up_bound2);
-IRF_low          = IRF_boot(:,:,low_bound);
-IRF_low2         = IRF_boot(:,:,low_bound2);
+% IRF_boot         = sort(IRF_boot,3);
+ sig              = 0.05;
+ sig2             = 0.16;
+% up_bound         = floor(nsimul*sig); % the upper percentile of bootstrapped responses for CI
+% up_bound2        = floor(nsimul*sig2); % the upper percentile of bootstrapped responses for CI
+% low_bound        = ceil(nsimul*(1-sig)); % the lower percentile of bootstrapped responses for CI
+% low_bound2       = ceil(nsimul*(1-sig2)); % the lower percentile of bootstrapped responses for CI
+% IRF_up           = IRF_boot(:,:,up_bound);
+% IRF_up2          = IRF_boot(:,:,up_bound2);
+% IRF_low          = IRF_boot(:,:,low_bound);
+% IRF_low2         = IRF_boot(:,:,low_bound2);
+for j = 1:size(dep_var,2)
+    IRF_up(j,:)   = quantile(squeeze(IRF_boot(j,:,:))',1-sig);
+    IRF_up2(j,:)  = quantile(squeeze(IRF_boot(j,:,:))',1-sig2);
+    IRF_low(j,:)  = quantile(squeeze(IRF_boot(j,:,:))',sig);
+    IRF_low2(j,:) = quantile(squeeze(IRF_boot(j,:,:))',sig2);
+end
+
+
 
 %Show the graph of IRF - Figure(2)
 plot2    = 1; % if plot2 = 1, figure will be displayed
@@ -328,16 +336,19 @@ end
 
 %% *************************************************************************%
 % (Canova) test of cyclical IRF
-% let's see how it works 
 % assume an AR(1)
+
 IRF_ar1 = 1;
 for j = 2: H
     IRF_ar1(j,:) = .9^j;
 end
 [sdensity_ar1] = spectrum(IRF_ar1); %I normalize s.t. the spectral density evaluated btwn 0 and pi is equal to .5 - CHECK
-[sdensity, period] = spectrum(IRF_boot(3,:,:));
+[sdensity] = spectrum(IRF_boot(1,:,:));
+[sdensity_pe, period] = spectrum(IRF(1,:)); %point estimate 
 
-figure(3);
+figure(3); %plot spectral density and its CI against the AR(1) counterpart
+sdensity_up   = quantile(sdensity,1-sig);
+sdensity_low  = quantile(sdensity,sig);
 plot(period(10:200)',sdensity(10:200,250),'Color','b','LineWidth',3); hold on; %step dependent 
 plot(period(10:200)',sdensity_ar1(10:200),'Color','k','LineWidth',3);
 
@@ -347,7 +358,7 @@ lpeak_lower   = 25; %should be adjusted with steps and IRF horizon
 lpeak_upper   = 35;
 ltrough_lower = 40;
 ltrough_upper = 50;
-D1 = mean(sdensity(find(period>lpeak_upper,1,'last'):find(period>lpeak_lower,1,'last'),:),1);
+D1 = mean(sdensity(find(period>lpeak_upper,1,'last'):find(period>lpeak_lower,1,'last'),:),1); 
 D2 = mean(sdensity(find(period>ltrough_upper,1,'last'):find(period>ltrough_lower,1,'last'),:),1);
 D  = D1./D2;
 D1_ar1 = mean(sdensity_ar1(find(period>lpeak_upper,1,'last'):find(period>lpeak_lower,1,'last'),:));
@@ -355,10 +366,16 @@ D2_ar1 = mean(sdensity_ar1(find(period>ltrough_upper,1,'last'):find(period>ltrou
 D_ar1 = D1_ar1./D2_ar1;
 pval = length(find(D<=D_ar1))/nsimul;
 disp(['P-value univariate:    ',num2str(pval)])
-%now iterate for every IRF. 
 
-
-
+%Need to perform LP on the AR(1)
+%Check line 290 - I think one should take quantile, there we take a
+%specific IRF as the bound
+% for j = 1:nvar
+%     IR_surp(:,j,2) = quantile(squeeze(irb_surp(:,j,:))',.95);
+%     IR_surp(:,j,3) = quantile(squeeze(irb_surp(:,j,:))',.05);
+%     IR_news(:,j,2) = quantile(squeeze(irb_news(:,j,:))',.95);
+%     IR_news(:,j,3) = quantile(squeeze(irb_news(:,j,:))',.05);
+% end
 
 
 
