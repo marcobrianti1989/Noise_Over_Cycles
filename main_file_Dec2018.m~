@@ -22,7 +22,7 @@ fprintf('\n')
 leads               = 16; %number of leads of TFP
 disp(['Number of leads used is ',num2str(leads)])
 fprintf('\n')
-H                   = 40; %irfs horizon
+H                   = 20; %irfs horizon
 lags_LP             = 4; %Lags in the Local Projection 
 which_trend         = 'quadratic'; %BPfilter, HPfilter, linear, quadratic
 
@@ -335,23 +335,27 @@ for j = 2: H
     IRF_ar1(j,:) = .9^j;
 end
 [sdensity_ar1] = spectrum(IRF_ar1); %I normalize s.t. the spectral density evaluated btwn 0 and pi is equal to .5 - CHECK
-[sdensity, period] = spectrum(IRF(1,:));
+[sdensity, period] = spectrum(IRF_boot(3,:,:));
 
 figure(3);
-plot(period(10:200)',sdensity(10:200),'Color','b','LineWidth',3); hold on; %step dependent 
+plot(period(10:200)',sdensity(10:200,250),'Color','b','LineWidth',3); hold on; %step dependent 
 plot(period(10:200)',sdensity_ar1(10:200),'Color','k','LineWidth',3);
 
 %Compute average spectral density, D1, around the peak  and average
 %spectral density around the trough, D2
-lpeak_lower   = 25;
-lpeak_upper   = 45;
-ltrough_lower = 50;
-ltrough_upper = 70;
-D1 = mean(sdensity(find(period>lpeak_upper,1,'last'):find(period>lpeak_lower,1,'last')));
-D2 = mean(sdensity(find(period>lpeak_upper,1,'last'):find(period>lpeak_lower,1,'last')));
-D  = D1/D2;
-
-
+lpeak_lower   = 25; %should be adjusted with steps and IRF horizon
+lpeak_upper   = 35;
+ltrough_lower = 40;
+ltrough_upper = 50;
+D1 = mean(sdensity(find(period>lpeak_upper,1,'last'):find(period>lpeak_lower,1,'last'),:),1);
+D2 = mean(sdensity(find(period>ltrough_upper,1,'last'):find(period>ltrough_lower,1,'last'),:),1);
+D  = D1./D2;
+D1_ar1 = mean(sdensity_ar1(find(period>lpeak_upper,1,'last'):find(period>lpeak_lower,1,'last'),:));
+D2_ar1 = mean(sdensity_ar1(find(period>ltrough_upper,1,'last'):find(period>ltrough_lower,1,'last'),:));
+D_ar1 = D1_ar1./D2_ar1;
+pval = length(find(D<=D_ar1))/nsimul;
+disp(['P-value univariate:    ',num2str(pval)])
+%now iterate for every IRF. 
 
 
 

@@ -4,28 +4,31 @@
 % the multivariate case.
 % TODO: accommodate multiple IRFs
 function[spect, periodicity] = spectrum(IRF)
-H      = length(IRF);
-[r c]  = size(IRF);
+[r, c, d]  = size(IRF);
 if c > r
-    IRF = IRF';
+    H = c;
+    IRF = permute(IRF,[2 1 3]);
+else
+    H = r;
 end
-Sigma  = 1; % normalization -- CHECK
+Sigma  = 1; % Shock variance
 step   = .01;  % check relation with Canova frequencies
 omega = 0 : step: pi;
-
+for k = 1 : d
 for x = 1: size(omega,2)
     for j = 1 : H
-        one(:,j) = (IRF(j,:)*exp(-i*(j-1)*omega(1,x)));
-        two(:,j) = (IRF(j,:)'*exp(i*(j-1)*omega(1,x))); %transpose is positive
+        one(:,j) = (IRF(j,:,k)*exp(-i*(j-1)*omega(1,x)));
+        two(:,j) = (IRF(j,:,k)'*exp(i*(j-1)*omega(1,x))); %transpose is positive
     end
-    spect(:,x)= (sum(one,2))*Sigma*(sum(two,2)); %CHECK
+    sp(x,:)= (sum(one,2))*Sigma*(sum(two,2)); %CHECK
     %cross_spectrum1(x,1) = spectrum(2,1,x);
     %cross_spectrum1(x,2) = spectrum(1,2,x);%correggi: va bene perche quando ne fai il trasposto lo transforma in positivo!!%
 end
+cn = 1/(2*sum(sp,1));
+spect(:,k) = sp.*cn;
+end
 periodicity = 2*pi./omega;
 %Normalize
-cn = 1/(2*sum(spect,2));
-spect = spect.*cn;
 
 
 
