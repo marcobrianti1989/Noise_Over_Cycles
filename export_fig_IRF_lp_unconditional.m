@@ -16,7 +16,7 @@ if export_fig2 == 1
             addpath([base_path '/Export_Fig']) %for Mac
       end
       warning on
-      export_fig(['VitoPresentation_13Dec2018_Zhat.pdf'])
+      export_fig(['ResInsideLP_20Dec2018_Zhat.pdf'])
       cd(base_path) %back to the original path
 
 end
