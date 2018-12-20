@@ -220,7 +220,7 @@ PC               = PC(1+lags:end-leads,:);
 
 disp(['Filter used is ',which_trend])
 fprintf('\n')
- Ztilde = Zhat;
+
 % warning('Be careful Ztilde is now Zhat')
 standardize_Ztilde = 1;
 if standardize_Ztilde == 1
@@ -347,9 +347,11 @@ end
 [sdensity_pe, period] = spectrum(IRF(1,:)); %point estimate 
 
 figure(3); %plot spectral density and its CI against the AR(1) counterpart
-sdensity_up   = quantile(sdensity',1);
-sdensity_low  = quantile(sdensity',0);
-plot(period(10:200)',sdensity_pe(10:200),'-b','LineWidth',3); hold on; %step dependent 
+sdensity_up   = quantile(sdensity',1-sig);
+sdensity_low  = quantile(sdensity',sig);
+sdensity_ave  = quantile(sdensity',.5);
+%plot(period(10:200)',sdensity_pe(10:200),'-b','LineWidth',3); hold on; %step dependent 
+plot(period(10:200)',sdensity_ave(10:200),'-b','LineWidth',3); hold on;  
 plot(period(10:200)',sdensity_up(10:200),'--b','LineWidth',2); hold on;
 plot(period(10:200)',sdensity_low(10:200),'--b','LineWidth',2); hold on; %the point estimate is not included in the CI, is it because we don't correct for the bias in the LP?
 plot(period(10:200)',sdensity_ar1(10:200),'k','LineWidth',3);
