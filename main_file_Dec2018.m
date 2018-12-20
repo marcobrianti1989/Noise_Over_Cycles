@@ -351,7 +351,7 @@ sdensity_up   = quantile(sdensity',1);
 sdensity_low  = quantile(sdensity',0);
 plot(period(10:200)',sdensity_pe(10:200),'-b','LineWidth',3); hold on; %step dependent 
 plot(period(10:200)',sdensity_up(10:200),'--b','LineWidth',2); hold on;
-plot(period(10:200)',sdensity_low(10:200),'--b','LineWidth',2); hold on;
+plot(period(10:200)',sdensity_low(10:200),'--b','LineWidth',2); hold on; %the point estimate is not included in the CI, is it because we don't correct for the bias in the LP?
 plot(period(10:200)',sdensity_ar1(10:200),'k','LineWidth',3);
 
 %Compute average spectral density, D1, around the peak  and average
