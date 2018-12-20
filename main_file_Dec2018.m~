@@ -15,6 +15,20 @@
 clear
 close all
 
+%Parameters
+lags                = 4; %number of lags of TFP - cannot be zero since 1 include current TFP
+disp(['Number of lags used is ',num2str(lags)])
+fprintf('\n')
+leads               = 16; %number of leads of TFP
+disp(['Number of leads used is ',num2str(leads)])
+fprintf('\n')
+H                   = 40; %irfs horizon
+lags_LP             = 4; %Lags in the Local Projection 
+which_trend         = 'quadratic'; %BPfilter, HPfilter, linear, quadratic
+
+
+
+
 % Read main dataset
 filename                    = 'main_file';
 sheet                       = 'Sheet1';
@@ -90,15 +104,10 @@ fprintf('\n')
 % XZ  = [ones(length(YFE),1) , Z3(1:end-3)];
 % [B,BINT,~,~,STATS] = regress(YFE,XZ);
 
-%Technical values to build Ztilde
-lags                 = 4; %number of lags of TFP - cannot be zero since 1 include current TFP
-disp(['Number of lags used is ',num2str(lags)])
-fprintf('\n')
-leads                = 16; %number of leads of TFP
-disp(['Number of leads used is ',num2str(leads)])
-fprintf('\n')
 
-%Structural shocks from Ramey narrative approach, Hamilton, Romer and Romer, Military government spending...
+
+%Structural shocks from Ramey narrative approach, Hamilton, Romer and
+%Romer, Military government spending ADD IN ORDER
 [TFP_trunc, trunc1, trunc2] = truncate_data(TFP);
 TFPBP                       = bpass(TFP_trunc,4,32);
 TFPBP                       = [TFPBP; NaN(length(TFP) - length(TFPBP),1)];
@@ -135,7 +144,9 @@ if plot1 == 1
       export_fig_Ztilde(export_fig1)
 end
 
-%Ztilde = BarskySimsNews(1+lags:end-leads);
+% Ztilde = Zhat;
+% Ztilde = RESID08(1+lags:end-leads);
+% Ztilde = BarskySimsNews(1+lags:end-leads);
 % Ztilde = Z1(1+lags:end-leads);
 % warning('Ztilde is replaced by another shock')
 %*************************************************************************%
@@ -206,10 +217,7 @@ end
 dep_var          = dep_var(1+lags:end-leads,:);
 PC               = PC(1+lags:end-leads,:);
 
-% Technical Parameters
-H                = 20; %irfs horizon
-lags             = 4;
-which_trend      = 'none'; %BPfilter, HPfilter, linear_time, quadratic_time
+
 disp(['Filter used is ',which_trend])
 fprintf('\n')
 % Ztilde = Zhat;
@@ -247,7 +255,7 @@ for kk = 1:size(dep_var,2)
             which_trend_final = which_trend;
       end
       [IR{kk},res{kk},Rsquared{kk},BL{kk},tuple{kk},VD{kk}] = ...
-            local_projection(depvarkk,pckk,Ztildekk,lags,H,which_trend_final);
+            local_projection(depvarkk,pckk,Ztildekk,lags_LP,H,which_trend_final);
       if logdifferences == 0
             IRF(kk,:) = IR{kk};
       else
@@ -261,7 +269,7 @@ for kk = 1:size(dep_var,2)
             tuplekkhh = tuplekk{hh}; % Fix a specific horizon
             Y                             = tuplekkhh(:,1);
             X                             = tuplekkhh(:,2:end);
-            [Yboot, Xboot]                = bb_bootstrap_LP(Y,X,nsimul,lags);
+            [Yboot, Xboot]                = bb_bootstrap_LP(Y,X,nsimul,lags_LP);
             for isimul = 1:nsimul
                   B                       = Xboot(:,:,isimul)'*Xboot(:,:,isimul)\...
                         (Xboot(:,:,isimul)'*Yboot(:,isimul));
@@ -323,13 +331,25 @@ end
 % let's see how it works 
 % assume an AR(1)
 IRF_ar1 = 1;
-for j = 2: 20
-    IRF_ar1(j) = IRF_ar1(j-1)^j;
+for j = 2: H
+    IRF_ar1(j,:) = .9^j;
 end
-sdensity = spectrum(IRF(:,1));
+[sdensity_ar1] = spectrum(IRF_ar1); %I normalize s.t. the spectral density evaluated btwn 0 and pi is equal to .5 - CHECK
+[sdensity, period] = spectrum(IRF(1,:));
 
+figure(3);
+plot(period(10:200)',sdensity(10:200),'Color','b','LineWidth',3); hold on; %step dependent 
+plot(period(10:200)',sdensity_ar1(10:200),'Color','k','LineWidth',3);
 
-
+%Compute average spectral density, D1, around the peak  and average
+%spectral density around the trough, D2
+lpeak_lower   = 25;
+lpeak_upper   = 45;
+ltrough_lower = 50;
+ltrough_upper = 70;
+D1 = mean(sdensity(find(period>lpeak_upper,1,'last'):find(period>lpeak_lower,1,'last')));
+D2 = mean(sdensity(find(period>lpeak_upper,1,'last'):find(period>lpeak_lower,1,'last')));
+D  = D1/D2;
 
 
 

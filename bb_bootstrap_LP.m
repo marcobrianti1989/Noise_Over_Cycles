@@ -1,4 +1,4 @@
-function [Yboot Xboot] = bb_bootstrap_LP(Y,X,nsimul,lags)
+function [Yboot, Xboot] = bb_bootstrap_LP(Y,X,nsimul,lags)
 % no bias correction yet - although it should not change substantially 
 
 % Inputs:

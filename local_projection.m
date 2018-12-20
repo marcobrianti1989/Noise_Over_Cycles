@@ -24,9 +24,9 @@ for h = 1:H
                   Y     = bpass(Y,4,32);
             case 'HPfilter'
                   [~,Y] = hpfilter(Y,1600);
-            case 'linear_time'
+            case 'linear'
                   trend = [1:1:length(Y)]';
-            case 'quadratic_time'
+            case 'quadratic'
                   trend = [1:1:length(Y)]';
                   trend = [trend trend.^2];
                   X     = [X trend];
