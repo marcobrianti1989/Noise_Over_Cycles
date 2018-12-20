@@ -220,7 +220,7 @@ PC               = PC(1+lags:end-leads,:);
 
 disp(['Filter used is ',which_trend])
 fprintf('\n')
- Ztilde = Zhat;
+
 % warning('Be careful Ztilde is now Zhat')
 standardize_Ztilde = 1;
 if standardize_Ztilde == 1
@@ -337,10 +337,10 @@ end
 %% *************************************************************************%
 % (Canova) test of cyclical IRF
 % assume an AR(1)
-
+rho = 0; %rho = 0, Hnull: flat spectral density, otherwise rho should be estimated from data
 IRF_ar1 = 1;
 for j = 2: H
-    IRF_ar1(j,:) = .9^j;
+    IRF_ar1(j,:) = rho^j;
 end
 [sdensity_ar1] = spectrum(IRF_ar1); %I normalize s.t. the spectral density evaluated btwn 0 and pi is equal to .5 - CHECK
 [sdensity] = spectrum(IRF_boot(1,:,:));
@@ -349,8 +349,9 @@ end
 figure(3); %plot spectral density and its CI against the AR(1) counterpart
 sdensity_up   = quantile(sdensity',1-sig);
 sdensity_low  = quantile(sdensity',sig);
-sdensity_ave  = quantile(sdensity',.);
-plot(period(10:200)',sdensity_pe(10:200),'-b','LineWidth',3); hold on; %step dependent 
+sdensity_ave  = quantile(sdensity',.5);
+%plot(period(10:200)',sdensity_pe(10:200),'-b','LineWidth',3); hold on; %step dependent 
+plot(period(10:200)',sdensity_ave(10:200),'-b','LineWidth',3); hold on;  
 plot(period(10:200)',sdensity_up(10:200),'--b','LineWidth',2); hold on;
 plot(period(10:200)',sdensity_low(10:200),'--b','LineWidth',2); hold on; %the point estimate is not included in the CI, is it because we don't correct for the bias in the LP?
 plot(period(10:200)',sdensity_ar1(10:200),'k','LineWidth',3);
@@ -371,14 +372,7 @@ pval = length(find(D<=D_ar1))/nsimul;
 disp(['P-value univariate:    ',num2str(pval)])
 
 %Need to perform LP on the AR(1)
-%Check line 290 - I think one should take quantile, there we take a
-%specific IRF as the bound
-% for j = 1:nvar
-%     IR_surp(:,j,2) = quantile(squeeze(irb_surp(:,j,:))',.95);
-%     IR_surp(:,j,3) = quantile(squeeze(irb_surp(:,j,:))',.05);
-%     IR_news(:,j,2) = quantile(squeeze(irb_news(:,j,:))',.95);
-%     IR_news(:,j,3) = quantile(squeeze(irb_news(:,j,:))',.05);
-% end
+
 
 
 

@@ -337,10 +337,10 @@ end
 %% *************************************************************************%
 % (Canova) test of cyclical IRF
 % assume an AR(1)
-
+rho = 0; %rho = 0, Hnull: flat spectral density, otherwise rho should be estimated from data
 IRF_ar1 = 1;
 for j = 2: H
-    IRF_ar1(j,:) = .9^j;
+    IRF_ar1(j,:) = rho^j;
 end
 [sdensity_ar1] = spectrum(IRF_ar1); %I normalize s.t. the spectral density evaluated btwn 0 and pi is equal to .5 - CHECK
 [sdensity] = spectrum(IRF_boot(1,:,:));
@@ -372,14 +372,7 @@ pval = length(find(D<=D_ar1))/nsimul;
 disp(['P-value univariate:    ',num2str(pval)])
 
 %Need to perform LP on the AR(1)
-%Check line 290 - I think one should take quantile, there we take a
-%specific IRF as the bound
-% for j = 1:nvar
-%     IR_surp(:,j,2) = quantile(squeeze(irb_surp(:,j,:))',.95);
-%     IR_surp(:,j,3) = quantile(squeeze(irb_surp(:,j,:))',.05);
-%     IR_news(:,j,2) = quantile(squeeze(irb_news(:,j,:))',.95);
-%     IR_news(:,j,3) = quantile(squeeze(irb_news(:,j,:))',.05);
-% end
+
 
 
 
