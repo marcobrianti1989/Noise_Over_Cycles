@@ -23,7 +23,7 @@ leads               = 16; %number of leads of TFP
 disp(['Number of leads used is ',num2str(leads)])
 fprintf('\n')
 H                   = 20; %irfs horizon
-lags_LP             = 4; %Lags in the Local Projection 
+lags_LP             = 4; %Lags in the Local Projection
 which_trend         = 'quadratic'; %BPfilter, HPfilter, linear, quadratic
 
 % Read main dataset
@@ -286,13 +286,13 @@ for kk = 1:size(dep_var,2)
       end
 end
 % IRF_boot         = sort(IRF_boot,3);
- sig              = 0.05;
- sig2             = 0.16;
+sig              = 0.05;
+sig2             = 0.16;
 for j = 1:size(dep_var,2)
-    IRF_up(j,:)   = quantile(squeeze(IRF_boot(j,:,:))',1-sig);
-    IRF_up2(j,:)  = quantile(squeeze(IRF_boot(j,:,:))',1-sig2);
-    IRF_low(j,:)  = quantile(squeeze(IRF_boot(j,:,:))',sig);
-    IRF_low2(j,:) = quantile(squeeze(IRF_boot(j,:,:))',sig2);
+      IRF_up(j,:)   = quantile(squeeze(IRF_boot(j,:,:))',1-sig);
+      IRF_up2(j,:)  = quantile(squeeze(IRF_boot(j,:,:))',1-sig2);
+      IRF_low(j,:)  = quantile(squeeze(IRF_boot(j,:,:))',sig);
+      IRF_low2(j,:) = quantile(squeeze(IRF_boot(j,:,:))',sig2);
 end
 
 
@@ -326,25 +326,28 @@ end
 
 %% *************************************************************************%
 % (Canova) test of cyclical IRF
-% assume an AR(1) 
-rho = 0; %rho = 0, Hnull: flat spectral density, otherwise rho should be estimated from data as im BG
+% assume an AR(1)
+rho = 0.9; %rho = 0, Hnull: flat spectral density, otherwise rho should be estimated from data as im BG
 IRF_ar1 = 1;
 for j = 2: H
-    IRF_ar1(j,:) = rho^j;
+      IRF_ar1(j,:) = rho^j;
 end
 [sdensity_ar1] = spectrum(IRF_ar1); %I normalize s.t. the spectral density evaluated btwn 0 and pi is equal to .5 - CHECK
+plot(sdensity_ar1)
 [sdensity] = spectrum(IRF_boot(1,:,:));
-[sdensity_pe, period] = spectrum(IRF(1,:)); %point estimate 
+[sdensity_pe, period] = spectrum(IRF(1,:)); %point estimate
 
 figure(3); %plot spectral density and its CI against the AR(1) counterpart
 sdensity_up   = quantile(sdensity',1-sig);
 sdensity_low  = quantile(sdensity',sig);
 sdensity_ave  = quantile(sdensity',.5);
-plot(period(10:200)',sdensity_pe(10:200),'-b','LineWidth',3); hold on; %step dependent 
-plot(period(10:200)',sdensity_ave(10:200),'-b','LineWidth',3); hold on;  
+plot(period(10:200)',sdensity_pe(10:200),'-r','LineWidth',2); hold on; %step dependent
+plot(period(10:200)',sdensity_ave(10:200),'-b','LineWidth',3); hold on;
 plot(period(10:200)',sdensity_up(10:200),'--b','LineWidth',2); hold on;
 plot(period(10:200)',sdensity_low(10:200),'--b','LineWidth',2); hold on; %the point estimate is not included in the CI, is it because we don't correct for the bias in the LP?
-plot(period(10:200)',sdensity_ar1(10:200),'k','LineWidth',3);
+plot(period(10:200)',sdensity_ar1(10:200),'k','LineWidth',1.25);
+xlabel('Frequency','fontsize',20);
+grid on
 
 %Compute average spectral density, D1, around the peak  and average
 %spectral density around the trough, D2
@@ -352,7 +355,7 @@ lpeak_lower   = 25; %should be adjusted with steps and IRF horizon
 lpeak_upper   = 35;
 ltrough_lower = 40;
 ltrough_upper = 50;
-D1 = mean(sdensity(find(period>lpeak_upper,1,'last'):find(period>lpeak_lower,1,'last'),:),1); 
+D1 = mean(sdensity(find(period>lpeak_upper,1,'last'):find(period>lpeak_lower,1,'last'),:),1);
 D2 = mean(sdensity(find(period>ltrough_upper,1,'last'):find(period>ltrough_lower,1,'last'),:),1);
 D  = D1./D2;
 D1_ar1 = mean(sdensity_ar1(find(period>lpeak_upper,1,'last'):find(period>lpeak_lower,1,'last'),:));
