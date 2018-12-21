@@ -26,13 +26,10 @@ H                   = 20; %irfs horizon
 lags_LP             = 4; %Lags in the Local Projection 
 which_trend         = 'quadratic'; %BPfilter, HPfilter, linear, quadratic
 
-
-
-
 % Read main dataset
 filename                    = 'main_file';
 sheet                       = 'Sheet1';
-range                       = 'B1:CT300';
+range                       = 'B1:CU300';
 do_truncation               = 0; %Do not truncate data. You will have many NaN
 [dataset, var_names]        = read_data2(filename, sheet, range, do_truncation);
 
@@ -146,6 +143,7 @@ end
 
 % Ztilde = Zhat;
 % Ztilde = RESID08(1+lags:end-leads);
+Ztilde = UnantTFPshock(1+lags:end-leads);
 % Ztilde = BarskySimsNews(1+lags:end-leads);
 % Ztilde = Z1(1+lags:end-leads);
 % warning('Ztilde is replaced by another shock')
