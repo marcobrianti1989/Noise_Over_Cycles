@@ -14,12 +14,12 @@ for h = 1:H
                   if sum(sum(x.^2)) > 0 % Add into (big) X controls (small) x
                         X = [X, u(lags-jj+1:end-jj-h+1,:), y(lags-jj+1:end-jj-h+1,:), ...
                               x(lags-jj+1:end-jj-h+1,:)];
-                        if h > 1
+                        if h > 1 && jj == 1
                               X = [X, resh(1:end-1)];
                         end
                   else % no controls
                         X = [X, u(lags-jj+1:end-jj-h+1,:), y(lags-jj+1:end-jj-h+1,:)];
-                        if h > 1
+                        if h > 1 && jj == 1
                               X = [X, resh(1:end-1)];
                         end
                   end
