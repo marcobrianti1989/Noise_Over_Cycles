@@ -186,8 +186,8 @@ end
 % Create Var List
 SP500            = SP500 - GDPDefl;
 varlist          = {'RealGDP','RealCons','RealInvestment','Hours',...
-      'RealInventories','CPIInflation','UnempRate','BloomFinDistress',...
-      'SP500'};
+      'RealInventories','FFR','UnempRate','BloomFinDistress',...
+      'MichIndexConfidence'};
 
 
 %{'RealGDP','RealCons','RealInvestment','Hours'};
@@ -329,7 +329,7 @@ end
 %% *************************************************************************%
 % (Canova) test of cyclical IRF
 % assume an AR(1) 
-rho = 0; %rho = 0, Hnull: flat spectral density, otherwise rho should be estimated from data as im BG
+rho = 0; %rho = 0, Hnull: flat spectral density, otherwise rho should be estimated from data as imn
 IRF_ar1 = 1;
 for j = 2: H
     IRF_ar1(j,:) = rho^j;
@@ -342,7 +342,7 @@ figure(3); %plot spectral density and its CI against the AR(1) counterpart
 sdensity_up   = quantile(sdensity',1-sig);
 sdensity_low  = quantile(sdensity',sig);
 sdensity_ave  = quantile(sdensity',.5);
-plot(period(10:200)',sdensity_pe(10:200),'-b','LineWidth',3); hold on; %step dependent 
+%plot(period(10:200)',sdensity_pe(10:200),'-b','LineWidth',3); hold on; %step dependent 
 plot(period(10:200)',sdensity_ave(10:200),'-b','LineWidth',3); hold on;  
 plot(period(10:200)',sdensity_up(10:200),'--b','LineWidth',2); hold on;
 plot(period(10:200)',sdensity_low(10:200),'--b','LineWidth',2); hold on; %the point estimate is not included in the CI, is it because we don't correct for the bias in the LP?
