@@ -26,9 +26,6 @@ H                   = 20; %irfs horizon
 lags_LP             = 4; %Lags in the Local Projection 
 which_trend         = 'quadratic'; %BPfilter, HPfilter, linear, quadratic
 
-
-
-
 % Read main dataset
 filename                    = 'main_file';
 sheet                       = 'Sheet1';
@@ -333,7 +330,6 @@ if plot3 == 1
       export_fig_IRF_lp_unconditional(export_fig3)
 end
 
-
 %% *************************************************************************%
 % (Canova) test of cyclical IRF
 % assume an AR(1)
@@ -349,7 +345,7 @@ end
 figure(3); %plot spectral density and its CI against the AR(1) counterpart
 sdensity_up   = quantile(sdensity',1-sig);
 sdensity_low  = quantile(sdensity',sig);
-sdensity_ave  = quantile(sdensity',.5);
+sdensity_ave  = quantile(sdensity',.5); % this is the median...little detail
 %plot(period(10:200)',sdensity_pe(10:200),'-b','LineWidth',3); hold on; %step dependent 
 plot(period(10:200)',sdensity_ave(10:200),'-b','LineWidth',3); hold on;  
 plot(period(10:200)',sdensity_up(10:200),'--b','LineWidth',2); hold on;

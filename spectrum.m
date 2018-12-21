@@ -17,7 +17,10 @@ omega = 0 : step: pi;
 for k = 1 : d
 for x = 1: size(omega,2)
     for j = 1 : H
-        one(:,j) = (IRF(j,:,k)*exp(-i*(j-1)*omega(1,x))); %CHECK (j-1)
+        one(:,j) = (IRF(j,:,k)*exp(-i*(j-1)*omega(1,x))); %CHECK (j-1) 
+        % 1. What about 2*pi? 
+        % 2. What about dividing over J the exponential?
+        % 3. What about dividing over J the whole object?
         two(:,j) = (IRF(j,:,k)'*exp(i*(j-1)*omega(1,x))); %transpose is positive
     end
     sp(x,:)= (sum(one,2))*Sigma*(sum(two,2)); %CHECK
