@@ -1,4 +1,4 @@
-function [IRF,res,Rsquared,B_store,tuple_store,VDstore] = local_projection(y,x,u,lags,H,which_trend)
+function [IRF,res,tuple_store,VDstore] = local_projection(y,x,u,lags,H,which_trend)
 
 % H is the horizon of the irf
 % y and x are (T,1); dependend and observable control variables
@@ -46,11 +46,6 @@ for h = 1:H
       resh               = Y - X*B;
       res{h}             = resh;
       Rsquared(h)        = 1 - var(res{h})/var(Y);
-      if h == 1
-            B_store(:,h)       = [B; NaN];
-      else
-            B_store(:,h)       = B;
-      end
       
       % Variance Decomposition
       NUM                = NUM + B(1)^2;

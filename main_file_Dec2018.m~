@@ -4,10 +4,6 @@
 % NOTE describe variables (especially SHOCKS) in dataset
 %
 % last change 11/30/2018
-% TODO:
-% - do not filter Inflation, add GDP deflator
-% - Variance decomposition
-% - State dependent effects
 %
 % Code by Brianti, Marco e Cormun, Vito
 %*************************************************************************%
@@ -23,16 +19,13 @@ leads               = 16; %number of leads of TFP
 disp(['Number of leads used is ',num2str(leads)])
 fprintf('\n')
 H                   = 20; %irfs horizon
-lags_LP             = 4; %Lags in the Local Projection 
+lags_LP             = 4; %Lags in the Local Projection
 which_trend         = 'quadratic'; %BPfilter, HPfilter, linear, quadratic
-
-
-
 
 % Read main dataset
 filename                    = 'main_file';
 sheet                       = 'Sheet1';
-range                       = 'B1:CT300';
+range                       = 'B1:CU300';
 do_truncation               = 0; %Do not truncate data. You will have many NaN
 [dataset, var_names]        = read_data2(filename, sheet, range, do_truncation);
 
@@ -146,6 +139,7 @@ end
 
 % Ztilde = Zhat;
 % Ztilde = RESID08(1+lags:end-leads);
+% Ztilde = UnantTFPshock(1+lags:end-leads);
 % Ztilde = BarskySimsNews(1+lags:end-leads);
 % Ztilde = Z1(1+lags:end-leads);
 % warning('Ztilde is replaced by another shock')
@@ -186,8 +180,8 @@ end
 % Create Var List
 SP500            = SP500 - GDPDefl;
 varlist          = {'RealGDP','RealCons','RealInvestment','Hours',...
-      'RealInventories','FFR','UnempRate','BloomFinDistress',...
-      'MichIndexConfidence'};
+      'RealInventories','CPIInflation','UnempRate','BloomFinDistress',...
+      'SP500'};
 
 
 %{'RealGDP','RealCons','RealInvestment','Hours'};
@@ -254,7 +248,7 @@ for kk = 1:size(dep_var,2)
       else
             which_trend_final = which_trend;
       end
-      [IR{kk},res{kk},Rsquared{kk},BL{kk},tuple{kk},VD{kk}] = ...
+      [IR{kk},res{kk},tuple{kk},VD{kk}] = ...
             local_projection(depvarkk,pckk,Ztildekk,lags_LP,H,which_trend_final);
       if logdifferences == 0
             IRF(kk,:) = IR{kk};
@@ -288,13 +282,13 @@ for kk = 1:size(dep_var,2)
       end
 end
 % IRF_boot         = sort(IRF_boot,3);
- sig              = 0.05;
- sig2             = 0.16;
+sig              = 0.05;
+sig2             = 0.16;
 for j = 1:size(dep_var,2)
-    IRF_up(j,:)   = quantile(squeeze(IRF_boot(j,:,:))',1-sig);
-    IRF_up2(j,:)  = quantile(squeeze(IRF_boot(j,:,:))',1-sig2);
-    IRF_low(j,:)  = quantile(squeeze(IRF_boot(j,:,:))',sig);
-    IRF_low2(j,:) = quantile(squeeze(IRF_boot(j,:,:))',sig2);
+      IRF_up(j,:)   = quantile(squeeze(IRF_boot(j,:,:))',1-sig);
+      IRF_up2(j,:)  = quantile(squeeze(IRF_boot(j,:,:))',1-sig2);
+      IRF_low(j,:)  = quantile(squeeze(IRF_boot(j,:,:))',sig);
+      IRF_low2(j,:) = quantile(squeeze(IRF_boot(j,:,:))',sig2);
 end
 
 
@@ -328,25 +322,69 @@ end
 
 %% *************************************************************************%
 % (Canova) test of cyclical IRF
-% assume an AR(1) 
-rho = 0; %rho = 0, Hnull: flat spectral density, otherwise rho should be estimated from data as imn
+rho = 0.99; %rho = 0, Hnull: flat spectral density, otherwise rho should be estimated from data as im BG
+T = 250; %should impose same data length
+%generate IRF on AR(1) from LP
+Yar(1) = 0;
+for t = 2:T
+    Yar(t) = rho*Yar(t-1) + randn;
+end
+%recover shocks
+[coef,~,Zar] = regress(Yar(2:end)', Yar(1:end-1)');
+%run LP
+[IRFar,res,tuplear] = local_projection(Yar(2:end)',zeros(T-1,1),Zar,0,H,'none');
+ % Initiate bootstrap
+for hh = 1:H
+    tuplearhh = tuplear{hh}; % Fix a specific horizon
+    Y                             = tuplearhh(:,1);
+    X                             = tuplearhh(:,2:end);
+    [Yboot, Xboot]                = bb_bootstrap_LP(Y,X,nsimul,0);
+    for isimul = 1:nsimul
+        B                       = Xboot(:,:,isimul)'*Xboot(:,:,isimul)\...
+            (Xboot(:,:,isimul)'*Yboot(:,isimul));
+        IRFar_boot(1,hh,isimul)  = B(1);
+    end
+end
+
+IRFar_up(j,:)   = quantile(squeeze(IRFar_boot(1,:,:))',1-sig);
+IRFar_low(j,:)  = quantile(squeeze(IRFar_boot(1,:,:))',sig);
+figure(3); %plot spectral density and its CI against the AR(1) counterpart
+plot([0:H-1]',IRFar_up,'--k','LineWidth',2); hold on; 
+plot([0:H-1]',IRFar_low,'--k','LineWidth',2); hold on;
+plot([0:H-1]',IRFar,'-k','LineWidth',2); 
+[sdensityar] = spectrum(IRFar_boot); 
+[sdensityar_pe, period] = spectrum(IRFar); %point estimate
+
+figure(4); %plot spectral density of AR(1) from LP
+sdensityar_up   = quantile(sdensityar',1-sig);
+sdensityar_low  = quantile(sdensityar',sig);
+sdensityar_ave  = quantile(sdensityar',.5);
+plot(period(10:200)',sdensityar_pe(10:200),'-r','LineWidth',2); hold on; %step dependent
+plot(period(10:200)',sdensityar_ave(10:200),'-b','LineWidth',3); hold on;
+plot(period(10:200)',sdensityar_up(10:200),'--b','LineWidth',2); hold on;
+plot(period(10:200)',sdensityar_low(10:200),'--b','LineWidth',2); hold on; %the point estimate is not included in the CI, is it because we don't correct for the bias in the LP?
+
+%Theoretical AR1-IRF
 IRF_ar1 = 1;
 for j = 2: H
-    IRF_ar1(j,:) = rho^j;
+      IRF_ar1(j,:) = rho^j;
 end
 [sdensity_ar1] = spectrum(IRF_ar1); %I normalize s.t. the spectral density evaluated btwn 0 and pi is equal to .5 - CHECK
+plot(sdensity_ar1)
 [sdensity] = spectrum(IRF_boot(1,:,:));
-[sdensity_pe, period] = spectrum(IRF(1,:)); %point estimate 
+[sdensity_pe, period] = spectrum(IRF(1,:)); %point estimate
 
-figure(3); %plot spectral density and its CI against the AR(1) counterpart
+figure(5); %plot spectral density and its CI against the AR(1) counterpart
 sdensity_up   = quantile(sdensity',1-sig);
 sdensity_low  = quantile(sdensity',sig);
 sdensity_ave  = quantile(sdensity',.5);
-%plot(period(10:200)',sdensity_pe(10:200),'-b','LineWidth',3); hold on; %step dependent 
-plot(period(10:200)',sdensity_ave(10:200),'-b','LineWidth',3); hold on;  
+plot(period(10:200)',sdensity_pe(10:200),'-r','LineWidth',2); hold on; %step dependent
+plot(period(10:200)',sdensity_ave(10:200),'-b','LineWidth',3); hold on;
 plot(period(10:200)',sdensity_up(10:200),'--b','LineWidth',2); hold on;
 plot(period(10:200)',sdensity_low(10:200),'--b','LineWidth',2); hold on; %the point estimate is not included in the CI, is it because we don't correct for the bias in the LP?
-plot(period(10:200)',sdensity_ar1(10:200),'k','LineWidth',3);
+plot(period(10:200)',sdensityar_pe(10:200),'k','LineWidth',1.25);
+xlabel('Frequency','fontsize',20);
+grid on
 
 %Compute average spectral density, D1, around the peak  and average
 %spectral density around the trough, D2
@@ -354,7 +392,7 @@ lpeak_lower   = 25; %should be adjusted with steps and IRF horizon
 lpeak_upper   = 35;
 ltrough_lower = 40;
 ltrough_upper = 50;
-D1 = mean(sdensity(find(period>lpeak_upper,1,'last'):find(period>lpeak_lower,1,'last'),:),1); 
+D1 = mean(sdensity(find(period>lpeak_upper,1,'last'):find(period>lpeak_lower,1,'last'),:),1);
 D2 = mean(sdensity(find(period>ltrough_upper,1,'last'):find(period>ltrough_lower,1,'last'),:),1);
 D  = D1./D2;
 D1_ar1 = mean(sdensity_ar1(find(period>lpeak_upper,1,'last'):find(period>lpeak_lower,1,'last'),:));
