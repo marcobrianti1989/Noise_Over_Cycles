@@ -385,7 +385,7 @@ Dar = D1ar./D2ar;
 
 Diff_D = D - Dar;
 
-pval = 1 - length(find(Diff_D>0))/nsimul
+pval = 1 - length(find(Diff_D>0))/nsimul %results seems to favor white noise against ar(1)
 
 
 % %Theoretical AR1-IRF
