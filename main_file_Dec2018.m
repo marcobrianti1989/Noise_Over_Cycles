@@ -139,7 +139,7 @@ end
 
 % Ztilde = Zhat;
 % Ztilde = RESID08(1+lags:end-leads);
- Ztilde = UnantTFPshock(1+lags:end-leads);
+% Ztilde = UnantTFPshock(1+lags:end-leads);
 % Ztilde = BarskySimsNews(1+lags:end-leads);
 % Ztilde = Z1(1+lags:end-leads);
 % warning('Ztilde is replaced by another shock')
@@ -322,8 +322,8 @@ end
 
 %% *************************************************************************%
 % (Canova) test of cyclical IRF
-rho = 0.1; %rho = 0, Hnull: flat spectral density, otherwise rho should be estimated from data as im BG
-T = 250; %should impose same data length
+rho = 0; %rho = 0, Hnull: flat spectral density, otherwise rho should be estimated from data as im BG
+T = 1000; %should impose same data length
 %generate IRF on AR(1) from LP
 Yar(1) = 0;
 for t = 2:T
@@ -369,12 +369,22 @@ plot(period(10:200)',sdensityar_low(10:200),'--b','LineWidth',2); hold on; %the 
 [sdensity] = spectrum(IRF_boot(1,:,:));
 [sdensity_pe, period] = spectrum(IRF(1,:)); %point estimate
 
+figure(5); %plot spectral density and its CI against the AR(1) counterpart
+sdensity_up   = quantile(sdensity',1-sig);
+sdensity_low  = quantile(sdensity',sig);
+sdensity_ave  = quantile(sdensity',.5);
+plot(period(10:200)',sdensity_pe(10:200),'-r','LineWidth',2); hold on; %step dependent
+plot(period(10:200)',sdensity_ave(10:200),'-b','LineWidth',3); hold on;
+plot(period(10:200)',sdensity_up(10:200),'--b','LineWidth',2); hold on;
+plot(period(10:200)',sdensity_low(10:200),'--b','LineWidth',2); hold on; %the point estimate is not included in the CI, is it because we don't correct for the bias in the LP?
+plot(period(10:200)',sdensityar_pe(10:200),'k','LineWidth',1.25);
+xlabel('Frequency','fontsize',20);
 %Compute average spectral density, D1, around the peak  and average
 %spectral density around the trough, D2
-lpeak_lower   = 25; %should be adjusted with steps and IRF horizon
-lpeak_upper   = 35;
-ltrough_lower = 40;
-ltrough_upper = 50;
+lpeak_lower   = 24; %should be adjusted with steps and IRF horizon
+lpeak_upper   = 25;
+ltrough_lower = 58;
+ltrough_upper = 60;
 D1 = mean(sdensity(find(period>lpeak_upper,1,'last'):find(period>lpeak_lower,1,'last'),:),1);
 D2 = mean(sdensity(find(period>ltrough_upper,1,'last'):find(period>ltrough_lower,1,'last'),:),1);
 D  = D1./D2;
