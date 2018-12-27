@@ -97,8 +97,6 @@ fprintf('\n')
 % XZ  = [ones(length(YFE),1) , Z3(1:end-3)];
 % [B,BINT,~,~,STATS] = regress(YFE,XZ);
 
-
-
 %Structural shocks from Ramey narrative approach, Hamilton, Romer and
 %Romer, Military government spending ADD IN ORDER
 [TFP_trunc, trunc1, trunc2] = truncate_data(TFP);
@@ -139,6 +137,7 @@ end
 
 % Ztilde = Zhat;
 % Ztilde = RESID08(1+lags:end-leads);
+% Ztilde = MUNI1Y(1+lags:end-leads);
 % Ztilde = UnantTFPshock(1+lags:end-leads);
 % Ztilde = BarskySimsNews(1+lags:end-leads);
 % Ztilde = Z1(1+lags:end-leads);
@@ -352,6 +351,8 @@ figure(3); %plot spectral density and its CI against the AR(1) counterpart
 plot([0:H-1]',IRFar_up,'--k','LineWidth',2); hold on; 
 plot([0:H-1]',IRFar_low,'--k','LineWidth',2); hold on;
 plot([0:H-1]',IRFar,'-k','LineWidth',2); 
+
+
 [sdensityar] = spectrum(IRFar_boot); 
 [sdensityar_pe, period] = spectrum(IRFar); %point estimate
 
@@ -369,7 +370,8 @@ plot(period(10:200)',sdensityar_low(10:200),'--b','LineWidth',2); hold on; %the 
 [sdensity] = spectrum(IRF_boot(1,:,:));
 [sdensity_pe, period] = spectrum(IRF(1,:)); %point estimate
 
-figure(5); %plot spectral density and its CI against the AR(1) counterpart
+%plot spectral density and its CI against the AR(1) counterpart
+figure(5); 
 sdensity_up   = quantile(sdensity',1-sig);
 sdensity_low  = quantile(sdensity',sig);
 sdensity_ave  = quantile(sdensity',.5);
@@ -382,7 +384,7 @@ xlabel('Frequency','fontsize',20);
 %Compute average spectral density, D1, around the peak  and average
 %spectral density around the trough, D2
 lpeak_lower   = 24; %should be adjusted with steps and IRF horizon
-lpeak_upper   = 25;
+lpeak_upper   = 26;
 ltrough_lower = 58;
 ltrough_upper = 60;
 D1 = mean(sdensity(find(period>lpeak_upper,1,'last'):find(period>lpeak_lower,1,'last'),:),1);
@@ -394,9 +396,23 @@ D2ar = mean(sdensityar(find(period>ltrough_upper,1,'last'):find(period>ltrough_l
 Dar = D1ar./D2ar;
 
 Diff_D = D - Dar;
-
 pval = 1 - length(find(Diff_D>0))/nsimul %results seems to favor white noise against ar(1)
 
+%% Multivariate test
+% it should embed the idea that there should be a pick in both spectral
+% densities of the series and their coherence should be high at the
+% frequency considered 
+
+%Spectral PCA 
+% standardize IRFs
+% compute spectrum
+% compute PCA 
+% take 1st pc and construct D
+
+[V,lamb] = eig(sigma); % diag(lamb) are the eigenvalues, V the eigenvectors
+V        = real(V);
+lamb     = real(lamb);
+pc       = data*V./n;
 
 % %Theoretical AR1-IRF
 % IRF_ar1 = 1;
