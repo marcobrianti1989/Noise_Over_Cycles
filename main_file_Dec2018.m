@@ -405,7 +405,11 @@ pval = 1 - length(find(Diff_D>0))/nsimul %results seems to favor white noise aga
 
 %Spectral PCA 
 % standardize IRFs
+IRF_boot_z = IRF_boot./sum(IRF_boot.^2,2); 
+
 % compute spectrum
+[spect, periodicity] = spectrum(IRF_boot_z);
+
 % compute PCA 
 % take 1st pc and construct D
 
