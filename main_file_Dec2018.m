@@ -19,7 +19,7 @@ leads               = 16; %number of leads of TFP
 disp(['Number of leads used is ',num2str(leads)])
 fprintf('\n')
 H                   = 20; %irfs horizon
-lags_LP             = 4; %Lags in the Local Projection
+lags_LP             = 4; %Lags in the Local Projection - should use lags selection criterion 
 which_trend         = 'quadratic'; %BPfilter, HPfilter, linear, quadratic
 
 % Read main dataset
@@ -38,7 +38,7 @@ end
 
 %*************************************************************************%
 %                                                                         %
-%          1st stage - Deriving sentimentcks                              %
+%          1st stage - Deriving sentiment                              %
 %                                                                         %
 %*************************************************************************%
 fprintf('\n')
@@ -144,7 +144,7 @@ end
 % warning('Ztilde is replaced by another shock')
 %*************************************************************************%
 %                                                                         %
-%          2nd stage - Smooth Transition Local Projections                %
+%          2nd stage - Local Projections                %
 %                                                                         %
 %*************************************************************************%
 fprintf('\n')
@@ -178,7 +178,7 @@ end
 
 % Create Var List
 SP500            = SP500 - GDPDefl;
-varlist          = {'RealGDP','RealCons','RealInvestment'}; %,'Hours',...
+varlist          = {'RealGDP','VXO'};%,'RealInvestment','UnempRate','SP500'}; %,'Hours',...
       %'RealInventories','CPIInflation','UnempRate','BloomFinDistress',...
       %'SP500'};
 
@@ -198,7 +198,7 @@ for i = 1:length(varlist)
       end
 end
 
-% Set up the typology of transformation
+% Choose the type of transformation
 logdifferences = 0;
 if logdifferences == 1
       dep_var = [nan(1,size(dep_var,2)); diff(dep_var)];
@@ -206,7 +206,7 @@ if logdifferences == 1
       fprintf('\n')
 end
 
-% Align the timing - It is important!
+% Align the timing 
 dep_var          = dep_var(1+lags:end-leads,:);
 PC               = PC(1+lags:end-leads,:);
 
@@ -256,7 +256,7 @@ for kk = 1:size(dep_var,2)
       end
       VDkk(kk,:) = VD{kk};
       % Initiate bootstrap
-      nsimul         = 500;
+      nsimul         = 1000;
       tuplekk        = tuple{kk};
       for hh = 1:H
             tuplekkhh = tuplekk{hh}; % Fix a specific horizon
