@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.19 (TeX Live 2018) (preloaded format=pdflatex 2018.8.9)  28 NOV 2018 17:26
+This is pdfTeX, Version 3.14159265-2.6-1.40.19 (TeX Live 2018) (preloaded format=pdflatex 2018.8.9)  15 JAN 2019 15:35
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -1214,22 +1214,20 @@ Underfull \vbox (badness 10000) has occurred while \output is active []
 
  <../../Figures/MarcoVito_Nov272018_FigureRyanMeeting.pdf>] [11 <../../Figures/
 MarcoVito_Nov272018_FigureRyanMeeting_Part1.pdf>]
-<../../Figures/MarcoVito_Nov272018_FigureRyanMeeting_Part2.pdf, id=101, 1171.12
-53pt x 634.90202pt>
-File: ../../Figures/MarcoVito_Nov272018_FigureRyanMeeting_Part2.pdf Graphic fil
-e (type pdf)
-<use ../../Figures/MarcoVito_Nov272018_FigureRyanMeeting_Part2.pdf>
-Package pdftex.def Info: ../../Figures/MarcoVito_Nov272018_FigureRyanMeeting_Pa
-rt2.pdf  used on input line 231.
-(pdftex.def)             Requested size: 316.20805pt x 171.42584pt.
 
-Overfull \hbox (8.91818pt too wide) in paragraph at lines 231--231
- [] 
- []
+./Brianti Cormun.tex:231: LaTeX Error: File `../../Figures/MarcoVito_Nov272018_
+FigureRyanMeeting_Part2' not found.
 
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.231 }
+       
+? 
 [12
 
- <../../Figures/MarcoVito_Nov272018_FigureRyanMeeting_Part2.pdf>] [13
+] [13
 
 ]
 \tf@nav=\write6
@@ -1243,8 +1241,7 @@ Overfull \hbox (8.91818pt too wide) in paragraph at lines 231--231
 
 Package atveryend Info: Empty hook `BeforeClearDocument' on input line 259.
 Package atveryend Info: Empty hook `AfterLastShipout' on input line 259.
-
-(./Brianti Cormun.aux)
+ (./Brianti Cormun.aux)
 Package atveryend Info: Empty hook `AtVeryEndDocument' on input line 259.
 Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 259.
 Package rerunfilecheck Info: File `"Brianti Cormun".out' has not changed.
@@ -1255,10 +1252,10 @@ LaTeX Font Warning: Some font shapes were not available, defaults substituted.
 
  ) 
 Here is how much of TeX's memory you used:
- 21024 strings out of 492649
- 419982 string characters out of 6129623
+ 21033 strings out of 492649
+ 419749 string characters out of 6129623
  485866 words of memory out of 5000000
- 24365 multiletter control sequences out of 15000+600000
+ 24361 multiletter control sequences out of 15000+600000
  48012 words of font info for 53 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  56i,14n,88p,1811b,797s stack positions out of 5000i,500n,10000p,200000b,80000s
@@ -1277,10 +1274,10 @@ t/fonts/type1/public/lm/lmsso10.pfb></usr/local/texlive/2018/texmf-dist/fonts/t
 ype1/public/lm/lmsso12.pfb></usr/local/texlive/2018/texmf-dist/fonts/type1/publ
 ic/lm/lmsso8.pfb></usr/local/texlive/2018/texmf-dist/fonts/type1/public/lm/lmsy
 10.pfb></usr/local/texlive/2018/texmf-dist/fonts/type1/public/lm/lmsy8.pfb>
-Output written on "Brianti Cormun.pdf" (13 pages, 597181 bytes).
+Output written on "Brianti Cormun.pdf" (13 pages, 463120 bytes).
 PDF statistics:
- 169 PDF objects out of 1000 (max. 8388607)
- 126 compressed objects within 2 object streams
+ 166 PDF objects out of 1000 (max. 8388607)
+ 124 compressed objects within 2 object streams
  27 named destinations out of 1000 (max. 500000)
- 75 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 70 words of extra memory for PDF output out of 10000 (max. 10000000)
 

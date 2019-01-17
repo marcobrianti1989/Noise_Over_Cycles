@@ -368,7 +368,7 @@ for cc = 1:2
     [sdensityar_pe, period] = spectrum(IRFar); %point estimate
     
     %plot spectral density of AR(1) from LP
-    figure(4+cc);
+    figure(4);
     sdensityar_up   = quantile(sdensityar',1-sig);
     sdensityar_low  = quantile(sdensityar',sig);
     sdensityar_ave  = quantile(sdensityar',.5);
@@ -387,27 +387,15 @@ for cc = 1:2
     sdensity_up(cc,:) = sdensity_up(cc,:).* 1/(2*sum(sdensity_up(cc,:)));
     sdensity_low(cc,:) = sdensity_low(cc,:).* 1/(2*sum(sdensity_low(cc,:)));
     sdensity_ave(cc,:) = sdensity_ave(cc,:).* 1/(2*sum(sdensity_ave(cc,:)));
-    %Compute average spectral density, D1, around the peak  and average
-    %spectral density around the trough, D2
-    lpeak_lower   = 24; %should be adjusted with steps and IRF horizon
-    lpeak_upper   = 26;
-    ltrough_lower = 58;
-    ltrough_upper = 60;
-    D1 = mean(sdensity(find(period>lpeak_upper,1,'last'):find(period>lpeak_lower,1,'last'),:),1);
-    D2 = mean(sdensity(find(period>ltrough_upper,1,'last'):find(period>ltrough_lower,1,'last'),:),1);
-    D  = D1./D2;
-    
-    D1ar = mean(sdensityar(find(period>lpeak_upper,1,'last'):find(period>lpeak_lower,1,'last'),:));
-    D2ar = mean(sdensityar(find(period>ltrough_upper,1,'last'):find(period>ltrough_lower,1,'last'),:));
-    Dar = D1ar./D2ar;
-    
-    Diff_D = D - Dar;
-    pval(cc) = 1 - length(find(Diff_D>0))/nsimul %results seems to favor white noise against ar(1)
 end
 var_list = {'$S_{GDP}$ to Sentiment','$S_{GDP}$ to Technology'};
 for cc = 1:2
+     %Normalize
+    sdensity_up(cc,:) = sdensity_up(cc,:).* 1/(2*sum(sdensity_up(cc,:)));
+    sdensity_low(cc,:) = sdensity_low(cc,:).* 1/(2*sum(sdensity_low(cc,:)));
+    sdensity_ave(cc,:) = sdensity_ave(cc,:).* 1/(2*sum(sdensity_ave(cc,:)));
     %plot spectral density and its CI against the AR(1) counterpart
-    figure(500);
+    figure(5);
     a = subplot(1,2,cc);
     p = plot(period(10:200)',sdensity_pe(10:200,cc),'-r','LineWidth',2); hold on; %step dependent
     m = plot(period(10:200)',sdensity_ave(cc,10:200),'-b','LineWidth',3); hold on;
@@ -423,7 +411,22 @@ for cc = 1:2
         set(l, 'box','off', 'FontSize',14,'Orientation','horizontal','Position',[0.35179282868526 -0.00717088619666764 0.400000000000001 0.0617721521401707]);
     end
 end
-   
+    %Compute average spectral density, D1, around the peak  and average
+    %spectral density around the trough, D2
+    lpeak_lower   = 24; %should be adjusted with steps and IRF horizon
+    lpeak_upper   = 26;
+    ltrough_lower = 58;
+    ltrough_upper = 60;
+    D1 = mean(sdensity(find(period>lpeak_upper,1,'last'):find(period>lpeak_lower,1,'last'),:),1);
+    D2 = mean(sdensity(find(period>ltrough_upper,1,'last'):find(period>ltrough_lower,1,'last'),:),1);
+    D  = D1./D2;
+    
+    D1ar = mean(sdensityar(find(period>lpeak_upper,1,'last'):find(period>lpeak_lower,1,'last'),:));
+    D2ar = mean(sdensityar(find(period>ltrough_upper,1,'last'):find(period>ltrough_lower,1,'last'),:));
+    Dar = D1ar./D2ar;
+    
+    Diff_D = D - Dar;
+    pval = 1 - length(find(Diff_D>0))/nsimul %results seems to favor white noise against ar(1)
 
 %% Multivariate test
 % it should embed the idea that there should be a pick in both spectral
