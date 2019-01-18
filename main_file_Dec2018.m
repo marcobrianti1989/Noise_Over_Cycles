@@ -15,7 +15,7 @@ close all
 lags                = 4; %number of lags of TFP - cannot be zero since 1 include current TFP
 disp(['Number of lags used is ',num2str(lags)])
 fprintf('\n')
-leads               = 16; %number of leads of TFP
+leads               = 1; %number of leads of TFP
 disp(['Number of leads used is ',num2str(leads)])
 fprintf('\n')
 H                   = 20; %irfs horizon
@@ -306,9 +306,9 @@ for cc = 1:2
     
     %Show the graph of IRF - Figure(2)
     plot2    = 1; % if plot2 = 1, figure will be displayed
-    n_row    = 3; % how many row in the figure
+    n_row    = 3; % number of rows in the figure
     unique   = 1; % if unique = 1 plot IRFs together, if = 1 plot each IRF separately
-    plot_IRF_lp_unconditional(varlist,100.*IRF_low,100.*IRF_low2,100.*IRF_up,100.*IRF_up2,100.*IRF,H,plot2,n_row,unique)
+    plot_IRF_lp_unconditional(varlist,100.*IRF_low,100.*IRF_low2,100.*IRF_up,100.*IRF_up2,100.*IRF,H,plot2,n_row,unique) %change this function
     
     
     %Print figure authomatically if "export_figure1 = 1"
@@ -319,10 +319,10 @@ for cc = 1:2
     
     %Show the variance Explained - Figure(3)
     plot3    = 1; % if plot2 = 1, figure will be displayed
-    n_row    = 3; % how many row in the figure
+    n_row    = 3; % number of in the figure
     unique   = 1; % if unique = 1 plot IRFs together, if = 1 plot each IRF separately
     plot_IRF_lp_unconditional(varlist,100*VDkk,100*VDkk,100*VDkk,...
-        100*VDkk,100*VDkk,H,plot3,n_row,unique)
+        100*VDkk,100*VDkk,H,plot3,n_row,unique) %change this function
     
     % Print figure authomatically if "export_figure1 = 1"
     if plot3 == 1

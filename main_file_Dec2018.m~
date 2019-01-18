@@ -306,9 +306,9 @@ for cc = 1:2
     
     %Show the graph of IRF - Figure(2)
     plot2    = 1; % if plot2 = 1, figure will be displayed
-    n_row    = 3; % how many row in the figure
+    n_row    = 3; % number of rows in the figure
     unique   = 1; % if unique = 1 plot IRFs together, if = 1 plot each IRF separately
-    plot_IRF_lp_unconditional(varlist,100.*IRF_low,100.*IRF_low2,100.*IRF_up,100.*IRF_up2,100.*IRF,H,plot2,n_row,unique)
+    plot_IRF_lp_unconditional(varlist,100.*IRF_low,100.*IRF_low2,100.*IRF_up,100.*IRF_up2,100.*IRF,H,plot2,n_row,unique) %change this function
     
     
     %Print figure authomatically if "export_figure1 = 1"
@@ -319,10 +319,10 @@ for cc = 1:2
     
     %Show the variance Explained - Figure(3)
     plot3    = 1; % if plot2 = 1, figure will be displayed
-    n_row    = 3; % how many row in the figure
+    n_row    = 3; % number of in the figure
     unique   = 1; % if unique = 1 plot IRFs together, if = 1 plot each IRF separately
     plot_IRF_lp_unconditional(varlist,100*VDkk,100*VDkk,100*VDkk,...
-        100*VDkk,100*VDkk,H,plot3,n_row,unique)
+        100*VDkk,100*VDkk,H,plot3,n_row,unique) %change this function
     
     % Print figure authomatically if "export_figure1 = 1"
     if plot3 == 1
@@ -368,7 +368,7 @@ for cc = 1:2
     [sdensityar_pe, period] = spectrum(IRFar); %point estimate
     
     %plot spectral density of AR(1) from LP
-    figure(4);
+    figure(4+cc);
     sdensityar_up   = quantile(sdensityar',1-sig);
     sdensityar_low  = quantile(sdensityar',sig);
     sdensityar_ave  = quantile(sdensityar',.5);
@@ -387,30 +387,6 @@ for cc = 1:2
     sdensity_up(cc,:) = sdensity_up(cc,:).* 1/(2*sum(sdensity_up(cc,:)));
     sdensity_low(cc,:) = sdensity_low(cc,:).* 1/(2*sum(sdensity_low(cc,:)));
     sdensity_ave(cc,:) = sdensity_ave(cc,:).* 1/(2*sum(sdensity_ave(cc,:)));
-end
-var_list = {'$S_{GDP}$ to Sentiment','$S_{GDP}$ to Technology'};
-for cc = 1:2
-     %Normalize
-    sdensity_up(cc,:) = sdensity_up(cc,:).* 1/(2*sum(sdensity_up(cc,:)));
-    sdensity_low(cc,:) = sdensity_low(cc,:).* 1/(2*sum(sdensity_low(cc,:)));
-    sdensity_ave(cc,:) = sdensity_ave(cc,:).* 1/(2*sum(sdensity_ave(cc,:)));
-    %plot spectral density and its CI against the AR(1) counterpart
-    figure(5);
-    a = subplot(1,2,cc);
-    p = plot(period(10:200)',sdensity_pe(10:200,cc),'-r','LineWidth',2); hold on; %step dependent
-    m = plot(period(10:200)',sdensity_ave(cc,10:200),'-b','LineWidth',3); hold on;
-    plot(period(10:200)',sdensity_up(cc,10:200),'--b','LineWidth',2); hold on;
-    plot(period(10:200)',sdensity_low(cc,10:200),'--b','LineWidth',2); hold on; %the point estimate is not included in the CI, is it because we don't correct for the bias in the LP?
-    t = plot(period(10:200)',sdensityar_pe(10:200),'k','LineWidth',3);
-    title(var_list{cc},'interpreter', 'latex', 'fontsize', 16);
-    if cc == 1
-        xlabel('Periodicity','fontsize',12);
-    end
-    if cc == 2
-        l=legend([p m t],{'Point estimate','Median','Null'},'Location', 'NorthEast','interpreter','latex');
-        set(l, 'box','off', 'FontSize',14,'Orientation','horizontal','Position',[0.35179282868526 -0.00717088619666764 0.400000000000001 0.0617721521401707]);
-    end
-end
     %Compute average spectral density, D1, around the peak  and average
     %spectral density around the trough, D2
     lpeak_lower   = 24; %should be adjusted with steps and IRF horizon
@@ -426,7 +402,28 @@ end
     Dar = D1ar./D2ar;
     
     Diff_D = D - Dar;
-    pval = 1 - length(find(Diff_D>0))/nsimul %results seems to favor white noise against ar(1)
+    pval(cc) = 1 - length(find(Diff_D>0))/nsimul %results seems to favor white noise against ar(1)
+end
+var_list = {'$S_{GDP}$ to Sentiment','$S_{GDP}$ to Technology'};
+for cc = 1:2
+    %plot spectral density and its CI against the AR(1) counterpart
+    figure(500);
+    a = subplot(1,2,cc);
+    p = plot(period(10:200)',sdensity_pe(10:200,cc),'-r','LineWidth',2); hold on; %step dependent
+    m = plot(period(10:200)',sdensity_ave(cc,10:200),'-b','LineWidth',3); hold on;
+    plot(period(10:200)',sdensity_up(cc,10:200),'--b','LineWidth',2); hold on;
+    plot(period(10:200)',sdensity_low(cc,10:200),'--b','LineWidth',2); hold on; %the point estimate is not included in the CI, is it because we don't correct for the bias in the LP?
+    t = plot(period(10:200)',sdensityar_pe(10:200),'k','LineWidth',3);
+    title(var_list{cc},'interpreter', 'latex', 'fontsize', 16);
+    if cc == 1
+        xlabel('Periodicity','fontsize',12);
+    end
+    if cc == 2
+        l=legend([p m t],{'Point estimate','Median','Null'},'Location', 'NorthEast','interpreter','latex');
+        set(l, 'box','off', 'FontSize',14,'Orientation','horizontal','Position',[0.35179282868526 -0.00717088619666764 0.400000000000001 0.0617721521401707]);
+    end
+end
+   
 
 %% Multivariate test
 % it should embed the idea that there should be a pick in both spectral
