@@ -15,7 +15,7 @@ close all
 lags                = 4; %number of lags of TFP - cannot be zero since 1 include current TFP
 disp(['Number of lags used is ',num2str(lags)])
 fprintf('\n')
-leads               = 1; %number of leads of TFP
+leads               = 16; %number of leads of TFP
 disp(['Number of leads used is ',num2str(leads)])
 fprintf('\n')
 H                   = 20; %irfs horizon
