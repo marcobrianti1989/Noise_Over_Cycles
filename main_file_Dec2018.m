@@ -13,13 +13,14 @@ close all
 
 %Parameters
 lags                = 4; %number of lags of TFP - cannot be zero since 1 include current TFP
+fprintf('\n')
 disp(['Number of lags used is ',num2str(lags)])
 fprintf('\n')
 leads               = 16; %number of leads of TFP
 disp(['Number of leads used is ',num2str(leads)])
 fprintf('\n')
 H                   = 20; %irfs horizon
-lags_LP             = 4; %Lags in the Local Projection - should use lags selection criterion
+lags_LP             = 1; %Lags in the Local Projection - should use lags selection criterion
 which_trend         = 'quadratic'; %BPfilter, HPfilter, linear, quadratic
 
 % Read main dataset
@@ -46,7 +47,7 @@ fprintf('\n')
 disp('First Step: Building Ztilde')
 fprintf('\n')
 fprintf('\n')
-for cc = 1:2
+for cc = 1:1
     %Building Zt
     %Step 1 - Getting the forecasted growth rates
     Delta_RGDP_t        = RGDP5_SPF./RGDP1_SPF - ones(length(RGDP1_SPF),1);
@@ -73,6 +74,7 @@ for cc = 1:2
     Z4                  = [NaN; Delta_INDPROD_t(2:end) - Delta_INDPROD_t1(1:end-1)];
     Z5                  = [NaN; Delta_RINV_t(2:end) - Delta_RINV_t1(1:end-1)];
     Z6                  = [NaN; Delta_CPI_t(2:end)];% - Delta_CPI_t1(1:end-1)];
+    Z7                  = [NaN; diff(Mich5Y)];
     
     % Choose which SPF variable
     which_Z             = '1';
@@ -80,16 +82,16 @@ for cc = 1:2
     disp(['Z',which_Z, ' is used as forecast revision variable'])
     fprintf('\n')
     
-    % Building the Forecast Errors
-    FE1                  = [NaN(3,1); (RGDP1_SPF(1+4:end) - RGDP5_SPF(1:end-4))./RGDP1_SPF(2:end-3); NaN];
-    FE2                  = [NaN(3,1); (NGDP1_SPF(1+4:end) - NGDP5_SPF(1:end-4))./NGDP1_SPF(2:end-3); NaN];
-    FE3                  = [NaN(3,1); (RCONS1_SPF(1+4:end) - RCONS5_SPF(1:end-4))./RCONS1_SPF(2:end-3); NaN];
-    FE4                  = [NaN(3,1); (INDPROD1_SPF(1+4:end) - INDPROD5_SPF(1:end-4))./INDPROD1_SPF(2:end-3); NaN];
-    FE5                  = [NaN(3,1); (RRESINV1_SPF(1+4:end) + RNRESIN1_SPF(1+4:end) - RRESINV5_SPF(1:end-4) - RNRESIN5_SPF(1:end-4))./(RRESINV1_SPF(2:end-3) + RNRESIN1_SPF(2:end-3)); NaN];
-    
-    eval(['FE = FE', which_Z,';']);
-    disp(['FE',which_Z, ' is used as forecast error variable'])
-    fprintf('\n')
+%     % Building the Forecast Errors
+%     FE1                  = [NaN(3,1); (RGDP1_SPF(1+4:end) - RGDP5_SPF(1:end-4))./RGDP1_SPF(2:end-3); NaN];
+%     FE2                  = [NaN(3,1); (NGDP1_SPF(1+4:end) - NGDP5_SPF(1:end-4))./NGDP1_SPF(2:end-3); NaN];
+%     FE3                  = [NaN(3,1); (RCONS1_SPF(1+4:end) - RCONS5_SPF(1:end-4))./RCONS1_SPF(2:end-3); NaN];
+%     FE4                  = [NaN(3,1); (INDPROD1_SPF(1+4:end) - INDPROD5_SPF(1:end-4))./INDPROD1_SPF(2:end-3); NaN];
+%     FE5                  = [NaN(3,1); (RRESINV1_SPF(1+4:end) + RNRESIN1_SPF(1+4:end) - RRESINV5_SPF(1:end-4) - RNRESIN5_SPF(1:end-4))./(RRESINV1_SPF(2:end-3) + RNRESIN1_SPF(2:end-3)); NaN];
+%     
+%     eval(['FE = FE', which_Z,';']);
+%     disp(['FE',which_Z, ' is used as forecast error variable'])
+%     fprintf('\n')
     
     % Coibon Gorodnichenko Regression
     % [B,BINT,R,RINT,STATS] = regress(Y,X);
@@ -122,7 +124,7 @@ for cc = 1:2
     end
     
     % Control Regression
-    [~, Zhat, Ztilde,regressor] = lead_lag_matrix_regression(Y,X_lead,...
+    [~, Zhat, Ztilde, regressor] = lead_lag_matrix_regression(Y,X_lead,...
         leads,X_lag,lags,X_contemporaneous);
     
     %Show the graph of Ztilde - Figure(1)
@@ -186,10 +188,8 @@ for cc = 1:2
         SP500            = SP500 - GDPDefl;
     else
     end
-    varlist          = {'RealGDP'};%,'RealInvestment','UnempRate','SP500'}; %,'Hours',...
-    %'RealInventories','CPIInflation','UnempRate','BloomFinDistress',...
-    %'SP500'};
-    
+    varlist          = {'RealGDP','RealCons','RealInvestment','Hours','RealInventories',...
+          'FFR','UnempRate','BloomFinDistress','CPIInflation',};
     
     %{'RealGDP','RealCons','RealInvestment','Hours'};
     % ,'UnempRate',...
@@ -330,7 +330,9 @@ for cc = 1:2
         export_fig_IRF_lp_unconditional(export_fig3)
     end
     
+end
     
+asd    
     %% *************************************************************************%
     % (Canova) test of cyclical IRF
     rho = 0; %rho = 0, Hnull: flat spectral density, otherwise rho should be estimated from data as im BG
@@ -403,7 +405,7 @@ for cc = 1:2
     
     Diff_D = D - Dar;
     pval(cc) = 1 - length(find(Diff_D>0))/nsimul %results seems to favor white noise against ar(1)
-end
+%end end for cc = 1:2
 var_list = {'$S_{GDP}$ to Sentiment','$S_{GDP}$ to Technology'};
 for cc = 1:2
     %plot spectral density and its CI against the AR(1) counterpart
