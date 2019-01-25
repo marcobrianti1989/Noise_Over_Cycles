@@ -74,7 +74,7 @@ for cc = 1:1
     Z4                  = [NaN; Delta_INDPROD_t(2:end) - Delta_INDPROD_t1(1:end-1)];
     Z5                  = [NaN; Delta_RINV_t(2:end) - Delta_RINV_t1(1:end-1)];
     Z6                  = [NaN; Delta_CPI_t(2:end)];% - Delta_CPI_t1(1:end-1)];
-    Z7                  = [NaN; diff(Mich5Y)];
+    Z7                  = [NaN; diff(Mich1Y)];
     
     % Choose which SPF variable
     which_Z             = '1';
@@ -425,64 +425,67 @@ for cc = 1:2
         set(l, 'box','off', 'FontSize',14,'Orientation','horizontal','Position',[0.35179282868526 -0.00717088619666764 0.400000000000001 0.0617721521401707]);
     end
 end
+
+
+
    
-
-%% Multivariate test
-% it should embed the idea that there should be a pick in both spectral
-% densities of the series and their coherence should be high at the
-% frequency considered
-
-%Spectral PCA
-% standardize IRFs
-IRF_boot_z = IRF_boot./sum(IRF_boot.^2,2);
-
-% compute spectrum
-[spect, periodicity] = spectrum(IRF_boot_z);
-
-% compute PCA
-% take 1st pc and construct D
-
-[V,lamb] = eig(sigma); % diag(lamb) are the eigenvalues, V the eigenvectors
-V        = real(V);
-lamb     = real(lamb);
-pc       = data*V./n;
-
-% %Theoretical AR1-IRF
-% IRF_ar1 = 1;
-% for j = 2: H
-%       IRF_ar1(j,:) = rho^j;
-% end
-% [sdensity_ar1] = spectrum(IRF_ar1); %I normalize s.t. the spectral density evaluated btwn 0 and pi is equal to .5 - CHECK
-% plot(sdensity_ar1)
-%
-% figure(5); %plot spectral density and its CI against the AR(1) counterpart
-% sdensity_up   = quantile(sdensity',1-sig);
-% sdensity_low  = quantile(sdensity',sig);
-% sdensity_ave  = quantile(sdensity',.5);
-% plot(period(10:200)',sdensity_pe(10:200),'-r','LineWidth',2); hold on; %step dependent
-% plot(period(10:200)',sdensity_ave(10:200),'-b','LineWidth',3); hold on;
-% plot(period(10:200)',sdensity_up(10:200),'--b','LineWidth',2); hold on;
-% plot(period(10:200)',sdensity_low(10:200),'--b','LineWidth',2); hold on; %the point estimate is not included in the CI, is it because we don't correct for the bias in the LP?
-% plot(period(10:200)',sdensityar_pe(10:200),'k','LineWidth',1.25);
-% xlabel('Frequency','fontsize',20);
-% grid on
-%
-% %Compute average spectral density, D1, around the peak  and average
-% %spectral density around the trough, D2
-% lpeak_lower   = 25; %should be adjusted with steps and IRF horizon
-% lpeak_upper   = 35;
-% ltrough_lower = 40;
-% ltrough_upper = 50;
-% D1 = mean(sdensity(find(period>lpeak_upper,1,'last'):find(period>lpeak_lower,1,'last'),:),1);
-% D2 = mean(sdensity(find(period>ltrough_upper,1,'last'):find(period>ltrough_lower,1,'last'),:),1);
-% D  = D1./D2;
-% D1_ar1 = mean(sdensity_ar1(find(period>lpeak_upper,1,'last'):find(period>lpeak_lower,1,'last'),:));
-% D2_ar1 = mean(sdensity_ar1(find(period>ltrough_upper,1,'last'):find(period>ltrough_lower,1,'last'),:));
-% D_ar1 = D1_ar1./D2_ar1;
-% pval = length(find(D<=D_ar1))/nsimul;
-% disp(['P-value univariate:    ',num2str(pval)])
-%
-% %Need to perform LP on the AR(1)
+%% Trash
+% %% Multivariate test
+% % it should embed the idea that there should be a pick in both spectral
+% % densities of the series and their coherence should be high at the
+% % frequency considered
+% 
+% %Spectral PCA
+% % standardize IRFs
+% IRF_boot_z = IRF_boot./sum(IRF_boot.^2,2);
+% 
+% % compute spectrum
+% [spect, periodicity] = spectrum(IRF_boot_z);
+% 
+% % compute PCA
+% % take 1st pc and construct D
+% 
+% [V,lamb] = eig(sigma); % diag(lamb) are the eigenvalues, V the eigenvectors
+% V        = real(V);
+% lamb     = real(lamb);
+% pc       = data*V./n;
+% 
+% % %Theoretical AR1-IRF
+% % IRF_ar1 = 1;
+% % for j = 2: H
+% %       IRF_ar1(j,:) = rho^j;
+% % end
+% % [sdensity_ar1] = spectrum(IRF_ar1); %I normalize s.t. the spectral density evaluated btwn 0 and pi is equal to .5 - CHECK
+% % plot(sdensity_ar1)
+% %
+% % figure(5); %plot spectral density and its CI against the AR(1) counterpart
+% % sdensity_up   = quantile(sdensity',1-sig);
+% % sdensity_low  = quantile(sdensity',sig);
+% % sdensity_ave  = quantile(sdensity',.5);
+% % plot(period(10:200)',sdensity_pe(10:200),'-r','LineWidth',2); hold on; %step dependent
+% % plot(period(10:200)',sdensity_ave(10:200),'-b','LineWidth',3); hold on;
+% % plot(period(10:200)',sdensity_up(10:200),'--b','LineWidth',2); hold on;
+% % plot(period(10:200)',sdensity_low(10:200),'--b','LineWidth',2); hold on; %the point estimate is not included in the CI, is it because we don't correct for the bias in the LP?
+% % plot(period(10:200)',sdensityar_pe(10:200),'k','LineWidth',1.25);
+% % xlabel('Frequency','fontsize',20);
+% % grid on
+% %
+% % %Compute average spectral density, D1, around the peak  and average
+% % %spectral density around the trough, D2
+% % lpeak_lower   = 25; %should be adjusted with steps and IRF horizon
+% % lpeak_upper   = 35;
+% % ltrough_lower = 40;
+% % ltrough_upper = 50;
+% % D1 = mean(sdensity(find(period>lpeak_upper,1,'last'):find(period>lpeak_lower,1,'last'),:),1);
+% % D2 = mean(sdensity(find(period>ltrough_upper,1,'last'):find(period>ltrough_lower,1,'last'),:),1);
+% % D  = D1./D2;
+% % D1_ar1 = mean(sdensity_ar1(find(period>lpeak_upper,1,'last'):find(period>lpeak_lower,1,'last'),:));
+% % D2_ar1 = mean(sdensity_ar1(find(period>ltrough_upper,1,'last'):find(period>ltrough_lower,1,'last'),:));
+% % D_ar1 = D1_ar1./D2_ar1;
+% % pval = length(find(D<=D_ar1))/nsimul;
+% % disp(['P-value univariate:    ',num2str(pval)])
+% %
+% % %Need to perform LP on the AR(1)
 
 
 
