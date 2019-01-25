@@ -1,0 +1,341 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage[a4paper,top=2.5cm,bottom=2.5cm,left=2.5cm,right=2.5cm,%
+bindingoffset=0mm]{geometry}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\newtheorem{prop}{Proposition}
+\newtheorem{lemma}{Lemma}
+\newenvironment{proof}[1][Proof]{\begin{trivlist}
+\item[\hskip \labelsep {\bfseries #1}]}{\end{trivlist}}
+\newcommand{\qed}{\nobreak \ifvmode \relax \else
+      \ifdim\lastskip<1.5em \hskip-\lastskip
+      \hskip1.5em plus0em minus0.5em \fi \nobreak
+      \vrule height0.75em width0.75em depth0em\fi}
+\usepackage{tikz}
+\usepackage{graphicx}
+\usepackage{rotating}
+\usepackage{float}
+\linespread{1.3}
+\raggedbottom
+
+
+
+
+%
+\font\reali=msbm10 at 12pt
+% subsets of real numbers
+\newcommand{\real}{\hbox{\reali R}}
+\newcommand{\realp}{\hbox{\reali R}_{\scriptscriptstyle +}}
+\newcommand{\realpp}{\hbox{\reali R}_{\scriptscriptstyle ++}}
+\newcommand{\R}{\mathbb{R}}
+\DeclareMathOperator{\E}{\mathbb{E}}
+%
+
+\title{BGP Model\\Some Derivations}
+\author{Marco Brianti\\Vito Cormun}
+\date{Spring 2019}
+
+\begin{document}
+
+\maketitle
+
+\section{Model}\label{sec:model}
+
+Consider the following model with two states variables. The first equation describes the law of motion of investment $I_t$,
+\begin{equation}\label{eq:LOMinvestment}
+I_t = \alpha_{1,1} I_{t-1} + \alpha_{1,2} K_{t-1} + s_t^I
+\end{equation}
+while the second equation describes the law of motion of capital $K_t$
+\begin{equation}\label{eq:LOMcapital}
+K_t = \alpha_{2,1} I_{t-1} + \alpha_{2,2} K_{t-1} + s_t^K.
+\end{equation}
+Notice that $s_t^I$ and $s_t^K$ are two disturbances such that $s_t^I \perp s_{\tau}^K$ for all $t$ and $\tau$. In addition, we also assume that $s_t^j \perp s_{\tau}^j$ for all $t$ and $\tau$ for $j \in \{ I,K\}$.\footnote{It can be easily derived that in steady state, both investment and capital are equal to $I_{ss} = K_{ss} = 0$. Without loss of generality, this result simplifies the analysis because levels outside of steady state are also deviations from steady state.}
+
+The system is linear and it can be written in a more compactly as
+\begin{equation}\label{eq:matrix_system_expanded}
+\begin{pmatrix}
+I_t \\
+K_t
+\end{pmatrix} = \begin{pmatrix}
+\alpha_{1,1} & \alpha_{1,2} \\
+\alpha_{2,1} & \alpha_{2,2}
+\end{pmatrix}\begin{pmatrix}
+I_{t-1} \\
+K_{t-1}
+\end{pmatrix} + \begin{pmatrix}
+s_t^I \\ 
+s_t^K
+\end{pmatrix}
+\end{equation}
+which is
+\begin{equation}\label{eq:matrix_system_compact}
+X_t = A X_{t-1} + s_t
+\end{equation}
+For the rest of the document, we will assume that both $\alpha_{1,1}$ and $\alpha_{2,2}$ are positive.\footnote{The economic interpretation of this assumption is straightforward. A positive value of $\alpha_{2,2}$ means that a part of capital in the previous period is not fully depreciated and survived as an endowment in the subsequent period. Instead, $\alpha_{1,1}$ positive suggests that Equation \ref{eq:LOMinvestment} is the reduced form of a setting with dynamic strategic complementary of investment. If investment has been positive in the past then it is convenient to invest more also today.}
+
+\section{Stability Conditions}
+
+In order to study the stability conditions, we parametrically evaluate the eigenvalues $\lambda_1$ and $\lambda_2$ of matrix $A$. In other words, we need to solve the following problem,
+$$
+\det(A - \lambda I) = 0
+$$
+which can be rewritten as,
+$$
+\det \begin{pmatrix}
+\alpha_{1,1} - \lambda & \alpha_{1,2} \\
+\alpha_{2,1} & \alpha_{2,2} - \lambda
+\end{pmatrix} = 0
+$$
+which is, 
+\begin{equation*}
+\begin{aligned}
+  0 &= (\alpha_{1,1} - \lambda)(\alpha_{2,2} - \lambda) - \alpha_{1,2}\alpha_{2,1} \\
+  &= \alpha_{1,1} \alpha_{2,2} + \lambda^2 - (\alpha_{1,1} + \alpha_{2,2}) \lambda - \alpha_{1,2}\alpha_{2,1} \\
+   &= \lambda^2  - (\alpha_{1,1} + \alpha_{2,2}) \lambda + \alpha_{1,1} \alpha_{2,2} - \alpha_{1,2}\alpha_{2,1}
+\end{aligned}
+\end{equation*}
+Solving over $\lambda$ yields,
+\begin{equation}\label{eq:lambda_sol}
+\begin{aligned}
+\lambda_{1,2} &= \frac{1}{2} \bigg[ (\alpha_{1,1} + \alpha_{2,2})  \pm \sqrt{  (\alpha_{1,1} + \alpha_{2,2})^2 - 4(\alpha_{1,1} \alpha_{2,2} - \alpha_{1,2}\alpha_{2,1}) }  \bigg] \\
+&= \frac{1}{2} \bigg[ (\alpha_{1,1} + \alpha_{2,2})  \pm \sqrt{  (\alpha_{1,1} - \alpha_{2,2})^2 + 4 \alpha_{1,2}\alpha_{2,1} }  \bigg] \\
+\end{aligned}
+\end{equation}
+
+\begin{prop}\label{prop:complex_eigen}
+Sufficient condition to have complex eigenvalues is to have $\alpha_{1,2}$ and $\alpha_{2,1}$ with a different sign. 
+\end{prop}
+
+\begin{proof}
+Proof follows from Equation \ref{eq:lambda_sol}. In particular, $(\alpha_{1,1} - \alpha_{2,2})^2 + 4 \alpha_{1,2}\alpha_{2,1}$ might be negative if and only if the sign of $\alpha_{1,2}$ is different than the sign of $\alpha_{2,1}$.
+\end{proof}
+
+\begin{prop}\label{prop:real_eigen}
+Sufficient condition to have real eigenvalues is to have $\alpha_{1,2}$ and $\alpha_{2,1}$ with the same sign.
+\end{prop}
+
+\begin{proof}
+	Proof straightforwardly follows from Proposition \ref{prop:complex_eigen}.
+\end{proof}
+
+\begin{prop}\label{prop:stability_one}
+	If $\alpha_{1,2}\alpha_{2,1} = 0$, then the system is stable (both $|\lambda_{1,2}| < 1$) if and only if both $\alpha_{1,1}$ and $\alpha_{2,2}$ are smaller than one.\footnote{Notice that we assumed both $\alpha_{1,1}$ and $\alpha_{2,2}$ to be non negative in Section \ref{sec:model}.}
+\end{prop}
+
+\begin{proof}
+Since $\lambda_{1,2} = \frac{1}{2} [ \alpha_{1,1} + \alpha_{2,2}  \pm ( \alpha_{1,1} - \alpha_{2,2} ) ]$ then we have that $\lambda_1 = \alpha_{1,1}$ and $\lambda_2 = \alpha_{2,2}$. If both $\alpha_{1,1}$ and $\alpha_{2,2}$ are smaller than one then the system is automatically stable. On the other hand, if the system is stable - $|\lambda_{1,2}| < 1$ - then it must be the case that both $\alpha_{1,1}$ and $\alpha_{2,2}$ are smaller than one.
+\end{proof}
+
+\section{Shock Dependent Cyclical responses}
+
+From now on we will assume that $\alpha_{1,2} \alpha_{2,1} < 0$, $\lambda_{1,2}$ are real and their module is smaller than one. In particular, I will assume that $\alpha_{1,2} < 0$ and $\alpha_{2,1} > 0$.
+
+\subsection{Investment-Specific Shock}
+
+Assume in period $t$, when the system is in steady state, that $s_t^I = 1$. Impact responses at $t$ of both variables are,
+\begin{equation}\label{eq:I_responses_zero}
+\begin{pmatrix}
+I_t \\
+K_t
+\end{pmatrix} = \begin{pmatrix}
+1 \\
+0
+\end{pmatrix} = \begin{pmatrix}
+\alpha_{1,1} & \alpha_{1,2} \\
+\alpha_{2,1} & \alpha_{2,2}
+\end{pmatrix}\begin{pmatrix}
+0 \\
+0
+\end{pmatrix} + \begin{pmatrix}
+1 \\ 
+0
+\end{pmatrix}
+\end{equation} 
+At time $t + 1$, dynamic responses are,
+\begin{equation}\label{eq:I_responses_one}
+\begin{pmatrix}
+I_{t+1} \\
+K_{t+1}
+\end{pmatrix} = \begin{pmatrix}
+\alpha_{1,1} \\
+\alpha_{2,1}
+\end{pmatrix} = \begin{pmatrix}
+\alpha_{1,1} & \alpha_{1,2} \\
+\alpha_{2,1} & \alpha_{2,2}
+\end{pmatrix}\begin{pmatrix}
+1 \\
+0
+\end{pmatrix} + \begin{pmatrix}
+0 \\ 
+0
+\end{pmatrix}
+\end{equation} 
+At time $t + 2$, dynamic responses are,
+\begin{equation}\label{eq:I_responses_two}
+\begin{pmatrix}
+I_{t+2} \\
+K_{t+2}
+\end{pmatrix} = \begin{pmatrix}
+\alpha_{1,1}^2 + \alpha_{1,2}\alpha_{2,1} \\
+\alpha_{2,1}\alpha_{1,1} + \alpha_{2,2}\alpha_{2,1}
+\end{pmatrix} = \begin{pmatrix}
+\alpha_{1,1} & \alpha_{1,2} \\
+\alpha_{2,1} & \alpha_{2,2}
+\end{pmatrix}\begin{pmatrix}
+\alpha_{1,1} \\
+\alpha_{2,1}
+\end{pmatrix} 
+\end{equation} 
+At time $t + 3$, dynamic responses are,
+\begin{equation}\label{eq:I_responses_three}
+\begin{aligned}
+\begin{pmatrix}
+I_{t+3} \\
+K_{t+3}
+\end{pmatrix} &= \begin{pmatrix}
+\alpha_{1,1}(\alpha_{1,1}^2 + \alpha_{1,2}\alpha_{2,1}) + \alpha_{1,2}(\alpha_{2,1}\alpha_{1,1} + \alpha_{2,2}\alpha_{2,1})  \\
+\alpha_{2,1}(\alpha_{1,1}^2 + \alpha_{1,2}\alpha_{2,1}) + \alpha_{2,2}(\alpha_{2,1}\alpha_{1,1} + \alpha_{2,2}\alpha_{2,1})
+\end{pmatrix} \\
+&= \begin{pmatrix}
+\alpha_{1,1} & \alpha_{1,2} \\
+\alpha_{2,1} & \alpha_{2,2}
+\end{pmatrix}\begin{pmatrix}
+\alpha_{1,1}^2 + \alpha_{1,2}\alpha_{2,1} \\
+\alpha_{2,1}\alpha_{1,1} + \alpha_{2,2}\alpha_{2,1}
+\end{pmatrix} 
+\end{aligned}
+\end{equation} 
+
+\subsection{Capital-Specific Shock}
+
+Assume in period $t$, when the system is in steady state, that $s_t^K = 1$. Impact responses at $t$ of both variables are,
+\begin{equation}\label{eq:K_responses_zero}
+\begin{pmatrix}
+I_t \\
+K_t
+\end{pmatrix} = \begin{pmatrix}
+0 \\
+1
+\end{pmatrix} = \begin{pmatrix}
+\alpha_{1,1} & \alpha_{1,2} \\
+\alpha_{2,1} & \alpha_{2,2}
+\end{pmatrix}\begin{pmatrix}
+0 \\
+0
+\end{pmatrix} + \begin{pmatrix}
+0 \\ 
+1
+\end{pmatrix}
+\end{equation} 
+At time $t + 1$, dynamic responses are,
+\begin{equation}\label{eq:K_responses_one}
+\begin{pmatrix}
+I_{t+1} \\
+K_{t+1}
+\end{pmatrix} = \begin{pmatrix}
+\alpha_{1,2} \\
+\alpha_{2,2}
+\end{pmatrix} = \begin{pmatrix}
+\alpha_{1,1} & \alpha_{1,2} \\
+\alpha_{2,1} & \alpha_{2,2}
+\end{pmatrix}\begin{pmatrix}
+0 \\
+1
+\end{pmatrix} + \begin{pmatrix}
+0 \\ 
+0
+\end{pmatrix}
+\end{equation} 
+At time $t + 2$, dynamic responses are,
+\begin{equation}\label{eq:K_responses_two}
+\begin{pmatrix}
+I_{t+2} \\
+K_{t+2}
+\end{pmatrix} = \begin{pmatrix}
+\alpha_{1,1}\alpha_{1,2} + \alpha_{1,2}\alpha_{2,2} \\
+\alpha_{1,2}\alpha_{2,1} + \alpha_{2,2}^2
+\end{pmatrix} = \begin{pmatrix}
+\alpha_{1,1} & \alpha_{1,2} \\
+\alpha_{2,1} & \alpha_{2,2}
+\end{pmatrix}\begin{pmatrix}
+\alpha_{1,2} \\
+\alpha_{2,2}
+\end{pmatrix} 
+\end{equation} 
+At time $t + 3$, dynamic responses are,
+\begin{equation}\label{eq:K_responses_three}
+\begin{aligned}
+\begin{pmatrix}
+I_{t+3} \\
+K_{t+3}
+\end{pmatrix} &= \begin{pmatrix}
+\alpha_{1,1}(\alpha_{1,1}\alpha_{1,2} + \alpha_{1,2}\alpha_{2,2}) + \alpha_{1,2}(\alpha_{1,2}\alpha_{2,1} + \alpha_{2,2}^2)\\
+\alpha_{2,1}(\alpha_{1,1}\alpha_{1,2} + \alpha_{1,2}\alpha_{2,2}) + \alpha_{2,2}(\alpha_{1,2}\alpha_{2,1} + \alpha_{2,2}^2)
+\end{pmatrix} \\
+&= \begin{pmatrix}
+\alpha_{1,1} & \alpha_{1,2} \\
+\alpha_{2,1} & \alpha_{2,2}
+\end{pmatrix}\begin{pmatrix}
+\alpha_{1,1}\alpha_{1,2} + \alpha_{1,2}\alpha_{2,2} \\
+\alpha_{1,2}\alpha_{2,1} + \alpha_{2,2}^2
+\end{pmatrix}
+\end{aligned}
+\end{equation} 
+At time $t + 4$, dynamic responses are,
+\begin{equation}\label{eq:K_responses_four}
+\begin{aligned}
+&\begin{pmatrix}
+I_{t+4} \\
+K_{t+4}
+\end{pmatrix} =\\ &\begin{pmatrix}
+\alpha_{1,1}[\alpha_{1,1}(\alpha_{1,1}\alpha_{1,2} + \alpha_{1,2}\alpha_{2,2}) + \alpha_{1,2}(\alpha_{1,2}\alpha_{2,1} + \alpha_{2,2}^2)] + \alpha_{1,2}[\alpha_{2,1}(\alpha_{1,1}\alpha_{1,2} + \alpha_{1,2}\alpha_{2,2}) + \alpha_{2,2}(\alpha_{1,2}\alpha_{2,1} + \alpha_{2,2}^2)]\\
+\alpha_{2,1}[\alpha_{1,1}(\alpha_{1,1}\alpha_{1,2} + \alpha_{1,2}\alpha_{2,2}) + \alpha_{1,2}(\alpha_{1,2}\alpha_{2,1} + \alpha_{2,2}^2)] + \alpha_{2,2}[\alpha_{2,1}(\alpha_{1,1}\alpha_{1,2} + \alpha_{1,2}\alpha_{2,2}) + \alpha_{2,2}(\alpha_{1,2}\alpha_{2,1} + \alpha_{2,2}^2)]
+\end{pmatrix} \\
+&= \begin{pmatrix}
+\alpha_{1,1} & \alpha_{1,2} \\
+\alpha_{2,1} & \alpha_{2,2}
+\end{pmatrix}\begin{pmatrix}
+\alpha_{1,1}(\alpha_{1,1}\alpha_{1,2} + \alpha_{1,2}\alpha_{2,2}) + \alpha_{1,2}(\alpha_{1,2}\alpha_{2,1} + \alpha_{2,2}^2)\\
+\alpha_{2,1}(\alpha_{1,1}\alpha_{1,2} + \alpha_{1,2}\alpha_{2,2}) + \alpha_{2,2}(\alpha_{1,2}\alpha_{2,1} + \alpha_{2,2}^2)
+\end{pmatrix}
+\end{aligned}
+\end{equation} 
+
+\begin{prop}
+Investment $I_t$ displays a shock-dependent cyclical dynamics if
+\begin{enumerate}
+	\item $\alpha_{1,1}^2 < |\alpha_{1,2} \alpha_{2,1}|$
+	\item $\alpha_{2,2}^2 > |\alpha_{1,2} \alpha_{2,1}|$
+\end{enumerate}
+\end{prop}
+
+\begin{proof}
+Notice that after an investment-specific shock $s_t^I$, responses of $I_t$ are,
+\begin{equation*}
+\begin{aligned}
+I_t     &= 1   \\
+I_{t+1} &= \alpha_{1,1}   \\ 
+I_{t+2} &=  \alpha_{1,1}^2 + \alpha_{1,1} \alpha_{2,1}  \\ 
+I_{t+3} &=  \alpha_{1,1}(\alpha_{1,1}^2 + \alpha_{1,2}\alpha_{2,1}) + \alpha_{1,2}(\alpha_{2,1}\alpha_{1,1} + \alpha_{2,2}\alpha_{2,1})  \\ 
+\end{aligned}
+\end{equation*}	
+which implies that both $I_t$ and $I_{t+1}$ are positive by construction. However, $I_{t+2}$ and $I_{t+3}$ are negative. In particular, $I_{t+2}$ is negative because $\alpha_{1,1}^2 < |\alpha_{1,2} \alpha_{2,1}|$. Moreover, $I_{t+3}$ is negative because both $\alpha_{1,1}(\alpha_{1,1}^2 + \alpha_{1,2}\alpha_{2,1})$ and $\alpha_{1,2}(\alpha_{2,1}\alpha_{1,1} + \alpha_{2,2}\alpha_{2,1})$ are negative. This is already sufficient to show that investment $I_t$ displays a cyclical dynamics after an investment-specific shock, $s_t^I$.
+
+Conversely, after a capital-specific shock $s_t^K$, responses of $I_t$ are,
+\begin{equation*}
+\begin{aligned}
+I_t     &= 0   \\
+I_{t+1} &= \alpha_{1,2}   \\ 
+I_{t+2} &=  \alpha_{1,1} \alpha_{1,2} + \alpha_{1,2} \alpha_{2,2}  \\ 
+I_{t+3} &=  \alpha_{1,1}(\alpha_{1,1}^2 + \alpha_{1,2}\alpha_{2,2}) + \alpha_{1,2}(\alpha_{1,2}\alpha_{2,1} + \alpha_{2,2}^2)  \\ 
+\end{aligned}
+\end{equation*}	
+\end{proof}
+
+
+
+
+\end{document}
+
