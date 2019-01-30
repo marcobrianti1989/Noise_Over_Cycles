@@ -29,7 +29,7 @@ Xss  = Xnew;
 ess  = enew;
 
 % Initialiation
-H      = 25;
+H      = 100;
 hor    = linspace(0,H,H);
 e      = zeros(H,1);
 X      = zeros(H,1);
