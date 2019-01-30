@@ -74,7 +74,7 @@ for cc = 1:1
     Z4                  = [NaN; Delta_INDPROD_t(2:end) - Delta_INDPROD_t1(1:end-1)];
     Z5                  = [NaN; Delta_RINV_t(2:end) - Delta_RINV_t1(1:end-1)];
     Z6                  = [NaN; Delta_CPI_t(2:end)];% - Delta_CPI_t1(1:end-1)];
-    Z7                  = [NaN; diff(Mich1Y)];
+    Z7                  = [NaN; diff(MichIndexConfidence)];
     
     % Choose which SPF variable
     which_Z             = '1';
