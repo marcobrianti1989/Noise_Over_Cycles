@@ -154,7 +154,7 @@ M_.params( 4 ) = 0.0467;
 PHIE = M_.params( 4 );
 M_.params( 5 ) = 0.8827;
 PHI = M_.params( 5 );
-M_.params( 6 ) = 0.0458;
+M_.params( 6 ) = 0.99;
 PHIBIG = M_.params( 6 );
 M_.params( 7 ) = 1;
 S = M_.params( 7 );
@@ -162,29 +162,52 @@ M_.params( 8 ) = 0.6666666666666666;
 ALP = M_.params( 8 );
 M_.params( 9 ) = 0.05;
 DEL = M_.params( 9 );
-M_.params( 10 ) = 1;
-THET = M_.params( 10 );
 M_.params( 11 ) = 0.99;
 BET = M_.params( 11 );
-M_.params( 12 ) = 0.9;
+M_.params( 10 ) = 1/(M_.params(11)*0.9417^M_.params(4));
+THET = M_.params( 10 );
+M_.params( 12 ) = 0.95;
 RHO_THET = M_.params( 12 );
 M_.params( 13 ) = 1;
 SIGMA_THET = M_.params( 13 );
-M_.params( 14 ) = 0.9;
+M_.params( 14 ) = 0.5;
 RHO_ZETA = M_.params( 14 );
 M_.params( 15 ) = 1;
 SIGMA_ZETA = M_.params( 15 );
+logthetss        = 0;
+logzetass        = 0;
+ess              = 0.777146777146777;
+rpss             = 1.03609362949245;
+xss              = 5.06155342500016;
+%
+% INITVAL instructions
+%
+options_.initval_file = 0;
+oo_.steady_state( 4 ) = logthetss;
+oo_.steady_state( 5 ) = logzetass;
+oo_.steady_state( 2 ) = ess;
+oo_.steady_state( 1 ) = rpss;
+oo_.steady_state( 3 ) = xss;
+if M_.exo_nbr > 0
+	oo_.exo_simul = ones(M_.maximum_lag,1)*oo_.exo_steady_state';
+end
+if M_.exo_det_nbr > 0
+	oo_.exo_det_simul = ones(M_.maximum_lag,1)*oo_.exo_det_steady_state';
+end
 %
 % SHOCKS instructions
 %
 M_.exo_det_length = 0;
 M_.Sigma_e(1, 1) = 1;
-options_.solve_algo = 2;
-options_.steady.maxit = 1000;
+M_.Sigma_e(2, 2) = 1;
+M_.Sigma_e(1, 2) = 0;
+M_.Sigma_e(2, 1) = M_.Sigma_e(1, 2);
+M_.sigma_e_is_diagonal = 0;
 steady;
+oo_.dr.eigval = check(M_,options_,oo_);
 options_.irf = 50;
 options_.order = 1;
-var_list_ = char('logthet','e','x','rp');
+var_list_ = char('logthet','logzeta','e','x','rp');
 info = stoch_simul(var_list_);
 save('BGP_Jan2019_results.mat', 'oo_', 'M_', 'options_');
 if exist('estim_params_', 'var') == 1
