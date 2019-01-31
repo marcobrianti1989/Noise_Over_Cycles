@@ -10,30 +10,92 @@ Processing outputs ...
 done
 Preprocessing completed.
 
+STEADY-STATE RESULTS:
+
+rp      		 0.99665
+e       		 1.00338
+x       		 6.00149
+logthet 		 0
+logzeta 		 0
+
+EIGENVALUES:
+         Modulus             Real        Imaginary
+
+         0.02775         -0.02775                0
+             0.5              0.5                0
+            0.95             0.95                0
+          0.9504           0.9504                0
+           89.66           -89.66                0
+             Inf              Inf                0
+             Inf              Inf                0
+
+
+There are 3 eigenvalue(s) larger than 1 in modulus 
+for 3 forward-looking variable(s)
+
+The rank condition is verified.
+
+
+MODEL SUMMARY
+
+  Number of variables:         5
+  Number of stochastic shocks: 2
+  Number of state variables:   4
+  Number of jumpers:           3
+  Number of static variables:  1
+
+
+MATRIX OF COVARIANCE OF EXOGENOUS SHOCKS
+Variables    eps_thet  eps_zeta
+eps_thet     1.000000  0.000000
+eps_zeta     0.000000  1.000000
+
+POLICY AND TRANSITION FUNCTIONS
+                             logthet         logzeta               e               x              rp
+Constant                           0               0        1.003380        6.001494        0.996650
+logzeta(-1)                        0        0.500000       -0.617904               0        0.611964
+e(-1)                              0               0       -0.027373        0.199376        0.027110
+x(-1)                              0               0        0.001857        0.950000       -0.001840
+logthet(-1)                 0.950000               0       -0.007755        0.300074        0.007680
+eps_thet                    1.000000               0        0.035204               0       -0.034865
+eps_zeta                           0        1.000000        1.249590               0       -1.237578
+
+
+THEORETICAL MOMENTS
+VARIABLE         MEAN  STD. DEV.   VARIANCE
+logthet        0.0000     3.2026    10.2564
+logzeta        0.0000     1.1547     1.3333
+e              1.0034     1.4496     2.1014
+x              6.0015    13.6175   185.4358
+rp             0.9966     1.4357     2.0612
 
 
 
-Residuals of the static equations:
+VARIANCE DECOMPOSITION (in percent)
+           eps_thet  eps_zeta
+logthet      100.00      0.00
+logzeta        0.00    100.00
+e              0.08     99.92
+x             99.96      0.04
+rp             0.08     99.92
 
-Equation number 1 : NaN
-Equation number 2 : NaN
-Equation number 3 : NaN
-Equation number 4 : NaN
-Equation number 5 : NaN
 
 
-{Error using <a href="matlab:matlab.internal.language.introspective.errorDocCallback('print_info', 'c:\dynare\4.5.4\matlab\print_info.m', 90)" style="font-weight:bold">print_info</a> (<a href="matlab: opentoline('c:\dynare\4.5.4\matlab\print_info.m',90,0)">line 90</a>)
-The steady state contains NaN or Inf
+MATRIX OF CORRELATIONS
+Variables    logthet  logzeta        e        x       rp
+logthet       1.0000   0.0000   0.0026   0.6882  -0.0026
+logzeta       0.0000   1.0000   0.4938   0.0100  -0.4938
+e             0.0026   0.4938   1.0000  -0.0053  -1.0000
+x             0.6882   0.0100  -0.0053   1.0000   0.0053
+rp           -0.0026  -0.4938  -1.0000   0.0053   1.0000
 
-Error in <a href="matlab:matlab.internal.language.introspective.errorDocCallback('steady', 'c:\dynare\4.5.4\matlab\steady.m', 104)" style="font-weight:bold">steady</a> (<a href="matlab: opentoline('c:\dynare\4.5.4\matlab\steady.m',104,0)">line 104</a>)
-    print_info(info,options_.noprint, options_);
 
-Error in <a href="matlab:matlab.internal.language.introspective.errorDocCallback('BGP_Jan2019', 'C:\Users\th3\Documents\Noise_Over_Cycles\Dynare\BGP_Jan2019.m', 184)" style="font-weight:bold">BGP_Jan2019</a> (<a href="matlab: opentoline('C:\Users\th3\Documents\Noise_Over_Cycles\Dynare\BGP_Jan2019.m',184,0)">line 184</a>)
-steady;
 
-Error in <a href="matlab:matlab.internal.language.introspective.errorDocCallback('dynare', 'c:\dynare\4.5.4\matlab\dynare.m', 223)" style="font-weight:bold">dynare</a> (<a href="matlab: opentoline('c:\dynare\4.5.4\matlab\dynare.m',223,0)">line 223</a>)
-evalin('base',fname) ;
-
-Error in <a href="matlab:matlab.internal.language.introspective.errorDocCallback('run_file', 'C:\Users\th3\Documents\Noise_Over_Cycles\Dynare\run_file.m', 7)" style="font-weight:bold">run_file</a> (<a href="matlab: opentoline('C:\Users\th3\Documents\Noise_Over_Cycles\Dynare\run_file.m',7,0)">line 7</a>)
-dynare BGP_Jan2019
-} 
+COEFFICIENTS OF AUTOCORRELATION
+Order           1       2       3       4       5
+logthet    0.9500  0.9025  0.8574  0.8145  0.7738
+logzeta    0.5000  0.2500  0.1250  0.0625  0.0313
+e         -0.2705 -0.1139 -0.0575 -0.0287 -0.0143
+x          0.9985  0.9947  0.9889  0.9812  0.9718
+rp        -0.2705 -0.1139 -0.0575 -0.0287 -0.0143
+Total computing time : 0h00m02s

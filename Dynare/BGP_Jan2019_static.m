@@ -31,14 +31,15 @@ residual = zeros( 5, 1);
 % Model equations
 %
 
-T27 = exp(y(4))*y(2)^params(8);
-T55 = (params(7)*(y(3)+T27)-(y(3)+T27)*params(7)*params(2))^(1-params(1))-1;
-T63 = (y(2)+(1-y(2))*params(5))*params(11)*params(10)*exp(y(5))/exp(y(5));
+T28 = y(2)^params(8);
+T57 = (params(7)*(y(3)+exp(y(4))*T28)-(y(3)+exp(y(4))*T28)*params(7)*params(2))^(-params(1));
+T64 = (y(2)+(1-y(2))*params(5))*params(11)*params(10)*exp(y(5))/exp(y(5));
+T68 = y(2)^params(4);
 lhs =y(1);
 rhs =(1+(1-y(2))*params(5)*params(6))/(y(2)+(1-y(2))*params(5));
 residual(1)= lhs-rhs;
 lhs =y(3);
-rhs =y(3)*(1-params(9))+T27;
+rhs =y(3)*(1-params(9))+params(3)*exp(y(4))*T28;
 residual(2)= lhs-rhs;
 lhs =y(4);
 rhs =y(4)*params(12)+params(13)*x(1);
@@ -46,8 +47,8 @@ residual(3)= lhs-rhs;
 lhs =y(5);
 rhs =y(5)*params(14)+params(15)*x(2);
 residual(4)= lhs-rhs;
-lhs =T55/(1-params(1));
-rhs =T55*y(1)*T63/(1-params(1));
+lhs =T57;
+rhs =T57*y(1)*T64*T68;
 residual(5)= lhs-rhs;
 if ~isreal(residual)
   residual = real(residual)+imag(residual).^2;
@@ -59,20 +60,20 @@ if nargout >= 2,
   % Jacobian matrix
   %
 
-T81 = exp(y(4))*getPowerDeriv(y(2),params(8),1);
-T86 = getPowerDeriv(params(7)*(y(3)+T27)-(y(3)+T27)*params(7)*params(2),1-params(1),1);
-T87 = (params(7)*T81-params(7)*params(2)*T81)*T86;
+T83 = getPowerDeriv(y(2),params(8),1);
+T90 = getPowerDeriv(params(7)*(y(3)+exp(y(4))*T28)-(y(3)+exp(y(4))*T28)*params(7)*params(2),(-params(1)),1);
+T91 = (params(7)*exp(y(4))*T83-params(7)*params(2)*exp(y(4))*T83)*T90;
   g1(1,1)=1;
   g1(1,2)=(-(((y(2)+(1-y(2))*params(5))*params(6)*(-params(5))-(1+(1-y(2))*params(5)*params(6))*(1-params(5)))/((y(2)+(1-y(2))*params(5))*(y(2)+(1-y(2))*params(5)))));
-  g1(2,2)=(-T81);
+  g1(2,2)=(-(params(3)*exp(y(4))*T83));
   g1(2,3)=1-(1-params(9));
-  g1(2,4)=(-T27);
+  g1(2,4)=(-(params(3)*exp(y(4))*T28));
   g1(3,4)=1-params(12);
   g1(4,5)=1-params(14);
-  g1(5,1)=(-(T55*T63/(1-params(1))));
-  g1(5,2)=T87/(1-params(1))-(y(1)*T63*T87+T55*y(1)*params(11)*params(10)*exp(y(5))/exp(y(5))*(1-params(5)))/(1-params(1));
-  g1(5,3)=T86*(params(7)-params(7)*params(2))/(1-params(1))-y(1)*T63*T86*(params(7)-params(7)*params(2))/(1-params(1));
-  g1(5,4)=T86*(T27*params(7)-T27*params(7)*params(2))/(1-params(1))-y(1)*T63*T86*(T27*params(7)-T27*params(7)*params(2))/(1-params(1));
+  g1(5,1)=(-(T68*T57*T64));
+  g1(5,2)=T91-(T68*(y(1)*T64*T91+T57*y(1)*params(11)*params(10)*exp(y(5))/exp(y(5))*(1-params(5)))+T57*y(1)*T64*getPowerDeriv(y(2),params(4),1));
+  g1(5,3)=T90*(params(7)-params(7)*params(2))-T68*y(1)*T64*T90*(params(7)-params(7)*params(2));
+  g1(5,4)=T90*(params(7)*exp(y(4))*T28-exp(y(4))*T28*params(7)*params(2))-T68*y(1)*T64*T90*(params(7)*exp(y(4))*T28-exp(y(4))*T28*params(7)*params(2));
   if ~isreal(g1)
     g1 = real(g1)+2*imag(g1);
   end
