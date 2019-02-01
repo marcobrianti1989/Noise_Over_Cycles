@@ -2,34 +2,20 @@ clear
 close all
 
 % From Beaudry, Galizia, Portier
-% et = alp0 + alp1*Xt + alp2*et-1 + alp3*et + mut
+% et = alp1*Xt + alp2*et-1 + alp3*et + mut
 
 % Parameterization
-alp0 = 0;
-alp1 = - 0.1; 
-alp2 = .5;
+alp1 = - 0.1;%19025; 
+alp2 = .3;
 del  = 0.01;
+Xss  = 0;
+ess  = 0;
 
-% Steady State
-eold  = 0;
-Xold  = 0;
-err   = 1;
-simss = 0;
-while err > 10^(-14) && simss < 1000
-      % Choice Variable
-      enew   = alp0 + alp1*Xold + alp2*eold;
-      % LOM of X
-      Xnew   = (1 - del)*Xold + enew;    
-      err    = abs(Xnew - Xold) + abs(enew - eold);
-      simss  = simss + 1;
-      eold   = enew;
-      Xold   = Xnew;
-end
-Xss  = Xnew;
-ess  = enew;
+matrix = [alp2 alp1; 1 (1-del)];
+eig(matrix)
 
 % Initialiation
-H      = 25;
+H      = 50;
 hor    = linspace(0,H,H);
 e      = zeros(H,1);
 X      = zeros(H,1);
@@ -41,15 +27,14 @@ X(1)   = Xss; % state variable always Xss on impact
 %-------------------------------------------------------------------------%
 
 
-e(1)   = alp0 + alp1*Xss + alp2*ess + SHOCK;
-X(2)   = (1 - del)*Xss + e(1);
+e(1)   = SHOCK;
+X(1)   = Xss;
 for i = 2:H
       % Choice Variable
-      e(i)   = alp0 + alp1*X(i) + alp2*e(i-1);
+      e(i)   = alp2*e(i-1) + alp1*X(i-1);
       % LOM of X
-      X(i+1) = (1 - del)*X(i) + e(i);    
+      X(i)   = e(i-1) + (1 - del)*X(i-1);    
 end
-X = X(1:end-1);
 
 figure('Position',[1 41 1920 963])
 set(gcf,'color','w');
@@ -71,7 +56,7 @@ xlabel('Horizon','fontsize',16);
 grid on
 axis tight
 hold off
-
+asd
 %-------------------------------------------------------------------------%
 % IRFs to Fundamental Shock (Exogenous increase in capital today)
 %-------------------------------------------------------------------------%

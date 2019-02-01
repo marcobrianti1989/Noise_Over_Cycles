@@ -45,11 +45,11 @@ bindingoffset=0mm]{geometry}
 
 Consider the following model with two states variables. The first equation describes the law of motion of investment $I_t$,
 \begin{equation}\label{eq:LOMinvestment}
-I_t = \alpha_{1,1} I_{t-1} + \alpha_{1,2} K_{t-1} + s_t^I
+I_t = \alpha_{1,1} I_{t-1} + \alpha_{1,2} K_{t} + s_t^I
 \end{equation}
 while the second equation describes the law of motion of capital $K_t$
 \begin{equation}\label{eq:LOMcapital}
-K_t = \alpha_{2,1} I_{t-1} + \alpha_{2,2} K_{t-1} + s_t^K.
+K_t =  I_{t-1} + \alpha_{2,2} K_{t-1} + s_t^K.
 \end{equation}
 Notice that $s_t^I$ and $s_t^K$ are two disturbances such that $s_t^I \perp s_{\tau}^K$ for all $t$ and $\tau$. In addition, we also assume that $s_t^j \perp s_{\tau}^j$ for all $t$ and $\tau$ for $j \in \{ I,K\}$.\footnote{It can be easily derived that in steady state, both investment and capital are equal to $I_{ss} = K_{ss} = 0$. Without loss of generality, this result simplifies the analysis because levels outside of steady state are also deviations from steady state.}
 

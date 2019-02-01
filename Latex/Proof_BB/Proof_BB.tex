@@ -1,0 +1,144 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage[a4paper,top=2.5cm,bottom=2.5cm,left=2.5cm,right=2.5cm,%
+bindingoffset=0mm]{geometry}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\newtheorem{prop}{Proposition}
+\newtheorem{lemma}{Lemma}
+\newenvironment{proof}[1][Proof]{\begin{trivlist}
+\item[\hskip \labelsep {\bfseries #1}]}{\end{trivlist}}
+\newcommand{\qed}{\nobreak \ifvmode \relax \else
+      \ifdim\lastskip<1.5em \hskip-\lastskip
+      \hskip1.5em plus0em minus0.5em \fi \nobreak
+      \vrule height0.75em width0.75em depth0em\fi}
+\usepackage{tikz}
+\usepackage{graphicx}
+\usepackage{rotating}
+\usepackage{float}
+\linespread{1.3}
+\raggedbottom
+
+
+
+
+%
+\font\reali=msbm10 at 12pt
+% subsets of real numbers
+\newcommand{\real}{\hbox{\reali R}}
+\newcommand{\realp}{\hbox{\reali R}_{\scriptscriptstyle +}}
+\newcommand{\realpp}{\hbox{\reali R}_{\scriptscriptstyle ++}}
+\newcommand{\R}{\mathbb{R}}
+\DeclareMathOperator{\E}{\mathbb{E}}
+%
+
+\title{BGP Model\\Some Derivations}
+\author{Marco Brianti\\Vito Cormun}
+\date{Spring 2019}
+
+\begin{document}
+
+\maketitle
+
+\section{Model}\label{sec:model}
+
+Consider the following model with two states variables. The first equation describes the optimal choice of investment $I_t$,
+\begin{equation}\label{eq:optimal_investment}
+I_t = \phi I_{t-1} + \psi K_{t} + s_t^I
+\end{equation}
+while the second equation describes the law of motion of capital $K_t$
+\begin{equation}\label{eq:LOMcapital}
+K_t =  I_{t-1} + (1 - \delta) K_{t-1} + s_t^K.
+\end{equation}
+Notice that $s_t^I$ and $s_t^K$ are two exogenous shocks such that $s_t^I \perp s_{\tau}^K$ for all $t$ and $\tau$. In addition, we also assume that $s_t^j \perp s_{\tau}^j$ for all $t$ and $\tau$ for $j \in \{ I,K\}$. Moving from the structural form to the reduced form,
+\begin{equation}\label{eq:reduced_form}
+\begin{aligned}
+I_t &= ( \phi + \psi) I_{t-1} + \psi (1 - \delta) K_{t-1} + \psi s_t^K + s_t^I \\
+K_t &= I_{t-1} + (1 - \delta) K_{t-1} + s_t^K.
+\end{aligned}
+\end{equation}
+Under mild full-rank conditions, it can be easily derived that in steady state, both investment and capital are equal to $I_{ss} = K_{ss} = 0$. The system is linear and it can be written more compactly as
+\begin{equation}\label{eq:matrix_system_expanded}
+\begin{pmatrix}
+I_t \\
+K_t
+\end{pmatrix} = \begin{pmatrix}
+\phi + \psi & \psi (1 - \delta) \\
+1 & (1 - \delta)
+\end{pmatrix}\begin{pmatrix}
+I_{t-1} \\
+K_{t-1}
+\end{pmatrix} + \begin{pmatrix}
+1 & \psi  \\
+0 & 1
+\end{pmatrix} \begin{pmatrix}
+s_t^I \\ 
+s_t^K
+\end{pmatrix}
+\end{equation}
+which is
+\begin{equation}\label{eq:matrix_system_compact}
+X_t = B X_{t-1} + A s_t
+\end{equation}
+For the rest of the document, we will assume that both $\phi$ and $\delta$ are real, positive and smaller than one.\footnote{The economic interpretation of this assumption is straightforward. A positive $\delta$ between $0$ and $1$ means that a part of capital in the previous period is lost in the form of depreciation. Instead, $\phi$ positive suggests that Equation \ref{eq:optimal_investment} is the linearized form of a model with investment-adjustment cost.}
+
+\section{Stability Conditions}
+
+In order to study the stability conditions, we parametrically evaluate the eigenvalues $\lambda_1$ and $\lambda_2$ of matrix $A$. In other words, we need to solve the following problem,
+$$
+\det(B - \lambda I) = 0
+$$
+which can be rewritten as,
+$$
+\det \begin{pmatrix}
+\phi + \psi - \lambda & \psi (1 - \delta) \\
+1 & 1 - \delta - \lambda
+\end{pmatrix} = 0
+$$
+which is, 
+\begin{equation*}
+\begin{aligned}
+  0 &= (\phi + \psi - \lambda)(1 - \delta - \lambda) - \psi (1 - \delta) \\
+  &= (\phi + \psi) (1 - \delta) + \lambda^2 - (\phi + \psi + 1 - \delta) \lambda - \psi (1 - \delta) \\
+   &= \lambda^2  - (\phi + \psi + 1 - \delta) \lambda  + \phi  (1 - \delta)
+\end{aligned}
+\end{equation*}
+Solving over $\lambda$ yields,
+\begin{equation}\label{eq:lambda_sol}
+\begin{aligned}
+\lambda_{1,2} &= \frac{1}{2} \bigg[ (\phi + \psi + 1 - \delta)  \pm \sqrt{  (\phi + \psi + 1 - \delta)^2 - 4\phi  (1 - \delta) }  \bigg] \\
+\end{aligned}
+\end{equation}
+
+
+
+
+\section{Shock Dependent Cyclical responses to $I_t$}
+
+Isolate $K_t$ from Equation \ref{eq:LOMcapital} and get,
+$$
+K_t = \frac{1}{1 - (1 - \delta)L}(I_{t-1} + s_t^K)
+$$
+which lagged of one period is
+$$
+K_{t-1} = \frac{1}{1 - (1 - \delta)L}(I_{t-2} + s_{t-1}^K)
+$$
+substitute is into reduced form investment equation in System \ref{eq:reduced_form} which is
+\begin{equation*}
+\begin{aligned}
+I_t &= ( \phi + \psi) I_{t-1} + \psi (1 - \delta) \bigg[  \frac{1}{1 - (1 - \delta)L}(I_{t-2} + s_{t-1}^K) \bigg] + \psi s_t^K + s_t^I \\
+\end{aligned}
+\end{equation*}
+which can be rewritten as
+\begin{equation*}
+I_t = ( \phi + \psi + 1 - \delta) I_{t-1} - \phi (1 - \delta) I_{t-2} + \psi s_{t}^K  + s_t^I  - (1 - \delta) s_{t-1}^I
+\end{equation*}
+
+
+\subsection{Investment-Specific Shock}
+
+
+
+\end{document}
+
