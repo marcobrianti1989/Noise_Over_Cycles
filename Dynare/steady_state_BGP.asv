@@ -1,5 +1,0 @@
-R = (1 + (1 - e)*PHI*PHIBIG)/(e + (1 - e)*PHI);
-
-x = PSI/DEL*e^ALP;
-
-check = (   S*(PSI/DEL*e^ALP + e^ALP) - GAM*S*(PSI/DEL*e^ALP + *e^ALP)   )^(-OMEG) - BET*THET*exp(logzeta)/exp(logzeta(-1))*(e + (1-e)*PHI)*rp*(   S*(x(+1) + exp(logthet(+1))*e(+1)^ALP) - GAM*S*(x + exp(logthet)*e^ALP)   )^(-OMEG)*e(+1)^PHIE; %(5)
