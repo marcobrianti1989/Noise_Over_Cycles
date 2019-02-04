@@ -56,39 +56,59 @@ xlabel('Horizon','fontsize',16);
 grid on
 axis tight
 hold off
-asd
-%-------------------------------------------------------------------------%
-% IRFs to Fundamental Shock (Exogenous increase in capital today)
-%-------------------------------------------------------------------------%
 
-e(1)   = alp0 + (alp1)*Xss + alp2*ess;
-X(2)   = (1 - del)*Xss + e(1) + SHOCK;
-for i = 2:H
-      % Choice Variable
-      e(i)   = alp0 + (alp1)*X(i) + alp2*e(i-1);
-      % LOM of X
-      X(i+1) = (1 - del)*X(i) + e(i);    
-end
-X = X(1:end-1);
+clear 
+close all
 
-figure('Position',[1 41 1920 963])
-set(gcf,'color','w');
-subplot(1,2,1)
-hold on
-plot(hor,e,'linewidth',2,'color','r')
-plot(hor,ones(1,H)*ess,'color','b')
-title('Choice Variable','fontsize',20)
-xlabel('Horizon','fontsize',16);
-grid on
-axis tight
-hold off
-subplot(1,2,2)
-hold on
-plot(hor,X,'linewidth',2,'color','r')
-plot(hor,ones(1,H)*Xss,'color','b')
-title('State Variable','fontsize',20)
-xlabel('Horizon','fontsize',16);
-grid on
-axis tight
-hold off
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                  Spectrum
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Parameterization
+omeg = linspace(0,pi,10000);
+omeg = omeg';
+phi = 0.9;
+psi = -0.11;
+del = 0.05;
+bet1 = phi + psi + 1 - del;
+bet2 = phi*(1-del);
+
+DEN = 1 + bet1.^2 + bet2.^2 - 2.*bet1.*(1-bet2).*cos(omeg) - 2.*bet2.*cos(2*omeg);
+NUM = 1 + (1-del) - 2.*(1 - del).*cos(omeg);
+obj = NUM./DEN;
+check = 2.*(1-del).*sin(omeg).*DEN ...
+      - NUM.*(4.*bet2.*sin(2.*omeg) + 2.*bet1.*(1 - bet2).*sin(omeg));
+
+figure(1)
+plot(obj)
+legend('Objective')
+
+figure(2)
+plot(check)
+legend('FOC')
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 

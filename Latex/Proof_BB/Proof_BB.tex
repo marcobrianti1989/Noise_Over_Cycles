@@ -136,7 +136,31 @@ I_t = ( \phi + \psi + 1 - \delta) I_{t-1} - \phi (1 - \delta) I_{t-2} + \psi s_{
 \end{equation*}
 
 
-\subsection{Investment-Specific Shock}
+\subsection{Spectrum Conditional on Preference Shocks}
+\begin{equation*}
+\begin{aligned}
+I_t - ( \phi + \psi + 1 - \delta) I_{t-1} + \phi (1 - \delta) I_{t-2} &=  s_t^I  - (1 - \delta) s_{t-1}^I  \\
+\Rightarrow \ \ [ 1 - ( \phi + \psi + 1 - \delta) L + \phi (1 - \delta) L^2 ] I_t &=  (1 - (1 - \delta)L)s_t^I  \\
+\end{aligned}
+\end{equation*}
+which is
+\begin{equation}
+I_t = \frac{  1 - (1 - \delta)L }{1 - ( \phi + \psi + 1 - \delta) L + \phi (1 - \delta) L^2 } s_t^I 
+\end{equation}
+Spectrum of $I_t$ is
+\begin{equation}
+\begin{aligned}
+g_I(e^{ -i \omega}) &= \bigg( \frac{  1 - (1 - \delta)e^{ -i \omega} }{1 - ( \phi + \psi + 1 - \delta) e^{ -i \omega} + \phi (1 - \delta) e^{ -2i\omega} } \bigg) \bigg( \frac{  1 - (1 - \delta)e^{ i \omega} }{1 - ( \phi + \psi + 1 - \delta) e^{ i \omega} + \phi (1 - \delta) e^{ 2i\omega} } \bigg) \sigma^2_I  \\
+&= \frac{( 1 - (1 - \delta)e^{ -i \omega}) (1 - (1 - \delta)e^{ i \omega})}{(1 - ( \phi + \psi + 1 - \delta) e^{ -i \omega} + \phi (1 - \delta) e^{ -2i\omega} )(1 - ( \phi + \psi + 1 - \delta) e^{ i \omega} + \phi (1 - \delta) e^{ 2i\omega})} \sigma^2_I \\
+&= \frac{1 + (1 - \delta) - (1 - \delta)(e^{i \omega} + e^{-i \omega})}{1 + ( \phi + \psi + 1 - \delta)^2 + \phi^2 (1 - \delta)^2 + ( \phi + \psi + 1 - \delta)(1 - \phi^2 (1 - \delta))(e^{i \omega} + e^{-i \omega}) - \phi (1 - \delta) (e^{2i \omega} + e^{-2i \omega}) } \sigma^2_I \\
+&= \frac{1 + (1 - \delta) - 2(1 - \delta)\cos(\omega)}{1 + ( \phi + \psi + 1 - \delta)^2 + \phi^2 (1 - \delta)^2 + 2( \phi + \psi + 1 - \delta)(1 - \phi^2 (1 - \delta))\cos(\omega) - 2\phi (1 - \delta) \cos(2 \omega) } \sigma^2_I \\
+&= \frac{ h_1(\omega) } {h_2(\omega)}
+\end{aligned}
+\end{equation}
+First order condition is,
+\begin{equation}
+\frac{\partial g_I(e^{ -i \omega})}{\partial \omega} = \frac{2(1-\delta)\sin(\omega)h_2(\omega) - h_1(\omega)[4\phi (1 - \delta)\sin(2 \omega) - 2( \phi + \psi + 1 - \delta)(1 - \phi (1 - \delta))\sin(\omega)]}{h_2(\omega)^2} \sigma^2_I
+\end{equation}
 
 
 
