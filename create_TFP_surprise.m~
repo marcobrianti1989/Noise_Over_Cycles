@@ -15,7 +15,7 @@ for i = 1:size(dataset,2)
       eval([var_names{i} ' = dataset(:,i);']);
 end
 
-system = [TFP RealGDP RealCons RealInvestment Hours]; %PC3 PC4 PC5 PC6];
-nlags  = 6;
+system = [TFP PC1 PC2 ]; %PC3 PC4 PC5 PC6];
+nlags  = 8;
 [system, truncation_point, truncation_point2] = truncate_data(system);
 [A,B,res,sigma] = sr_var(system,nlags);

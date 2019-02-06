@@ -12,16 +12,16 @@ clear
 close all
 
 %Parameters
-lags                = 1; %number of lags of TFP - cannot be zero since 1 include current TFP
+lags                = 4; %number of lags of TFP - cannot be zero since 1 include current TFP
 fprintf('\n')
 disp(['Number of lags used is ',num2str(lags)])
 fprintf('\n')
-leads               = 0; %number of leads of TFP
+leads               = 16; %number of leads of TFP
 disp(['Number of leads used is ',num2str(leads)])
 fprintf('\n')
-H                   = 40; %irfs horizon
+H                   = 20; %irfs horizon
 lags_LP             = 4; %Lags in the Local Projection - should use lags selection criterion
-which_trend         = 'quadratic' ; %quadratic'; %BPfilter, HPfilter, linear, quadratic
+which_trend         = 'quadratic'; %BPfilter, HPfilter, linear, quadratic
 
 % Read main dataset
 filename                    = 'main_file';
@@ -189,7 +189,7 @@ for cc = 2:2
     else
     end
     varlist          = {'RealGDP','RealCons','RealInvestment','Hours','RealInventories',...
-          'FFR','UnempRate','TFP','CPIInflation',};
+          'FFR','UnempRate','BloomFinDistress','CPIInflation',};
     
     %{'RealGDP','RealCons','RealInvestment','Hours'};
     % ,'UnempRate',...
@@ -260,7 +260,7 @@ for cc = 2:2
             which_trend_final = which_trend;
         end
         [IR{kk},res{kk},tuple{kk},VD{kk}] = ...
-            local_projection(depvarkk,0,Ztildekk,lags_LP,H,which_trend_final);
+            local_projection(depvarkk,pckk,Ztildekk,lags_LP,H,which_trend_final);
         if logdifferences == 0
             IRF(kk,:) = IR{kk};
         else

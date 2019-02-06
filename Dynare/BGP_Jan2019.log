@@ -1,6 +1,6 @@
-Starting Dynare (version 4.5.4).
+Starting Dynare (version 4.5.6).
 Starting preprocessing of the model file ...
-Found 5 equation(s).
+Found 6 equation(s).
 Evaluating expressions...done
 Computing static model derivatives:
  - order 1
@@ -12,21 +12,22 @@ Preprocessing completed.
 
 STEADY-STATE RESULTS:
 
-rp      		 0.99665
-e       		 1.00338
-x       		 6.00149
+c       		 6.62077
+rp      		 1.0073
+e       		 0.922215
+x       		 5.67333
 logthet 		 0
 logzeta 		 0
 
 EIGENVALUES:
          Modulus             Real        Imaginary
 
-         0.02775         -0.02775                0
-             0.5              0.5                0
-            0.95             0.95                0
-          0.9504           0.9504                0
-           89.66           -89.66                0
-             Inf              Inf                0
+            0.74             0.74                0
+          0.9694           0.9598           0.1361
+          0.9694           0.9598          -0.1361
+          0.9985           0.9985                0
+           21.07           -21.07                0
+       1.787e+16       -1.787e+16                0
              Inf              Inf                0
 
 
@@ -38,11 +39,11 @@ The rank condition is verified.
 
 MODEL SUMMARY
 
-  Number of variables:         5
+  Number of variables:         6
   Number of stochastic shocks: 2
   Number of state variables:   4
   Number of jumpers:           3
-  Number of static variables:  1
+  Number of static variables:  2
 
 
 MATRIX OF COVARIANCE OF EXOGENOUS SHOCKS
@@ -51,23 +52,23 @@ eps_thet     1.000000  0.000000
 eps_zeta     0.000000  1.000000
 
 POLICY AND TRANSITION FUNCTIONS
-                             logthet         logzeta               e               x              rp
-Constant                           0               0        1.003380        6.001494        0.996650
-logzeta(-1)                        0        0.500000       -0.617904               0        0.611964
-e(-1)                              0               0       -0.027373        0.199376        0.027110
-x(-1)                              0               0        0.001857        0.950000       -0.001840
-logthet(-1)                 0.950000               0       -0.007755        0.300074        0.007680
-eps_thet                    1.000000               0        0.035204               0       -0.034865
-eps_zeta                           0        1.000000        1.249590               0       -1.237578
+                             logthet         logzeta               e               x               c
+Constant                           0               0        0.922215        5.673327        6.620775
+logzeta(-1)                        0        0.740000      -41.455538               0      -28.393167
+e(-1)                              0               0        0.969655        0.205061        0.869184
+x(-1)                              0               0       -0.090815        0.950000        0.887800
+logthet(-1)                 0.998500               0        0.510679        0.283666        1.579459
+eps_thet                    1.000000               0       -0.831915               0        0.377663
+eps_zeta                           0       -0.010000        0.560210               0        0.383691
 
 
 THEORETICAL MOMENTS
-VARIABLE         MEAN  STD. DEV.   VARIANCE
-logthet        0.0000     3.2026    10.2564
-logzeta        0.0000     1.1547     1.3333
-e              1.0034     1.4496     2.1014
-x              6.0015    13.6175   185.4358
-rp             0.9966     1.4357     2.0612
+VARIABLE          MEAN   STD. DEV.    VARIANCE
+logthet         0.0000     18.2643    333.5835
+logzeta         0.0000      0.0149      0.0002
+e               0.9222     11.4157    130.3186
+x               5.6733    103.8717  10789.3297
+c               6.6208    121.4116  14740.7714
 
 
 
@@ -75,27 +76,27 @@ VARIANCE DECOMPOSITION (in percent)
            eps_thet  eps_zeta
 logthet      100.00      0.00
 logzeta        0.00    100.00
-e              0.08     99.92
-x             99.96      0.04
-rp             0.08     99.92
+e             76.50     23.50
+x             99.37      0.63
+c             99.31      0.69
 
 
 
 MATRIX OF CORRELATIONS
-Variables    logthet  logzeta        e        x       rp
-logthet       1.0000   0.0000   0.0026   0.6882  -0.0026
-logzeta       0.0000   1.0000   0.4938   0.0100  -0.4938
-e             0.0026   0.4938   1.0000  -0.0053  -1.0000
-x             0.6882   0.0100  -0.0053   1.0000   0.0053
-rp           -0.0026  -0.4938  -1.0000   0.0053   1.0000
+Variables    logthet  logzeta        e        x        c
+logthet       1.0000   0.0000   0.0325   0.9827   0.9853
+logzeta       0.0000   1.0000  -0.2303  -0.0129  -0.0259
+e             0.0325  -0.2303   1.0000   0.0304   0.0951
+x             0.9827  -0.0129   0.0304   1.0000   0.9976
+c             0.9853  -0.0259   0.0951   0.9976   1.0000
 
 
 
 COEFFICIENTS OF AUTOCORRELATION
 Order           1       2       3       4       5
-logthet    0.9500  0.9025  0.8574  0.8145  0.7738
-logzeta    0.5000  0.2500  0.1250  0.0625  0.0313
-e         -0.2705 -0.1139 -0.0575 -0.0287 -0.0143
-x          0.9985  0.9947  0.9889  0.9812  0.9718
-rp        -0.2705 -0.1139 -0.0575 -0.0287 -0.0143
+logthet    0.9985  0.9970  0.9955  0.9940  0.9925
+logzeta    0.7400  0.5476  0.4052  0.2999  0.2219
+e          0.9835  0.9455  0.8888  0.8161  0.7302
+x          0.9997  0.9988  0.9973  0.9953  0.9928
+c          0.9997  0.9987  0.9970  0.9948  0.9921
 Total computing time : 0h00m02s
