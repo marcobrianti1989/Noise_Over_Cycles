@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.18 (MiKTeX 2.9.6350 64-bit) (preloaded format=pdflatex 2017.8.21)  13 JUL 2018 13:52
+This is pdfTeX, Version 3.14159265-2.6-1.40.18 (MiKTeX 2.9.6350 64-bit) (preloaded format=pdflatex 2017.8.21)  8 FEB 2019 09:38
 entering extended mode
 **./meeting.tex
 (meeting.tex
@@ -1140,14 +1140,14 @@ Overfull \hbox (1.60075pt too wide) in paragraph at lines 161--161
 
  <../../Figures/Noise_Shocks_SPF_GDPgrowth_revisions.pdf>]
 <../../Figures/STLP_IRFs_Noise_Shocks_SPF_GDPgrowth_revisions_logdiff.pdf, id=8
-9, 1156.82187pt x 689.83723pt>
+9, 1156.82187pt x 624.37263pt>
 File: ../../Figures/STLP_IRFs_Noise_Shocks_SPF_GDPgrowth_revisions_logdiff.pdf 
 Graphic file (type pdf)
 
 <use ../../Figures/STLP_IRFs_Noise_Shocks_SPF_GDPgrowth_revisions_logdiff.pdf>
 Package pdftex.def Info: ../../Figures/STLP_IRFs_Noise_Shocks_SPF_GDPgrowth_rev
 isions_logdiff.pdf used on input line 172.
-(pdftex.def)             Requested size: 312.34608pt x 186.25853pt.
+(pdftex.def)             Requested size: 312.34608pt x 168.58286pt.
 
 Overfull \hbox (5.05621pt too wide) in paragraph at lines 172--172
  [] 
@@ -1199,7 +1199,7 @@ onts/type1/public/lm/lmsso10.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/publi
 c/lm/lmsso12.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/lm/lmsso8.pfb>
 <C:/Program Files/MiKTeX 2.9/fonts/type1/public/lm/lmsy10.pfb><C:/Program Files
 /MiKTeX 2.9/fonts/type1/public/lm/lmsy8.pfb>
-Output written on meeting.pdf (11 pages, 351494 bytes).
+Output written on meeting.pdf (11 pages, 367442 bytes).
 PDF statistics:
  159 PDF objects out of 1000 (max. 8388607)
  27 named destinations out of 1000 (max. 500000)
