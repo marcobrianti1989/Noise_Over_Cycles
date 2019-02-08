@@ -20,7 +20,7 @@ leads               = 0; %number of leads of TFP
 disp(['Number of leads used is ',num2str(leads)])
 fprintf('\n')
 H                   = 20; %irfs horizon
-lags_LP             = 4; %Lags in the Local Projection - should use lags selection criterion
+lags_LP             = 1; %Lags in the Local Projection - should use lags selection criterion
 which_trend         = 'quadratic' ; %quadratic'; %BPfilter, HPfilter, linear, quadratic
 
 % Read main dataset
@@ -47,7 +47,7 @@ fprintf('\n')
 disp('First Step: Building Ztilde')
 fprintf('\n')
 fprintf('\n')
-for cc = 2:2
+for cc = 1:1
       %Building Zt
       %Step 1 - Getting the forecasted growth rates
       Delta_RGDP_t        = RGDP5_SPF./RGDP1_SPF - ones(length(RGDP1_SPF),1);
@@ -188,8 +188,7 @@ for cc = 2:2
             SP500            = SP500 - GDPDefl;
       else
       end
-      varlist          = {'RealGDP','RealCons','RealInvestment','Hours'};%,...
-            %'RealInventories','UnempRate','FFR','CPIInflation'};
+      varlist          = {'RealGDP','RealCons','RealInvestment','Hours'};%{'RealInventories','UnempRate','FFR','CPIInflation'};
       
       %,'RealInventories',...
       %    'FFR','UnempRate','TFP','CPIInflation',};
@@ -326,7 +325,7 @@ for cc = 2:2
       
       % Print figure authomatically if "export_figure1 = 1"
       if plot3 == 1
-            export_fig3 = 0; % if export_fig1 = 1, figure will be saved
+            export_fig3 = 1; % if export_fig1 = 1, figure will be saved
             export_fig_IRF_lp_unconditional(export_fig3)
       end
       
