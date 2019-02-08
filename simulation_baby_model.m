@@ -5,10 +5,10 @@ close all
 % et = alp0 + alp1*Xt + alp2*et-1 + alp3*et + mut
 
 % Parameterization
-alp0 = 0.2;
+alp0 = 0.4;
 alp1 = - 0.1; 
-alp2 = .9;
-del  = 0.01;
+alp2 = 1;
+del  = 0.05;
 
 % Steady State
 eold  = 0;
@@ -29,7 +29,7 @@ Xss  = Xnew;
 ess  = enew;
 
 % Initialiation
-H      = 100;
+H      = 20;
 hor    = linspace(0,H,H);
 e      = zeros(H,1);
 X      = zeros(H,1);
