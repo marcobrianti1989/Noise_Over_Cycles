@@ -12,15 +12,15 @@ clear
 close all
 
 %Parameters
-lags                = 1; %number of lags of TFP - cannot be zero since 1 include current TFP
+lags                = 4; %number of lags of TFP - cannot be zero since 1 include current TFP
 fprintf('\n')
 disp(['Number of lags used is ',num2str(lags)])
 fprintf('\n')
-leads               = 0; %number of leads of TFP
+leads               = 16; %number of leads of TFP
 disp(['Number of leads used is ',num2str(leads)])
 fprintf('\n')
-H                   = 40; %irfs horizon
-lags_LP             = 4; %Lags in the Local Projection - should use lags selection criterion
+H                   = 20; %irfs horizon
+lags_LP             = 10; %Lags in the Local Projection - should use lags selection criterion
 which_trend         = 'quadratic' ; %quadratic'; %BPfilter, HPfilter, linear, quadratic
 
 % Read main dataset
@@ -37,7 +37,7 @@ for i = 1:size(dataset,2)
     eval([var_names{i} ' = dataset(:,i);']);
 end
 
-%*************************************************************************%
+%% *************************************************************************%
 %                                                                         %
 %          1st stage - Deriving sentiment                              %
 %                                                                         %
@@ -47,7 +47,7 @@ fprintf('\n')
 disp('First Step: Building Ztilde')
 fprintf('\n')
 fprintf('\n')
-for cc = 2:2
+for cc = 1
     %Building Zt
     %Step 1 - Getting the forecasted growth rates
     Delta_RGDP_t        = RGDP5_SPF./RGDP1_SPF - ones(length(RGDP1_SPF),1);
@@ -105,7 +105,7 @@ for cc = 2:2
     TFPBP                       = bpass(TFP_trunc,4,32);
     TFPBP                       = [TFPBP; NaN(length(TFP) - length(TFPBP),1)];
     dTFP                        = [NaN; diff(TFP)];
-    PC                          = [PC1 PC2 PC3];
+    PC                          = [PC1];% PC2 PC3];
     X_contemporaneous           = [TFPBP MUNI1Y PDVMILY HAMILTON3YP RESID08 TAXNARRATIVE];
     X_lag                       = [TFPBP PC MUNI1Y PDVMILY HAMILTON3YP RESID08 TAXNARRATIVE];
     X_lead                      = TFPBP;
@@ -149,7 +149,7 @@ for cc = 2:2
             warning('Ztilde is replaced by another shock')
         end
     end
-    %*************************************************************************%
+    %% *************************************************************************%
     %                                                                         %
     %          2nd stage - Local Projections                %
     %                                                                         %
@@ -260,7 +260,7 @@ for cc = 2:2
             which_trend_final = which_trend;
         end
         [IR{kk},res{kk},tuple{kk},VD{kk}] = ...
-            local_projection(depvarkk,0,Ztildekk,lags_LP,H,which_trend_final);
+            local_projection(depvarkk,pckk,Ztildekk,lags_LP,H,which_trend_final);
         if logdifferences == 0
             IRF(kk,:) = IR{kk};
         else
@@ -292,6 +292,7 @@ for cc = 2:2
             IRF_boot(kk,:,:)  = cumsum(IRF_bootkk,2);
         end
     end
+    %%
     % IRF_boot         = sort(IRF_boot,3);
     sig              = 0.05;
     sig2             = 0.16;
