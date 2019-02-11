@@ -20,11 +20,9 @@ leads               = 16; %number of leads of TFP
 disp(['Number of leads used is ',num2str(leads)])
 fprintf('\n')
 H                   = 20; %irfs horizon
-<<<<<<< HEAD
-lags_LP             = 10; %Lags in the Local Projection - should use lags selection criterion
-=======
+
 lags_LP             = 1; %Lags in the Local Projection - should use lags selection criterion
->>>>>>> 7a2d2ea0fe6b9fc2414fb38462d6aa9091a09ed6
+
 which_trend         = 'quadratic' ; %quadratic'; %BPfilter, HPfilter, linear, quadratic
 
 % Read main dataset
