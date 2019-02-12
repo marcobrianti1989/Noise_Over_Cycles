@@ -288,6 +288,13 @@ X_{j,t+1} = (1 - \delta) X_{j,t} + e_{j,t}
 \frame{\frametitle{A New Keynesian Model}
 
 
+Augment a standard NK Model with
+\begin{itemize}
+	\item External habit formation
+	\item Intra-temporal budget constraint on the household side
+	\item Positive and endogenous probability of bankruptcy 
+	\item Lender can never fully recover its investment after bankruptcy
+\end{itemize}
 
 
 
@@ -383,7 +390,101 @@ Accordingly, final goods sector is competitive and combine $k$-specific consumpt
 	\end{eqnarray}
 }
 
+\frame{\frametitle{Economic Intuition}
+	
+	
 
+\begin{itemize}
+	\item Suppose to be in a recession
+	\item Unemployment is high, so bankruptcy rate
+	\item Risk premium is large and household consumption is low
+	\item Capital $X_t$ is keep decreasing during this phase
+	\item The lower $X_t$ the larger the marginal utility of the household
+	\item MU will eventually be so high to be larger than the loan rate
+	\item Household increases borrowings, increasing the demand
+	\item Unemployment thus decrease, so does the bankruptcy rate
+	\item Risk premium decreases, consumption and $X_t$ increase
+	\item Capital $X_t$ is keep increasing during this phase
+	\item The higher $X_t$ the lower the marginal utility of the household
+	\item MU will eventually be so low to be lower than the loan rate
+	\item \dots
+\end{itemize}
+
+
+
+
+
+
+}
+
+
+\frame{\frametitle{Estimation of the Model}
+	
+	Exogenous parameters:
+	\begin{itemize}
+\item $\delta = 0.05$
+\item $\alpha = 2/3$
+\item $\Theta$ such that steady state unemployment rate is $0.0583$
+\end{itemize}
+	
+	\
+	
+	\
+	
+	They estimate the remaining parameters (10) of the model via spectral density matching.
+	
+	
+}
+
+
+\frame{\frametitle{Estimation Results - Spectral Density}
+	
+	\begin{center}
+		\includegraphics[scale=0.34]{matching}
+	\end{center}
+	
+	
+}
+
+\frame{\frametitle{Estimation Results - Endogenous Parameters}
+	
+	\begin{center}
+		\includegraphics[scale=0.34]{param}
+	\end{center}
+	
+	
+}
+
+\frame{\frametitle{Estimation Results - Eigenvalues}
+	
+	Solving the model with a less restrictive solution method allows to obtain  a parameterization that supports limit cycle and local instability
+	
+	\begin{center}
+		\includegraphics[scale=0.34]{eigen}
+	\end{center}
+	
+	
+}
+
+\frame{\frametitle{Conclusions}
+	
+Why do market economies experience business cycle?
+
+\begin{itemize}
+	\item Persistent outside disturbance
+	\item Internal forces that endogenously favor cyclical outcomes
+\end{itemize}
+
+This paper:
+
+\begin{itemize}
+	\item Macro variables display predictable cyclical dynamics
+	\item Strategic complementarity is key to match empirical properties of spectral density
+	\item Models do not need large and persistent shocks to match observable features in the data
+\end{itemize}
+	
+	
+}
 
 
 
