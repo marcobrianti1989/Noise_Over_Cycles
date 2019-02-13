@@ -1,9 +1,20 @@
 function plot_IRF(varlist,IRF_low,IRF_low2,IRF_up,IRF_up2,IRF,H,...
-      export_fig,fig_name)
+      exp_fig,fig_name)
 
 % Technical parameters, you may want to change depending on the number of Nvar
-n_row      = 3; % number of rows in the figure
-unique     = 1; % if unique = 1 plot IRFs together, if = 1 plot each IRF separately
+if length(varlist) == 1
+      unique     = 0; % if unique = 1 plot IRFs together, if = 1 plot each IRF separately
+      n_row      = NaN;
+elseif length(varlist) <= 3
+      unique     = 1;
+      n_row      = 1; % number of rows in the figure
+elseif length(varlist) <= 6
+      unique     = 1;
+      n_row      = 2; % number of rows in the figure
+elseif length(varlist) < 6
+      unique     = 1;
+      n_row      = 3; % number of rows in the figure
+end
 
 % IRFs are now percentage deviations
 IRF_low    = IRF_low*100;
@@ -47,25 +58,23 @@ for j = 1:length(varlist)
       end
       axis tight
       
-      
-      if export_fig == 1
-      
-      % Create the correct path
-      base_path = pwd;
-      warning off
-      if exist([base_path '\Figures'], 'dir')
-            cd([base_path '\Figures']) %for Microsoft
-      else
-            cd([base_path '/Figures']) %for Mac
+      % Print Fig
+      if exp_fig == 1
+            % Create the correct path
+            base_path = pwd;
+            warning off
+            if exist([base_path '\Figures'], 'dir')
+                  cd([base_path '\Figures']) %for Microsoft
+            else
+                  cd([base_path '/Figures']) %for Mac
+            end
+            if exist([base_path '\Export_Fig'], 'dir')
+                  addpath([base_path '\Export_Fig']) %for Microsoft
+            else
+                  addpath([base_path '/Export_Fig']) %for Mac
+            end
+            warning on
+            export_fig(fig_name)
+            cd(base_path) %back to the original path
       end
-      if exist([base_path '\Export_Fig'], 'dir')
-            addpath([base_path '\Export_Fig']) %for Microsoft
-      else
-            addpath([base_path '/Export_Fig']) %for Mac
-      end
-      warning on
-      export_fig(fig_name)
-      cd(base_path) %back to the original path
-
-end
 end
