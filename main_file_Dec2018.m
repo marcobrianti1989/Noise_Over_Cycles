@@ -685,7 +685,7 @@ D2 = mean(sdensity(find(period>ltrough_upper,1,'last'):find(period>ltrough_lower
 D  = D1./D2;
 
 D1ar = mean(sdensityar(find(period>lpeak_upper,1,'last'):find(period>lpeak_lower,1,'last'),:));
-D2ar = mean(sdensityar(find(period>ltrough_upper,1,'last'):find(period>ltrough_lower,1,'last'),:));
+D2ar = mean(sdensityar(find(perio   d>ltrough_upper,1,'last'):find(period>ltrough_lower,1,'last'),:));
 Dar = D1ar./D2ar;
 
 Diff_D = D - Dar;
