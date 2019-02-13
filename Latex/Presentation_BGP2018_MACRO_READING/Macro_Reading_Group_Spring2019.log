@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.18 (MiKTeX 2.9.6350 64-bit) (preloaded format=pdflatex 2017.8.21)  8 FEB 2019 09:38
+This is pdfTeX, Version 3.14159265-2.6-1.40.18 (MiKTeX 2.9.6350 64-bit) (preloaded format=pdflatex 2017.8.21)  11 FEB 2019 18:58
 entering extended mode
 **./Macro_Reading_Group_Spring2019.tex
 (Macro_Reading_Group_Spring2019.tex
@@ -1130,115 +1130,171 @@ Overfull \vbox (6.4001pt too high) detected at line 114
 
 [5
 
- <./NBER.png>] [6
+ <./NBER.png>] <spectrum_four.png, id=47, 676.77844pt x 678.28406pt>
+File: spectrum_four.png Graphic file (type png)
+
+<use spectrum_four.png>
+Package pdftex.def Info: spectrum_four.png used on input line 124.
+(pdftex.def)             Requested size: 270.70657pt x 271.3088pt.
+
+Overfull \vbox (66.71263pt too high) detected at line 124
+ []
+
+[6
+
+ <./spectrum_four.png>] <financial.png, id=53, 621.82312pt x 589.4522pt>
+File: financial.png Graphic file (type png)
+
+<use financial.png>
+Package pdftex.def Info: financial.png used on input line 133.
+(pdftex.def)             Requested size: 236.29523pt x 223.99416pt.
+
+Overfull \vbox (19.39798pt too high) detected at line 133
+ []
+
+[7
+
+ <./financial.png>] <DSGE_fail.png, id=60, 813.79031pt x 653.44125pt>
+File: DSGE_fail.png Graphic file (type png)
+
+<use DSGE_fail.png>
+Package pdftex.def Info: DSGE_fail.png used on input line 143.
+(pdftex.def)             Requested size: 276.68504pt x 222.16708pt.
+
+Overfull \vbox (17.5709pt too high) detected at line 143
+ []
+
+[8
+
+ <./DSGE_fail.png>] [9
 
 ]
-LaTeX Font Info:    Try loading font information for OML+lmm on input line 145.
+LaTeX Font Info:    Try loading font information for OML+lmm on input line 188.
 
  ("C:\Program Files\MiKTeX 2.9\tex\latex\lm\omllmm.fd"
 File: omllmm.fd 2009/10/30 v1.6 Font defs for Latin Modern
 )
-LaTeX Font Info:    Try loading font information for OMS+lmsy on input line 145
+LaTeX Font Info:    Try loading font information for OMS+lmsy on input line 188
 .
-
-("C:\Program Files\MiKTeX 2.9\tex\latex\lm\omslmsy.fd"
+ ("C:\Program Files\MiKTeX 2.9\tex\latex\lm\omslmsy.fd"
 File: omslmsy.fd 2009/10/30 v1.6 Font defs for Latin Modern
 )
-LaTeX Font Info:    Try loading font information for OMX+lmex on input line 145
+LaTeX Font Info:    Try loading font information for OMX+lmex on input line 188
 .
 
 ("C:\Program Files\MiKTeX 2.9\tex\latex\lm\omxlmex.fd"
 File: omxlmex.fd 2009/10/30 v1.6 Font defs for Latin Modern
 )
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <10.95> on input line 145.
+(Font)              <10.95> on input line 188.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <8> on input line 145.
+(Font)              <8> on input line 188.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <6> on input line 145.
-LaTeX Font Info:    Try loading font information for U+msa on input line 145.
+(Font)              <6> on input line 188.
+LaTeX Font Info:    Try loading font information for U+msa on input line 188.
 
 ("C:\Program Files\MiKTeX 2.9\tex\latex\amsfonts\umsa.fd"
 File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 )
-LaTeX Font Info:    Try loading font information for U+msb on input line 145.
+LaTeX Font Info:    Try loading font information for U+msb on input line 188.
 
 ("C:\Program Files\MiKTeX 2.9\tex\latex\amsfonts\umsb.fd"
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 )
-LaTeX Font Info:    Try loading font information for U+rsfs on input line 145.
+LaTeX Font Info:    Try loading font information for U+rsfs on input line 188.
 
 ("C:\Program Files\MiKTeX 2.9\tex\latex\jknappen\ursfs.fd"
 File: ursfs.fd 1998/03/24 rsfs font definition file (jk)
 )
 LaTeX Font Info:    Font shape `OT1/lmss/m/it' in size <10.95> not available
-(Font)              Font shape `OT1/lmss/m/sl' tried instead on input line 145.
+(Font)              Font shape `OT1/lmss/m/sl' tried instead on input line 188.
 
 LaTeX Font Info:    Font shape `OT1/lmss/m/it' in size <8> not available
-(Font)              Font shape `OT1/lmss/m/sl' tried instead on input line 145.
+(Font)              Font shape `OT1/lmss/m/sl' tried instead on input line 188.
 
 LaTeX Font Info:    Font shape `OT1/lmss/m/it' in size <6> not available
-(Font)              Font shape `OT1/lmss/m/sl' tried instead on input line 145.
+(Font)              Font shape `OT1/lmss/m/sl' tried instead on input line 188.
+
+
+Overfull \vbox (7.1444pt too high) detected at line 188
+ []
+
+[10
+
+]
+Overfull \hbox (17.2926pt too wide) in alignment at lines 206--206
+ [][][] []
+ []
 
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <12> on input line 145.
+(Font)              <12> on input line 206.
 LaTeX Font Info:    Font shape `OT1/lmss/m/it' in size <12> not available
-(Font)              Font shape `OT1/lmss/m/sl' tried instead on input line 145.
-
-
-Overfull \vbox (6.11206pt too high) detected at line 145
- []
-
-[7
-
-]
-Overfull \vbox (71.53326pt too high) detected at line 169
- []
-
-[8
-
-] [9
-
-] [10
-
-]
-<../../Figures/ResInsideLP_20Dec2018.pdf, id=82, 1168.11406pt x 620.60857pt>
-File: ../../Figures/ResInsideLP_20Dec2018.pdf Graphic file (type pdf)
-
-<use ../../Figures/ResInsideLP_20Dec2018.pdf>
-Package pdftex.def Info: ../../Figures/ResInsideLP_20Dec2018.pdf used on input 
-line 225.
-(pdftex.def)             Requested size: 315.39502pt x 167.56654pt.
-
-Overfull \hbox (8.10515pt too wide) in paragraph at lines 225--225
- [] 
- []
+(Font)              Font shape `OT1/lmss/m/sl' tried instead on input line 206.
 
 [11
 
- <../../Figures/ResInsideLP_20Dec2018.pdf>] [12
+] [12
 
-]
-Overfull \vbox (0.57227pt too high) detected at line 256
- []
-
-[13
+] [13
 
 ] [14
 
-]
-Overfull \vbox (1.2454pt too high) detected at line 286
- []
-
-[15
+] [15
 
 ]
-Overfull \vbox (24.1318pt too high) detected at line 299
+Overfull \vbox (4.88174pt too high) detected at line 329
  []
 
 [16
 
 ] [17
+
+] [18
+
+] [19
+
+] [20
+
+] [21
+
+]
+<matching.png, id=141, 678.28406pt x 658.71094pt>
+File: matching.png Graphic file (type png)
+ <use matching.png>
+Package pdftex.def Info: matching.png used on input line 447.
+(pdftex.def)             Requested size: 230.61353pt x 223.95876pt.
+
+Overfull \vbox (19.36258pt too high) detected at line 447
+ []
+
+[22
+
+ <./matching.png>] <param.png, id=147, 679.78969pt x 670.75594pt>
+File: param.png Graphic file (type png)
+
+<use param.png>
+Package pdftex.def Info: param.png used on input line 456.
+(pdftex.def)             Requested size: 231.12543pt x 228.054pt.
+
+Overfull \vbox (23.45782pt too high) detected at line 456
+ []
+
+[23
+
+ <./param.png>] <eigen.png, id=153, 947.79094pt x 317.68687pt>
+File: eigen.png Graphic file (type png)
+
+<use eigen.png>
+Package pdftex.def Info: eigen.png used on input line 467.
+(pdftex.def)             Requested size: 322.24466pt x 108.0121pt.
+
+Overfull \hbox (14.95479pt too wide) in paragraph at lines 467--467
+ [] 
+ []
+
+[24
+
+ <./eigen.png>] [25
 
 ]
 \tf@nav=\write6
@@ -1250,11 +1306,11 @@ Overfull \vbox (24.1318pt too high) detected at line 299
 \tf@snm=\write8
 \openout8 = `Macro_Reading_Group_Spring2019.snm'.
 
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 306.
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 306.
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 491.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 491.
  (Macro_Reading_Group_Spring2019.aux)
-Package atveryend Info: Empty hook `AtVeryEndDocument' on input line 306.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 306.
+Package atveryend Info: Empty hook `AtVeryEndDocument' on input line 491.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 491.
 Package rerunfilecheck Info: File `Macro_Reading_Group_Spring2019.out' has not 
 changed.
 (rerunfilecheck)             Checksum: D41D8CD98F00B204E9800998ECF8427E;0.
@@ -1264,30 +1320,29 @@ LaTeX Font Warning: Some font shapes were not available, defaults substituted.
 
  ) 
 Here is how much of TeX's memory you used:
- 21086 strings out of 493323
- 422321 string characters out of 3139072
+ 21146 strings out of 493323
+ 423010 string characters out of 3139072
  483446 words of memory out of 3000000
- 24061 multiletter control sequences out of 15000+200000
- 48012 words of font info for 53 fonts, out of 3000000 for 9000
+ 24101 multiletter control sequences out of 15000+200000
+ 45297 words of font info for 52 fonts, out of 3000000 for 9000
  1141 hyphenation exceptions out of 8191
- 56i,14n,88p,1823b,789s stack positions out of 5000i,500n,10000p,200000b,50000s
-{C:/Program Files/MiKTeX 2.9/fonts/enc/dvips/lm/lm-mathit.enc}{C:/Program Fil
-es/MiKTeX 2.9/fonts/enc/dvips/lm/lm-mathex.enc}{C:/Program Files/MiKTeX 2.9/fon
-ts/enc/dvips/lm/lm-rm.enc}{C:/Program Files/MiKTeX 2.9/fonts/enc/dvips/lm/lm-ma
-thsy.enc}<C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmsy10.pfb
+ 56i,17n,88p,1823b,789s stack positions out of 5000i,500n,10000p,200000b,50000s
+{C:/Program Files/MiKTeX 2.9/fonts/enc/dvips/lm/lm-rm.enc}{C:/Program Files/M
+iKTeX 2.9/fonts/enc/dvips/lm/lm-mathex.enc}{C:/Program Files/MiKTeX 2.9/fonts/e
+nc/dvips/lm/lm-mathsy.enc}{C:/Program Files/MiKTeX 2.9/fonts/enc/dvips/lm/lm-ma
+thit.enc}<C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmsy10.pfb
 ><C:/Program Files/MiKTeX 2.9/fonts/type1/public/lm/lmex10.pfb><C:/Program File
 s/MiKTeX 2.9/fonts/type1/public/lm/lmmi10.pfb><C:/Program Files/MiKTeX 2.9/font
 s/type1/public/lm/lmmi8.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/lm/
-lmss10.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/lm/lmss12.pfb><C:/Pr
-ogram Files/MiKTeX 2.9/fonts/type1/public/lm/lmss8.pfb><C:/Program Files/MiKTeX
- 2.9/fonts/type1/public/lm/lmssbx10.pfb><C:/Program Files/MiKTeX 2.9/fonts/type
-1/public/lm/lmsso10.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/lm/lmss
-o12.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/lm/lmsso8.pfb><C:/Progr
-am Files/MiKTeX 2.9/fonts/type1/public/lm/lmsy10.pfb><C:/Program Files/MiKTeX 2
-.9/fonts/type1/public/lm/lmsy8.pfb>
-Output written on Macro_Reading_Group_Spring2019.pdf (17 pages, 499663 bytes).
+lmss10.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/lm/lmss8.pfb><C:/Pro
+gram Files/MiKTeX 2.9/fonts/type1/public/lm/lmssbx10.pfb><C:/Program Files/MiKT
+eX 2.9/fonts/type1/public/lm/lmsso10.pfb><C:/Program Files/MiKTeX 2.9/fonts/typ
+e1/public/lm/lmsso12.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/lm/lms
+so8.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/lm/lmsy10.pfb><C:/Progr
+am Files/MiKTeX 2.9/fonts/type1/public/lm/lmsy8.pfb>
+Output written on Macro_Reading_Group_Spring2019.pdf (25 pages, 893788 bytes).
 PDF statistics:
- 174 PDF objects out of 1000 (max. 8388607)
- 35 named destinations out of 1000 (max. 500000)
- 65 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 220 PDF objects out of 1000 (max. 8388607)
+ 51 named destinations out of 1000 (max. 500000)
+ 90 words of extra memory for PDF output out of 10000 (max. 10000000)
 
