@@ -50,7 +50,7 @@ disp('First Step: Building Ztilde')
 fprintf('\n')
 fprintf('\n')
 
-for cc = 1:2
+for cc = 2:2
     %Building Zt
     %Step 1 - Getting the forecasted growth rates
     Delta_RGDP_t        = RGDP5_SPF./RGDP1_SPF - ones(length(RGDP1_SPF),1);
@@ -192,7 +192,8 @@ for cc = 1:2
     else
     end
     Spread           = MoodySpreadBaa - MoodySpreadAaa;
-    varlist          = {'RealGDP','RealCons','RealInvestment','Credit2GDP','Spread'};%,...
+    varlist          = {'RealGDP','RealCons','RealInvestment','RealInventories',...
+          'Credit2GDP','Spread'};%,...
           %'FFR','UnempRate','TFP','CPIInflation',};
     
     %{'RealGDP','RealCons','RealInvestment','Hours'};
@@ -315,7 +316,7 @@ for cc = 1:2
     
     %Print figure authomatically if "export_figure1 = 1"
     if plot2 == 1
-        export_fig2 = 0; % if export_fig1 = 1, figure will be saved
+        export_fig2 = 1; % if export_fig1 = 1, figure will be saved
         export_fig_IRF_lp_unconditional(export_fig2)
     end
     
