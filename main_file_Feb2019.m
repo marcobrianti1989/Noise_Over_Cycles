@@ -1,11 +1,11 @@
 %*************************************************************************%
-% Main
+%    Main
 %
-% NOTE describe variables (especially SHOCKS) in dataset
+%    NOTE describe variables (especially SHOCKS) in dataset
 %
-% last change 11/30/2018
+%    last change 02/14/2019
 %
-% Code by Brianti, Marco e Cormun, Vito
+%    Code by Brianti, Marco e Cormun, Vito
 %*************************************************************************%
 clc
 clear
@@ -44,33 +44,8 @@ end
 %                                                                         %
 %*************************************************************************%
 
-%Building Zt
-%Step 1 - Getting the forecasted growth rates
-Delta_RGDP_t        = RGDP5_SPF./RGDP1_SPF - ones(length(RGDP1_SPF),1);
-Delta_RDGP_t1       = RGDP6_SPF./RGDP2_SPF - ones(length(RGDP1_SPF),1);
-% Nominal GDP
-Delta_NGDP_t        = NGDP5_SPF./NGDP1_SPF - ones(length(NGDP1_SPF),1);
-Delta_NDGP_t1       = NGDP6_SPF./NGDP2_SPF - ones(length(NGDP1_SPF),1);
-% Real Cons
-Delta_RCONS_t       = RCONS5_SPF./RCONS1_SPF - ones(length(RCONS1_SPF),1);
-Delta_RCONS_t1      = RCONS6_SPF./RCONS2_SPF - ones(length(RCONS1_SPF),1);
-%Industrial Production
-Delta_INDPROD_t     = INDPROD5_SPF./INDPROD1_SPF - ones(length(INDPROD1_SPF),1);
-Delta_INDPROD_t1    = INDPROD6_SPF./INDPROD2_SPF - ones(length(INDPROD1_SPF),1);
-%Investment is the sum between residential and non residential investment
-Delta_RINV_t        = (RRESINV5_SPF + RNRESIN5_SPF)./(RRESINV1_SPF + RNRESIN1_SPF)  - ones(length(RRESINV1_SPF),1);
-Delta_RINV_t1       = (RRESINV6_SPF + RNRESIN6_SPF)./(RRESINV2_SPF + RNRESIN2_SPF)  - ones(length(RRESINV1_SPF),1);
-% CPI
-Delta_CPI_t         = CPI5_SPF;% - CPI1_SPF;
-Delta_CPI_t1        = CPI6_SPF;% - CPI2_SPF;
-%Step 2 - Revision in forecast growth rates
-Z1                  = [NaN; Delta_RGDP_t(2:end) - Delta_RDGP_t1(1:end-1)];
-Z2                  = [NaN; Delta_NGDP_t(2:end) - Delta_NDGP_t1(1:end-1)];
-Z3                  = [NaN; Delta_RCONS_t(2:end) - Delta_RCONS_t1(1:end-1)];
-Z4                  = [NaN; Delta_INDPROD_t(2:end) - Delta_INDPROD_t1(1:end-1)];
-Z5                  = [NaN; Delta_RINV_t(2:end) - Delta_RINV_t1(1:end-1)];
-Z6                  = [NaN; Delta_CPI_t(2:end)];% - Delta_CPI_t1(1:end-1)];
-Z7                  = [NaN; diff(MichIndexConfidence)];
+%Building Zt - Forecast Revisions from SPF and Michigan Index
+create_Z
 
 % Define Variables
 [TFP_trunc, trunc1, trunc2] = truncate_data(TFP);
@@ -96,7 +71,7 @@ X_lead                      = TFPBP;
 
 %*************************************************************************%
 %                                                                         %
-%                     2nd stage - Local Projections                       %
+%                      2nd stage - Local Projections                      %
 %                                                                         %
 %*************************************************************************%
 
@@ -232,18 +207,23 @@ end
 % Technical Parameters
 tech_info_table;
 asd
-% *************************************************************************%
-% (Canova) test of cyclical IRF
-rho  = 0; %rho = 0, Hnull: flat spectral density, otherwise rho should be estimated from data as im BG
-T    = 1000; %should impose same data length
-%generate IRF on AR(1) from LP
+
+%*************************************************************************%
+%                                                                         %
+%                        Test Cyclicality - Canova                        %
+%                                                                         %
+%*************************************************************************%
+
+% Generate IRF on AR(1) from LP
+rho    = 0;    % rho = 0, Hnull: flat spectral density, otherwise rho should be estimated from data as im BG
+T      = 1000; % Asyntotic (Maybe should be the same length) !!!
 Yar(1) = 0;
 for t = 2:T
       Yar(t) = rho*Yar(t-1) + randn;
 end
-%recover shocks
-[coef,~,Zar] = regress(Yar(2:end)', Yar(1:end-1)');
-%run LP
+% Recover shocks
+[coef,~,Zar] = regress(Yar(2:end)',Yar(1:end-1)');
+% Run LP
 [IRFar,res,tuplear] = local_projection(Yar(2:end)',zeros(T-1,1),Zar,0,H,'none');
 for hh = 1:H
       tuplearhh = tuplear{hh}; % Fix a specific horizon
@@ -256,12 +236,14 @@ for hh = 1:H
             IRFar_boot(1,hh,isimul)  = B(1);
       end
 end
-% plot LP under AR(1)
+% Plot LP under AR(1)
 IRFar_up    = quantile(squeeze(IRFar_boot(1,:,:))',1-sig);
 IRFar_up2   = quantile(squeeze(IRFar_boot(1,:,:))',1-sig2);
 IRFar_low   = quantile(squeeze(IRFar_boot(1,:,:))',sig);
 IRFar_low2  = quantile(squeeze(IRFar_boot(1,:,:))',sig2);
-figure(3); %plot spectral density and its CI against the AR(1) counterpart
+hfig        =  findobj('type','figure');
+nfig        = length(hfig);
+figure(nfig); %plot spectral density and its CI against the AR(1) counterpart
 print       = NaN;
 nameAR      = {'AR1'};
 plot_IRF(nameAR,IRFar_low,IRFar_low2,IRFar_up,IRFar_up2,IRFar,H,print,name); %change this function
