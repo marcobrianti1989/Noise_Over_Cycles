@@ -9,7 +9,7 @@
 clear
 close all
 
-T = 1000000;
+T = 200;
 alp1 = 0.9;
 alp2 = -0.80;
 alp3 = 0;
@@ -26,7 +26,7 @@ end
 % close
 omeg = linspace(0,pi,50)';
 Z    = exp(-1i*omeg);
-lags = 100;
+lags = 25;
 for iZ = 1:length(omeg)
       [GxZ(iZ,1), Cx] = autocov_GenFunc(X,lags,Z(iZ));
 end

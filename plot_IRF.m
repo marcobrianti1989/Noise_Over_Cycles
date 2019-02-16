@@ -11,7 +11,7 @@ elseif length(varlist) <= 3
 elseif length(varlist) <= 6
       unique     = 1;
       n_row      = 2; % number of rows in the figure
-elseif length(varlist) < 6
+elseif length(varlist) > 6
       unique     = 1;
       n_row      = 3; % number of rows in the figure
 end
@@ -24,22 +24,23 @@ IRF_up2    = IRF_up2*100;
 IRF        = IRF*100;
 
 %Impulse Response Functions using Local Projection - Figure
+hfig        = findobj('type','figure');
+nfig        = length(hfig);
 if unique == 1
       nvar     = length(varlist);
       n_col    = ceil(nvar/n_row); %plus one for Vix
-      figure('Position',[1 41 1920 963])
-      set(gcf,'color','w');
 end
 for j = 1:length(varlist)
       if unique == 1
+            figure(nfig+1)
             s = subplot(n_row,n_col,j);
       else
-            figure(j)
+            figure(nfig+j)
             nvar     = length(varlist);
             n_col    = ceil(nvar/n_row); %plus one for Vix
-            figure('Position',[1 41 1920 963])
-            set(gcf,'color','w');
       end
+      set(gcf,'Position',[1 41 1920 963])
+      set(gcf,'color','w');
       hold on
       plot([0:H-1]',IRF_low(j,:), '--k','linewidth', 1);
       plot([0:H-1]',IRF_up(j,:), '--k','linewidth', 1);
