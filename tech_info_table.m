@@ -1,9 +1,7 @@
 fprintf('\n')
 fprintf('\n')
-fprintf('\n')
-fprintf('\n')
 disp('------------------------------------------------')
-disp('             Technical Parameters               ')
+disp('           Technical Parameters LP              ')
 disp('------------------------------------------------')
 fprintf('\n')
 if strcmp(which_Z,'1') == 1
@@ -27,12 +25,11 @@ disp(['Number of lags in LP    ',num2str(lags_LP)])
 disp(['Trend                   ',which_trend])
 disp(['IRFs horizon            ',num2str(H)])
 disp(['Number of PCs           ',num2str(nPC)])
+disp(['Number of simulations   ',num2str(nsimul)])
 if diff_LP == 1
       disp('Other                   Dependent Variables are differentiated')
 else
       disp('Other                   Dependent Variables are in levels')
 end
-fprintf('\n')
-fprintf('\n')
 fprintf('\n')
 fprintf('\n')
