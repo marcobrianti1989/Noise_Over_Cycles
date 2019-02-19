@@ -15,7 +15,7 @@ tic
 lags                = 4;             % Number of lags in the first step (deriving Ztilde)
 leads               = 16;            % Number of leads in the first step (deriving Ztilde)
 H                   = 20;            % IRFs horizon
-lags_LP             = 1;             % Number of lags in the Local Projection
+lags_LP             = 3;             % Number of lags in the Local Projection
 which_trend         = 'quadratic' ;  % BPfilter, HPfilter, linear, quadratic for Local Projection
 which_Z             = '1';           % Which Forecast Revision: RGDP, NGDP, RCONS, INDPROD, RINV
 which_shock         = {'Sentiment'}; % Tech, News
@@ -24,11 +24,11 @@ nPC                 = 3;             % Number of Principal Components
 norm_SHOCK          = 1;             % Divide shock over its own variance
 printIRFs           = 0;             % Print IRFs
 printVD             = 0;             % Print Variance Decompositions
-nsimul              = 2000;          % number of simulations for bootstrap
+nsimul              = 500;          % number of simulations for bootstrap
 
 % Define Dependent Variables
-varlist          = {'SpreadBond','SpreadBankRate','VXO',...
-      'Vix'};
+varlist          = {'SpreadBond','SpreadBankRate','M1Stock',...
+      'ChicagoFedAdjIndex'};
 
 % Read main dataset
 filename                    = 'main_file';
@@ -211,7 +211,7 @@ close
 % Technical Parameters
 tech_info_table;
 
-return
+r
 
 
 %*************************************************************************%
