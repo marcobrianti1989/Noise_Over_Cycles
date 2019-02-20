@@ -1,34 +1,41 @@
 %*************************************************************************%
 %    Main
 %
-%    NOTE describe variables (especially SHOCKS) in dataset
+%  
 %
 %    last change 02/14/2019
 %
+%   todo: degrees of freedom and allow for setting up the time period
+% considered, the NFCI, for example, is extremely volatile before 1980 
 %    Code by Brianti, Marco e Cormun, Vito
 %*************************************************************************%
 clc
 clear
 close all
 tic
+% Start date and end date
+
+% Decide whether or not include policy shocks in the controls
+
+%
 % Technical Parameters
 lags                = 4;             % Number of lags in the first step (deriving Ztilde)
-leads               = 16;            % Number of leads in the first step (deriving Ztilde)
+leads               = 0;            % Number of leads in the first step (deriving Ztilde)
 H                   = 20;            % IRFs horizon
-lags_LP             = 1;             % Number of lags in the Local Projection
+lags_LP             = 4;             % Number of lags in the Local Projection
 which_trend         = 'quadratic' ;  % BPfilter, HPfilter, linear, quadratic for Local Projection
 which_Z             = '1';           % Which Forecast Revision: RGDP, NGDP, RCONS, INDPROD, RINV
 which_shock         = {'Sentiment'}; % Tech, News
 diff_LP             = 0;             % LP in levels or differences
-nPC                 = 3;             % Number of Principal Components
+nPC                 = 1;             % Number of Principal Components
 norm_SHOCK          = 1;             % Divide shock over its own variance
 printIRFs           = 0;             % Print IRFs
 printVD             = 0;             % Print Variance Decompositions
 nsimul              = 2000;          % number of simulations for bootstrap
 
 % Define Dependent Variables
-varlist          = {'SpreadBond','SpreadBankRate','VXO','ChicagoFedIndex','ChicagoFedIndex' ...
-      'Vix'};
+varlist          = {'SpreadBond','Leverage','ChicagoFedIndex','RealGDP', 'RealInvestment'}; % ...
+      %'Vix'};
 
 % Read main dataset
 filename                    = 'main_file';
@@ -36,7 +43,7 @@ sheet                       = 'Sheet1';
 range                       = 'B1:DP300';
 do_truncation               = 0; %Do not truncate data. You will have many NaN
 [dataset, var_names]        = read_data2(filename, sheet, range, do_truncation);
-dataset                     = [dataset; NaN(leads,size(dataset,2))]; % Adding some NaN at the end for technical purposes
+dataset                     = [dataset; NaN(leads,size(dataset,2))]; % Adding some NaN at the end for technical reasons
 
 % Assess name to each variable
 for i = 1:size(dataset,2)
@@ -66,8 +73,8 @@ eval(['Z = Z', which_Z,';']);
 Y                           = Z;
 
 % Define Regressors and Dependent Variable
-X_contemporaneous           = [TFPBP SHOCKS_NARRATIVE];
-X_lag                       = [TFPBP PC SHOCKS_NARRATIVE];
+X_contemporaneous           = [TFPBP]; SHOCKS_NARRATIVE];
+X_lag                       = [TFPBP PC] SHOCKS_NARRATIVE];
 X_lead                      = TFPBP;
 
 % Control Regression
@@ -207,7 +214,7 @@ for is = 1:length(which_shock)
       % Plot VD
       plot_IRF(varlist,VDkk,VDkk,VDkk,VDkk,VDkk,H,printVD,VDname)
 end
-close
+
 % Technical Parameters
 tech_info_table;
 

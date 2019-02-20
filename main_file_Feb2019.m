@@ -20,12 +20,12 @@ tic
 %
 % Technical Parameters
 lags                = 4;             % Number of lags in the first step (deriving Ztilde)
-leads               = 16;            % Number of leads in the first step (deriving Ztilde)
+leads               = 0;            % Number of leads in the first step (deriving Ztilde)
 H                   = 20;            % IRFs horizon
-lags_LP             = 1;             % Number of lags in the Local Projection
+lags_LP             = 3;             % Number of lags in the Local Projection
 which_trend         = 'quadratic' ;  % BPfilter, HPfilter, linear, quadratic for Local Projection
-which_Z             = '1';           % Which Forecast Revision: RGDP, NGDP, RCONS, INDPROD, RINV
-which_shock         = {'Sentiment'}; % Tech, News
+which_Z             = '3';           % Which Forecast Revision: RGDP, NGDP, RCONS, INDPROD, RINV
+which_shock         = {'Tech'}; % Tech, News
 diff_LP             = 0;             % LP in levels or differences
 nPC                 = 3;             % Number of Principal Components
 norm_SHOCK          = 1;             % Divide shock over its own variance
@@ -34,8 +34,7 @@ printVD             = 0;             % Print Variance Decompositions
 nsimul              = 2000;          % number of simulations for bootstrap
 
 % Define Dependent Variables
-varlist          = {'SpreadBond','Leverage','ChicagoFedIndex','RealGDP', 'RealInvestment'}; % ...
-      %'Vix'};
+varlist          = {'RealGDP', 'RealInvestment','SpreadBond','Leverage','ChicagoFedIndex','Vix','FFR'}; %'SpreadBond','Leverage','ChicagoFedIndex',
 
 % Read main dataset
 filename                    = 'main_file';
@@ -73,8 +72,8 @@ eval(['Z = Z', which_Z,';']);
 Y                           = Z;
 
 % Define Regressors and Dependent Variable
-X_contemporaneous           = [TFPBP SHOCKS_NARRATIVE];
-X_lag                       = [TFPBP PC SHOCKS_NARRATIVE];
+X_contemporaneous           = [TFPBP];% [TFPBP SHOCKS_NARRATIVE]; %[TFPBP];% 
+X_lag                       = [TFPBP PC];%[TFPBP PC SHOCKS_NARRATIVE]; %[TFPBP PC];%
 X_lead                      = TFPBP;
 
 % Control Regression
