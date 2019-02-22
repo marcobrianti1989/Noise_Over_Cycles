@@ -6,7 +6,7 @@
 %    last change 02/14/2019
 %
 %   todo: degrees of freedom and allow for setting up the time period
-% considered, the NFCI, for example, is extremely volatile before 1980 
+%    considered, the NFCI, for example, is extremely volatile before 1980 
 %    Code by Brianti, Marco e Cormun, Vito
 %*************************************************************************%
 clc
@@ -22,19 +22,20 @@ tic
 lags                = 4;             % Number of lags in the first step (deriving Ztilde)
 leads               = 0;            % Number of leads in the first step (deriving Ztilde)
 H                   = 20;            % IRFs horizon
-lags_LP             = 3;             % Number of lags in the Local Projection
+lags_LP             = 2;             % Number of lags in the Local Projection
 which_trend         = 'quadratic' ;  % BPfilter, HPfilter, linear, quadratic for Local Projection
-which_Z             = '3';           % Which Forecast Revision: RGDP, NGDP, RCONS, INDPROD, RINV
-which_shock         = {'Tech'}; % Tech, News
+which_Z             = '1';           % Which Forecast Revision: RGDP, NGDP, RCONS, INDPROD, RINV
+which_shock         = {'Sentiment','Tech'}; % Tech, News
 diff_LP             = 0;             % LP in levels or differences
 nPC                 = 3;             % Number of Principal Components
 norm_SHOCK          = 1;             % Divide shock over its own variance
 printIRFs           = 0;             % Print IRFs
 printVD             = 0;             % Print Variance Decompositions
-nsimul              = 2000;          % number of simulations for bootstrap
+nsimul              = 1000;          % number of simulations for bootstrap
 
 % Define Dependent Variables
-varlist          = {'RealGDP', 'RealInvestment','SpreadBond','Leverage','ChicagoFedIndex','Vix','FFR'}; %'SpreadBond','Leverage','ChicagoFedIndex',
+varlist          = {'SpreadBonds','MoodySpreadBaa','TermYield','FFR','Y10Treasury','M3Treasury'};
+%'RealGDP', 'RealInvestment','SpreadBond','Leverage','ChicagoFedIndex','Vix','FFR',
 
 % Read main dataset
 filename                    = 'main_file';
@@ -72,8 +73,8 @@ eval(['Z = Z', which_Z,';']);
 Y                           = Z;
 
 % Define Regressors and Dependent Variable
-X_contemporaneous           = [TFPBP];% [TFPBP SHOCKS_NARRATIVE]; %[TFPBP];% 
-X_lag                       = [TFPBP PC];%[TFPBP PC SHOCKS_NARRATIVE]; %[TFPBP PC];%
+X_contemporaneous           = [TFPBP SHOCKS_NARRATIVE];% [TFPBP SHOCKS_NARRATIVE]; %[TFPBP];% 
+X_lag                       = [TFPBP PC SHOCKS_NARRATIVE];%[TFPBP PC SHOCKS_NARRATIVE]; %[TFPBP PC];%
 X_lead                      = TFPBP;
 
 % Control Regression
@@ -108,8 +109,9 @@ end
 
 % Other Transformations
 SP500                   = SP500 - GDPDefl;
-SpreadBond              = MoodySpreadBaa - MoodySpreadAaa;
-SpreadBankRate          = LoanPrime - TenYTreasury;
+SpreadBonds             = MoodySpreadBaa - MoodySpreadAaa;
+TermYield               = Y10Treasury - M3Treasury;
+%SpreadBankRate          = LoanPrime - TenYTreasury;
 BankLeverage            = BanksTotLiabilities - BanksTotAssets;
 CorpEqui2Assets         = NonFinEquity - NonFinTotAssets;
 CorpDebt2Assets         = NonFinDebtSecurities - NonFinTotAssets;
