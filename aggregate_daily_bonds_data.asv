@@ -48,36 +48,26 @@
 % code_principal           = data_principal(:,1);
 % date_principal           = data_principal(:,2);
 % principal                = data_principal(:,3);
-tic
-JUNK_CODE = {'BB+','BB','BB-','B+','B','B-','CCC+','CCC','CCC-','CC','C',...
+
+JUNK = {'BB+','BB','BB-','B+','B','B-','CCC+','CCC','CCC-','CC','C',...
       'RD','SD','D','DDD','DD',...
       'Ba1','Ba2','Ba3','B1','B2','B3','Caa1','Caa2','Caa3','Ca'};
 
-JUNK = zeros(size(code_principal,1),1);
-SAFE = zeros(size(code_principal,1),1);
-for i = 1:length(code_principal)
+for i = 1000:1050%length(code_principal)
       codei = code_principal(i);
       locs  = find(codei == code_rating);
       for il = 1:length(locs)
-         locsi           = locs(il);
-         ratinglocsi     = rating{locsi};
-         JUNK_flag(il)   = sum(strcmp(JUNK_CODE,ratinglocsi));
+         locsi       = locs(il);
+         ratinglocsi    = rating{locsi};
+         JUNK_flag(il)   = sum(strcmp(JUNK,ratinglocsi));
       end
-      BOND_flag          = sum(JUNK_flag);     
-      if BOND_flag >= 1
-            JUNK(i,1) = principal(i,1);
-            SAFE(i,1) = 0;
-      else
-            JUNK(i,1) = 0;
-            SAFE(i,1) = principal(i,1);
-      end  
-      if i/100 == ceil(i/100)
-            disp(['Iteration number ', num2str(i)])
-      end
+       sum(JUNK_flag_sum)     
+               
+      
 end
-toc
 
-boundle = [JUNK SAFE]
+
+
 
 
 
