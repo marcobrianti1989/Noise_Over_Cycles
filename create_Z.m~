@@ -39,8 +39,7 @@ YR      = exp(RealGDP);
 %YR      = [RGDP1_SPF(2:end); NaN]; %it's very different from RealGDP, has
 %jumps and the growth is too much right skewed
 YRG     = [NaN(4,1); YR(5:end)./YR(1:end-4) - ones(length(YR)-4,1)];  %Y(t)/Y(t-4)
-%FE_RGDP = [YRG(4:end) - Delta_RGDP_t(1:end-3); NaN(3,1)]; %Y(t+3)/Y(t-1) - Y(t+3|t)/Y(t-1|t)
-FE_RGDP = [NaN(3,1); YRG(4:end) - Delta_RGDP_t(1:end-3)]; %Y(t)/Y(t-4) - Y(t|t-3)/Y(t-4|t-3)
+FE_RGDP = [YRG(4:end) - Delta_RGDP_t(1:end-3); NaN(3,1)]; %Y(t+3)/Y(t-1) - Y(t+3|t)/Y(t-1|t)
 %[B,Bint] = regress( FE_RGDP , [Z1, ones(length(Z1),1)] ) %replicates Gennaioli
 %[B,Bint] = regress( FE_RGDP(2:end) , [Z1(2:end),FE_RGDP(1:end-1),ones(length(Z1)-1,1)] )%not robust, forecast errors are highly autocorrelated 
 
@@ -48,19 +47,16 @@ FE_RGDP = [NaN(3,1); YRG(4:end) - Delta_RGDP_t(1:end-3)]; %Y(t)/Y(t-4) - Y(t|t-3
 YN = exp(GDPDefl).*exp(RealGDP)/100;
 %YN     = [NGDP1_SPF(2:end); NaN];
 YNG     = [NaN(4,1); YN(5:end)./YN(1:end-4) - ones(length(YN)-4,1)];  %Y(t)/Y(t-4)
-%FE_NGDP = [YNG(4:end) - Delta_NGDP_t(1:end-3); NaN(3,1)]; %Y(t+3)/Y(t-1) - Y(t+3|t)/Y(t-1|t)
-FE_NGDP = [NaN(3,1) ; YNG(4:end) - Delta_NGDP_t(1:end-3)]; %Y(t)/Y(t-4) - Y(t|t-3)/Y(t-4|t-3)
+FE_NGDP = [YNG(4:end) - Delta_NGDP_t(1:end-3); NaN(3,1)]; %Y(t+3)/Y(t-1) - Y(t+3|t)/Y(t-1|t)
 %[B,Bint] = regress( FE_NGDP , [Z2, ones(length(Z2),1)] ) %replicates Gennaioli
 %[B,Bint] = regress( FE_NGDP(2:end) , [Z2(2:end),FE_NGDP(1:end-1),ones(length(Z2)-1,1)] )%not robust, forecast errors are highly autocorrelated 
 
 % Real Consumption - find series for now we use Gennaioli series
-RC      = exp(RealCons);
-%RC      = [RCONS1_SPF(2:end); NaN];
-RCG     = [NaN(4,1); RC(5:end)./RC(1:end-4) - ones(length(RC)-4,1)];  %Y(t)/Y(t-4)
-%FE_RC   = [RCG(4:end) - Delta_RCONS_t(1:end-3); NaN(3,1)]; %Y(t+3)/Y(t-1) - Y(t+3|t)/Y(t-1|t)
-FE_RC   = [NaN(3,1); RCG(4:end) - Delta_RCONS_t(1:end-3) ]; %Y(t)/Y(t-4) - Y(t|t-3)/Y(t-4|t-3)
-%[B,Bint] = regress( FE_RC , [Z3, ones(length(Z3),1)] ) %replicates Gennaioli
-%[B,Bint] = regress( FE_RC(2:end) , [Z3(2:end),FE_RC(1:end-1),ones(length(Z3)-1,1)] )%not robust, forecast errors are highly autocorrelated 
+RC      = [RCONS1_SPF(2:end); NaN];
+RCG     = [NaN(4,1); YN(5:end)./YN(1:end-4) - ones(length(YN)-4,1)];  %Y(t)/Y(t-4)
+FE_RC   = [RCG(4:end) - Delta_RCONS_t(1:end-3); NaN(3,1)]; %Y(t+3)/Y(t-1) - Y(t+3|t)/Y(t-1|t)
+[B,Bint] = regress( FE_P , [Z2, ones(length(Z2),1)] ) %replicates Gennaioli
+%[B,Bint] = regress( FE_NGDP(2:end) , [Z2(2:end),FE_NGDP(1:end-1),ones(length(Z2)-1,1)] )%not robust, forecast errors are highly autocorrelated 
 
 
 

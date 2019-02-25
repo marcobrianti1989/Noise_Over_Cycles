@@ -19,27 +19,28 @@ tic
 
 %
 % Technical Parameters
-lags                = 4;             % Number of lags in the first step (deriving Ztilde)
-leads               = 0;            % Number of leads in the first step (deriving Ztilde)
+lags                = 4;            % Number of lags in the first step (deriving Ztilde)
+leads               = 0;             % Number of leads in the first step (deriving Ztilde)
 H                   = 20;            % IRFs horizon
-lags_LP             = 3;             % Number of lags in the Local Projection
+lags_LP             = 4;             % Number of lags in the Local Projection
 which_trend         = 'quadratic' ;  % BPfilter, HPfilter, linear, quadratic for Local Projection
 which_Z             = '3';           % Which Forecast Revision: RGDP, NGDP, RCONS, INDPROD, RINV
 which_shock         = {'Tech'}; % Tech, News
 diff_LP             = 0;             % LP in levels or differences
-nPC                 = 3;             % Number of Principal Components
+nPC_first           = 3;             % Number of Principal Components in the first stage
+nPC                 = 3;             % Number of Principal Components in the second stage
 norm_SHOCK          = 1;             % Divide shock over its own variance
 printIRFs           = 0;             % Print IRFs
 printVD             = 0;             % Print Variance Decompositions
 nsimul              = 2000;          % number of simulations for bootstrap
 
 % Define Dependent Variables
-varlist          = {'RealGDP', 'RealInvestment','SpreadBond','Leverage','ChicagoFedIndex','Vix','FFR'}; %'SpreadBond','Leverage','ChicagoFedIndex',
+varlist          = {'Z', 'RealGDP','RealInvestment','FE_RGDP'}; % 'SpreadBond','Leverage','ChicagoFedIndex','RealGDP','RealInvestment', 'RealExchRate', 
 
 % Read main dataset
 filename                    = 'main_file';
 sheet                       = 'Sheet1';
-range                       = 'B1:DP300';
+range                       = 'B1:DR300';
 do_truncation               = 0; %Do not truncate data. You will have many NaN
 [dataset, var_names]        = read_data2(filename, sheet, range, do_truncation);
 dataset                     = [dataset; NaN(leads,size(dataset,2))]; % Adding some NaN at the end for technical reasons
@@ -65,20 +66,35 @@ TFPBP                       = [TFPBP; NaN(length(TFP) - length(TFPBP),1)];
 dTFP                        = [NaN; diff(TFP)];
 PC                          = [PC1 PC2 PC3 PC4 PC5 PC6 PC7 PC8 PC9];
 PC                          = PC(:,1:nPC);
-SHOCKS_NARRATIVE            = [MUNI1Y PDVMILY HAMILTON3YP RESID08 TAXNARRATIVE];
+PC_first                    = PC(:,1:nPC_first);
+SHOCKS_NARRATIVE            = [RESID08]; % TAXNARRATIVE MUNI1Y PDVMILY HAMILTON3YP  reduce number of shocks
 
-% Defibe dependent variable
+% Define dependent variable
 eval(['Z = Z', which_Z,';']);
 Y                           = Z;
 
 % Define Regressors and Dependent Variable
-X_contemporaneous           = [TFPBP];% [TFPBP SHOCKS_NARRATIVE]; %[TFPBP];% 
-X_lag                       = [TFPBP PC];%[TFPBP PC SHOCKS_NARRATIVE]; %[TFPBP PC];%
+X_contemporaneous           = [TFPBP ];% [TFPBP SHOCKS_NARRATIVE]; %[TFPBP];% 
+X_lag                       = [TFPBP PC ];%[TFPBP PC SHOCKS_NARRATIVE]; %[TFPBP PC];%
 X_lead                      = TFPBP;
 
 % Control Regression
 [~, Zhat, Ztilde, regressor] = lead_lag_matrix_regression(Y,X_lead,...
       leads,X_lag,lags,X_contemporaneous);
+
+% %Check Overreaction and Underreaction conditional on a shock  - adjust FE
+% timing
+% if which_Z == '1'
+%     [B,Bint] = regress(FE_RGDP(lags+1:end),[Ztilde, ones(length(Ztilde),1)])
+% elseif which_Z == '2'
+%     [B,Bint] = regress(FE_NGDP(lags+1:end),[Ztilde, ones(length(Ztilde),1)])
+% elseif which_Z == '3'
+%     [B,Bint] = regress(FE_RC(lags+1:end),[Ztilde, ones(length(Ztilde),1)])
+% end
+% 
+% [B,Bint] = regress(FE_RGDP(lags+1:end),[UnantTFPshock(lags+1:end), ones(length(Ztilde),1)])  
+% [B,Bint] = regress(FE_NGDP(lags+1:end),[UnantTFPshock(lags+1:end), ones(length(Ztilde),1)])  
+% [B,Bint] = regress(FE_RC(lags+1:end),[UnantTFPshock(lags+1:end), ones(length(Ztilde),1)])  
 
 %*************************************************************************%
 %                                                                         %
