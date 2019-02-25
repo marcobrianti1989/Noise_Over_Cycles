@@ -47,7 +47,7 @@ Z = Z1;
 
 % Define the system1
 system_names  = {'TFP','Z','RealGDP','RealCons','RealInvestment',...
-      'HoursPerPerson'};
+      'HoursAll'};
 
 for i = 1:length(system_names)
       system(:,i) = eval(system_names{i});
@@ -55,12 +55,16 @@ end
 Zpos    = find(strcmp('Z', system_names));
 [system, truncation_point, truncation_point2] = truncate_data(system);
 
+% Detrend Variables
+% which_trend = 'quad';
+% system = detrend_func(system,which_trend);
+
 % Tests for lags
 max_lags     = 4;
 [AIC,BIC,HQ] = aic_bic_hq(system,max_lags);
 
 % Cholesky decomposition
-nlags           = 4;
+nlags           = 1;
 [A,B,res,sigma] = sr_var(system, nlags);
 
 % Get Structural Shocks
@@ -83,7 +87,7 @@ end
 % Generate IRFs with upper and lower bounds
 sig1                       = 0.05;
 sig2                       = 0.025;
-H                          = 20;
+H                          = 40;
 [IRFs, ub1, lb1, ub2, lb2] = genIRFs(A,A_boot,B,B_boot,H,sig1,sig2);
 
 % Create and Printing figures
@@ -91,7 +95,7 @@ base_path         = pwd;
 which_ID          = 'chol_';
 print_figs        = 'no';
 use_current_time  = 1; % don't save the time
-which_shocks      = [Zpos]; %[Uposition];
+which_shocks      = [1]; %[Uposition];
 shocknames        = {'Sentiment Shock'};
 
 
