@@ -28,7 +28,7 @@ which_Z             = '1';           % Which Forecast Revision: RGDP, NGDP, RCON
 which_shock         = {'Tech','Sentiment'}; % Tech, News, Sentiment
 diff_LP             = 0;             % LP in levels or differences
 nPC_first           = 4;             % Number of Principal Components in the first stage
-nPC_LP              = 4;             % Number of Principal Components in the second stage
+nPC_LP              = 1;             % Number of Principal Components in the second stage
 norm_SHOCK          = 1;             % Divide shock over its own variance
 printIRFs           = 0;             % Print IRFs
 printVD             = 0;             % Print Variance Decompositions
@@ -78,9 +78,11 @@ eval(['Z = Z', which_Z,';']);
 Y                           = Z;
 
 % Define Regressors and Dependent Variable
-X_contemporaneous           = [dTFP];% SHOCKS_NARRATIVE];% [TFPBP SHOCKS_NARRATIVE]; %[TFPBP];%
-X_lag                       = [dTFP PC];% SHOCKS_NARRATIVE];%[TFPBP PC SHOCKS_NARRATIVE]; %[TFPBP PC];%
-X_lead                      = dTFP;
+X_contemporaneous           = [TFP];% [TFPBP SHOCKS_NARRATIVE]; %[TFPBP];%
+X_lag                       = [TFP PC];%[TFPBP PC SHOCKS_NARRATIVE]; %[TFPBP PC];%
+X_contemporaneous           = [TFP];% SHOCKS_NARRATIVE];% [TFPBP SHOCKS_NARRATIVE]; %[TFPBP];%
+X_lag                       = [TFP PC];% SHOCKS_NARRATIVE];%[TFPBP PC SHOCKS_NARRATIVE]; %[TFPBP PC];%
+X_lead                      = TFP;
 
 % Control Regression
 [~, Zhat, Ztilde, regressor] = lead_lag_matrix_regression(Y,X_lead,...
