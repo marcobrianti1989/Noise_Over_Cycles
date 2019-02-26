@@ -22,21 +22,20 @@ tic
 lags                = 4;            % Number of lags in the first step (deriving Ztilde)
 leads               = 0;             % Number of leads in the first step (deriving Ztilde)
 H                   = 20;            % IRFs horizon
-lags_LP             = 4;             % Number of lags in the Local Projection
+lags_LP             = 1;             % Number of lags in the Local Projection
 which_trend         = 'quadratic' ;  % BPfilter, HPfilter, linear, quadratic for Local Projection
-which_Z             = '1';           % Which Forecast Revision: RGDP, NGDP, RCONS, INDPROD, RINV
+which_Z             = '3';           % Which Forecast Revision: RGDP, NGDP, RCONS, INDPROD, RINV
 which_shock         = {'Tech','Sentiment'}; % Tech, News, Sentiment
 diff_LP             = 0;             % LP in levels or differences
-nPC_first           = 4;             % Number of Principal Components in the first stage
-nPC_LP              = 4;             % Number of Principal Components in the second stage
+nPC_first           = 3;             % Number of Principal Components in the first stage
+nPC_LP              = 2;             % Number of Principal Components in the second stage
 norm_SHOCK          = 1;             % Divide shock over its own variance
 printIRFs           = 0;             % Print IRFs
 printVD             = 0;             % Print Variance Decompositions
-nsimul              = 500;           % number of simulations for bootstrap
+nsimul              = 1000;           % number of simulations for bootstrap
 
 % Define Dependent Variables
-varlist          = {'TFP','Z','RealGDP',...
-      'RealCons','RealInvestment','HoursPerPerson'};
+varlist          = {'TFP','Z','RealGDP','RealInvestment','HYS','HYSSMOOTH'};
 % 'SpreadBond'  'Leverage'        'ChicagoFedIndex'  'RealExchRate' 'FFR'
 % 'SpreadBonds' 'MoodySpreadBaa'  'TermYield'        'FFR'      'Y10Treasury'     'M3Treasury'
 % 'RealGDP'     'RealInvestment'  'SpreadBond'       'Leverage' 'ChicagoFedIndex' 'Vix'
@@ -44,7 +43,7 @@ varlist          = {'TFP','Z','RealGDP',...
 % Read main dataset
 filename                    = 'main_file';
 sheet                       = 'Sheet1';
-range                       = 'B1:DR300';
+range                       = 'B1:DU300';
 do_truncation               = 0; %Do not truncate data. You will have many NaN
 [dataset, var_names]        = read_data2(filename, sheet, range, do_truncation);
 dataset                     = [dataset; NaN(leads,size(dataset,2))]; % Adding some NaN at the end for technical reasons
@@ -70,7 +69,6 @@ TFPBP                       = [TFPBP; NaN(length(TFP) - length(TFPBP),1)];
 dTFP                        = [NaN; diff(TFP)];
 PC                          = [PC1 PC2 PC3 PC4 PC5 PC6 PC7 PC8 PC9];
 PC_first                    = PC(:,1:nPC_first);
-PC_LP                       = PC(:,1:nPC_LP);
 SHOCKS_NARRATIVE            = [RESID08]; % TAXNARRATIVE MUNI1Y PDVMILY HAMILTON3YP  reduce number of shocks
 
 % Define dependent variable
@@ -78,9 +76,9 @@ eval(['Z = Z', which_Z,';']);
 Y                           = Z;
 
 % Define Regressors and Dependent Variable
-X_contemporaneous           = [dTFP];% SHOCKS_NARRATIVE];% [TFPBP SHOCKS_NARRATIVE]; %[TFPBP];%
-X_lag                       = [dTFP PC];% SHOCKS_NARRATIVE];%[TFPBP PC SHOCKS_NARRATIVE]; %[TFPBP PC];%
-X_lead                      = dTFP;
+X_contemporaneous           = [TFPBP];% SHOCKS_NARRATIVE];% [TFPBP SHOCKS_NARRATIVE]; %[TFPBP];%
+X_lag                       = [TFPBP PC_first];% SHOCKS_NARRATIVE];%[TFPBP PC SHOCKS_NARRATIVE]; %[TFPBP PC];%
+X_lead                      = TFPBP;
 
 % Control Regression
 [~, Zhat, Ztilde, regressor] = lead_lag_matrix_regression(Y,X_lead,...
@@ -148,7 +146,7 @@ end
 
 % Align timing with SHOCK
 dep_var          = dep_var(1+lags:end-leads,:);
-PC               = PC(1+lags:end-leads,:);
+PC_LP               = PC(1+lags:end-leads,1:nPC_LP);
 
 % Which shock to plot
 for is = 1:length(which_shock)
@@ -184,10 +182,10 @@ for is = 1:length(which_shock)
             disp(['  - Projecting ',varnamekk])
             fprintf('\n')
             depvarkk                    = dep_var(:,kk);
-            [~, loc_start, loc_end]     = truncate_data([depvarkk SHOCK PC]);
+            [~, loc_start, loc_end]     = truncate_data([depvarkk SHOCK PC_LP]);
             depvarkk                    = depvarkk(loc_start:loc_end);
             SHOCKkk                     = SHOCK(loc_start:loc_end);
-            pckk                        = PC(loc_start:loc_end,:);
+            pckk                        = PC_LP(loc_start:loc_end,:);
             % Run local_projection
             [IR{kk},res{kk},tuple{kk},VD{kk},DF{kk}] = ...
                   local_projection(depvarkk,pckk,SHOCKkk,lags_LP,H,which_trend);
