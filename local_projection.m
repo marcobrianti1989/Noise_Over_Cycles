@@ -1,4 +1,5 @@
-function [IRF,res,tuple_store,VDstore,degreeFreedom] = local_projection(y,x,u,lags,H,which_trend)
+function [IRF,res,tuple_store,VDstore,degreeFreedom,nRegressor] = ...
+      local_projection(y,x,u,lags,H,which_trend)
 
 % H is the horizon of the irf
 % y and x are (T,1); dependend and observable control variables
@@ -42,6 +43,7 @@ for h = 1:H
       X                  = [X, ones(length(Y),1)];
       [T,n]              = size(X);
       degreeFreedom(h)   = T - n;
+      nRegressor(h)      = n;
       tuple_store{h}     = [Y X];
       B                  = X'*X\(X'*Y);
       IRF(h)             = B(1);

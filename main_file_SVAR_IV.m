@@ -12,22 +12,21 @@ clear
 close all
 tic
 % Technical Parameters
-lags                = 0;             % Number of lags in the first step (deriving Ztilde)
-leads               = 0;            % Number of leads in the first step (deriving Ztilde)
-H                   = 20;            % IRFs horizon
-lags_LP             = 1;             % Number of lags in the Local Projection
+lags                = 1;             % Number of lags in the first step (deriving Ztilde)
+leads               = 0;             % Number of leads in the first step (deriving Ztilde)
+H                   = 40;            % IRFs horizon
 which_trend         = 'quadratic' ;  % BPfilter, HPfilter, linear, quadratic for Local Projection
 which_Z             = '1';           % Which Forecast Revision: RGDP, NGDP, RCONS, INDPROD, RINV
 which_shock         = {'Sentiment'}; % Tech, News
 diff_LP             = 0;             % LP in levels or differences
-nPC                 = 3;             % Number of Principal Components
+nPC                 = 1;             % Number of Principal Components
 norm_SHOCK          = 1;             % Divide shock over its own variance
 printIRFs           = 0;             % Print IRFs
 printVD             = 0;             % Print Variance Decompositions
 nsimul              = 500;          % number of simulations for bootstrap
 
 % Define Dependent Variables
-varlist          = {'Z','RealGDP','RealCons','RealInvestment','HoursAll'};
+varlist          = {'RealInvestment','TFP','PC1'};
 
 % Read main dataset
 filename                    = 'main_file';
@@ -65,14 +64,15 @@ eval(['Z = Z', which_Z,';']);
 Y                           = Z;
 
 % Define Regressors and Dependent Variable
-X_contemporaneous           = 0;%[TFPBP]; %SHOCKS_NARRATIVE];
-X_lag                       = [TFPBP]; % PC SHOCKS_NARRATIVE];
+X_contemporaneous           = [TFP]; %SHOCKS_NARRATIVE];
+X_lag                       = [TFPBP PC]; % PC SHOCKS_NARRATIVE];
 X_lead                      = TFPBP;
 
 % Control Regression
 [~, Zhat, Ztilde, regressor] = lead_lag_matrix_regression(Y,X_lead,...
       leads,X_lag,lags,X_contemporaneous);
-
+Ztilde = [NaN(lags,1); Ztilde; NaN(leads,1)];
+Ztilde = Z;
 %*************************************************************************%
 %                                                                         %
 %                 STRUCTURAL VAR INSTRUMENTAL VARIABLE                    %
@@ -83,7 +83,12 @@ X_lead                      = TFPBP;
 for i = 1:length(varlist)
       system(:,i) = eval(varlist{i});
 end
-[system, loc_start, loc_end]     = truncate_data(system);
+[XXX, loc_start, loc_end]     = truncate_data([system Ztilde]);
+system                        = XXX(:,1:end-1);
+Ztilde                        = XXX(:,end);
+% Detrend Variables
+which_trend = 'quad';
+system = detrend_func(system,which_trend);
 
 % Tests for lags
 max_lags     = 10;
@@ -94,8 +99,10 @@ nlags           = 4;
 disp(['Number of lags is ',num2str(nlags)])
 fprintf('\n')
 [B,res,sigma] = reduform_var(system, nlags);
-Ztilde        = Ztilde(loc_start+nlags:loc_end);
-Time          = Time(loc_start+nlags:loc_end);
+
+
+Ztilde        = Ztilde(1+nlags:end);
+Time          = Time(1+nlags+loc_start:loc_end);
 
 % IV VAR Identification
 [MM, loc_startIV, loc_endIV]     = truncate_data([res Ztilde]);
@@ -107,7 +114,6 @@ THET(:,1)                        = (res'*Ztilde)./(res(:,1)'*Ztilde);
 
 % Create dataset from bootstrap
 nburn             = 0;
-nsimul            = 2000;
 which_correction  = 'none';
 blocksize         = 4;
 %nlagZ             = 4;
@@ -139,7 +145,6 @@ A_boot                        = THET_boot;
 % Generate IRFs with upper and lower bounds
 sig1                       = 0.05;
 sig2                       = 0.025;
-H                          = 20;
 normIRFs                   = 0;
 [IRFs, ub1, lb1, ub2, lb2] = genIRFs(A,A_boot,B,B_boot,H,sig1,sig2);
 

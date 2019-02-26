@@ -32,7 +32,7 @@ nPC_LP              = 2;             % Number of Principal Components in the sec
 norm_SHOCK          = 1;             % Divide shock over its own variance
 printIRFs           = 0;             % Print IRFs
 printVD             = 0;             % Print Variance Decompositions
-nsimul              = 1000;           % number of simulations for bootstrap
+nsimul              = 500;           % number of simulations for bootstrap
 
 % Define Dependent Variables
 varlist          = {'TFP','Z','RealGDP','RealInvestment','HYS','HYSSMOOTH'};
@@ -187,7 +187,7 @@ for is = 1:length(which_shock)
             SHOCKkk                     = SHOCK(loc_start:loc_end);
             pckk                        = PC_LP(loc_start:loc_end,:);
             % Run local_projection
-            [IR{kk},res{kk},tuple{kk},VD{kk},DF{kk}] = ...
+            [IR{kk},res{kk},tuple{kk},VD{kk},DF{kk},nREG{kk}] = ...
                   local_projection(depvarkk,pckk,SHOCKkk,lags_LP,H,which_trend);
             if diff_LP == 0
                   IRF(kk,:,is) = IR{kk};
@@ -196,6 +196,7 @@ for is = 1:length(which_shock)
             end
             VDkk(kk,:)        = VD{kk};
             DFkk(kk,:,is)     = DF{kk};
+            nREGkk(kk,:,is)   = nREG{kk};
             % Initiate bootstrap
             tuplekk        = tuple{kk};
             for hh = 1:H
