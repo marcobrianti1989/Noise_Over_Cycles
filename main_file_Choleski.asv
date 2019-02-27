@@ -29,7 +29,7 @@ for i = 1:size(dataset,2)
 end
 
 % Per capita adjustment
-control_pop = 1; % Divide GDP, Cons, Hours, Investment over population
+control_pop = 0; % Divide GDP, Cons, Hours, Investment over population
 if control_pop == 1
       RealGDP                 = RealGDP - Population;
       RealCons                = RealCons - Population;
@@ -46,7 +46,7 @@ create_Z;
 Z = Z1;
 
 % Define the system1
-system_names  = {'TFP','PC1','PC2','PC3'};%'RealGDP','RealCons','RealInvestment','HoursPerPerson'};
+system_names  = {'TFP','RealGDP'};
 
 for i = 1:length(system_names)
       system(:,i) = eval(system_names{i});
@@ -55,15 +55,15 @@ Zpos    = find(strcmp('Z', system_names));
 [system, truncation_point, truncation_point2] = truncate_data(system);
 
 % Detrend Variables
-which_trend = 'none';
+which_trend = 'quad';
 system = detrend_func(system,which_trend);
 
 % Tests for lags
-max_lags     = 20;
+max_lags     = 4;
 [AIC,BIC,HQ] = aic_bic_hq(system,max_lags);
 
 % Cholesky decomposition
-nlags           = 4;
+nlags           = 2;
 [A,B,res,sigma] = sr_var(system, nlags);
 
 % Get Structural Shocks
@@ -86,7 +86,7 @@ end
 % Generate IRFs with upper and lower bounds
 sig1                       = 0.05;
 sig2                       = 0.025;
-H                          = 40;
+H                          = 20;
 [IRFs, ub1, lb1, ub2, lb2] = genIRFs(A,A_boot,B,B_boot,H,sig1,sig2);
 
 % Create and Printing figures
@@ -95,7 +95,7 @@ which_ID          = 'chol_';
 print_figs        = 'no';
 use_current_time  = 1; % don't save the time
 which_shocks      = [1]; %[Uposition];
-shocknames        = {'News Shock'};
+shocknames        = {'Sentiment Shock'};
 
 
 plot_IRFs_2CIs(IRFs,ub1,lb1,ub2,lb2,H,which_shocks,shocknames,...
