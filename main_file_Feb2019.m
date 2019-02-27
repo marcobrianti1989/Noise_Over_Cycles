@@ -19,26 +19,25 @@ tic
 
 %
 % Technical Parameters
-lags                = 4;            % Number of lags in the first step (deriving Ztilde)
+lags                = 4;             % Number of lags in the first step (deriving Ztilde)
 leads               = 0;             % Number of leads in the first step (deriving Ztilde)
 H                   = 20;            % IRFs horizon
-lags_LP             = 1;             % Number of lags in the Local Projection
+lags_LP             = 2;             % Number of lags in the Local Projection
 which_trend         = 'quadratic' ;  % BPfilter, HPfilter, linear, quadratic for Local Projection
-which_Z             = '3';           % Which Forecast Revision: RGDP, NGDP, RCONS, INDPROD, RINV
-which_shock         = {'Tech','Sentiment'}; % Tech, News, Sentiment
+which_Z             = '1';           % Which Forecast Revision: RGDP, NGDP, RCONS, INDPROD, RINV
+which_shock         = {'Sentiment'}; % Tech, News, Sentiment
 diff_LP             = 0;             % LP in levels or differences
 nPC_first           = 3;             % Number of Principal Components in the first stage
-nPC_LP              = 2;             % Number of Principal Components in the second stage
+nPC_LP              = 3;             % Number of Principal Components in the second stage
 norm_SHOCK          = 1;             % Divide shock over its own variance
 printIRFs           = 0;             % Print IRFs
 printVD             = 0;             % Print Variance Decompositions
 nsimul              = 500;           % number of simulations for bootstrap
-
-% Define Dependent Variables
-varlist          = {'TFP','Z','RealGDP','RealInvestment','HYS','HYSSMOOTH'};
-% 'SpreadBond'  'Leverage'        'ChicagoFedIndex'  'RealExchRate' 'FFR'
-% 'SpreadBonds' 'MoodySpreadBaa'  'TermYield'        'FFR'      'Y10Treasury'     'M3Treasury'
-% 'RealGDP'     'RealInvestment'  'SpreadBond'       'Leverage' 'ChicagoFedIndex' 'Vix'
+control_pop         = 0;             % Divide GDP, Cons, Hours, Investment over population
+varlist             = {'TFP','Z','RealGDP','RealInvestment','RealCons','HoursAll'}; % Define endogenous variables for LP
+                                     % 'SpreadBond'  'Leverage'        'ChicagoFedIndex'  'RealExchRate' 'FFR'
+                                     % 'SpreadBonds' 'MoodySpreadBaa'  'TermYield'        'FFR'      'Y10Treasury'     'M3Treasury'
+                                     % 'RealGDP'     'RealInvestment'  'SpreadBond'       'Leverage' 'ChicagoFedIndex' 'Vix'
 
 % Read main dataset
 filename                    = 'main_file';
@@ -113,7 +112,6 @@ CPINonDurables  = create_inflation(CPINonDurables,ninfl);
 CPIServices     = create_inflation(CPIServices,ninfl);
 
 % Per capita adjustment
-control_pop = 0; % Divide GDP, Cons, Hours, Investment over population
 if control_pop == 1
       RealGDP                 = RealGDP - Population;
       RealCons                = RealCons - Population;
@@ -146,7 +144,9 @@ end
 
 % Align timing with SHOCK
 dep_var          = dep_var(1+lags:end-leads,:);
-PC_LP               = PC(1+lags:end-leads,1:nPC_LP);
+PC_LP            = PC(1+lags:end-leads,1:nPC_LP);
+Time             = Time(1+lags:end-leads);
+bundle           = [Time Ztilde]; 
 
 % Which shock to plot
 for is = 1:length(which_shock)

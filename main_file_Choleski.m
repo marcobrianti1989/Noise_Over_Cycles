@@ -1,18 +1,39 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %
-%  Marco Brianti, PhD Candidate, Boston College, Department of Economics, August 8, 2018
+%  Marco Brianti and Vito Cormun,
+%  PhD Candidates, Boston College,
+%  Department of Economics, February 27, 2019
 %
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
+clc
 clear
 close all
+
+% Technical parameters
+nlags                      = 14;      %lags in the VAR system
+control_pop                = 0;       % Divide key macro variables over population
+which_trend                = 'none';  %'BP', 'HP', 'lin', 'quad', 'diff', 'none', 'demean': detrending the variables before adding them in the VAR.
+which_boot                 = 'none';  % Either 'none' or 'blocks'
+blocksize                  = 4;       % if which_boot = 'blocks', then decide the block of residuals
+nsimul                     = 500;     % Number of bootstrap simulations
+nburn                      = 0;       % Number of observations to burn during each bootstrap
+sig1                       = 0.16;    % Tighter Confidence Interval
+sig2                       = 0.05;    % Looser Confidence Interval
+H                          = 20;      % Horizon of IRFs
+print_figs                 = 'no';    % If you want to pring fig 'yes', otherwise 'no'
+use_current_time           = 1;       % In order to avoid overwriting
+shocknames                 = {'Sentiment Shock'};                     % Name of the Shock(s)
+system_names               = {'ZTILDE','RealGDP','RealCons',...
+      'RealInvestment','Hours','RealInventories'};             % Variables in the VAR  %'RealGDP','RealCons','RealInvestment','HoursPerPerson'};
+pos_ZTILDE                 = find(strcmp('ZTILDE',system_names)==1);  % Position of Ztilde
+which_shocks               = pos_ZTILDE;                              % Cholesky, Position of the Shock
 
 % Read main dataset
 filename                    = 'main_file';
 sheet                       = 'Sheet1';
-range                       = 'B1:DP300';
+range                       = 'B1:DV300';
 do_truncation               = 0; %Do not truncate data. You will have many NaN
 [dataset, var_names]        = read_data2(filename, sheet, range, do_truncation);
 tf                          = isreal(dataset);
@@ -22,14 +43,12 @@ end
 dataset                     = real(dataset);
 time_start                  = dataset(1,1);
 time_end                    = dataset(end,1);
-
 % Assess names to each variable as an array
 for i = 1:size(dataset,2)
       eval([var_names{i} ' = dataset(:,i);']);
 end
 
 % Per capita adjustment
-control_pop = 1; % Divide GDP, Cons, Hours, Investment over population
 if control_pop == 1
       RealGDP                 = RealGDP - Population;
       RealCons                = RealCons - Population;
@@ -37,88 +56,76 @@ if control_pop == 1
       HoursPerPerson          = HoursAll - Population;
       RealInventories         = RealInventories - Population;
       RealSales               = RealSales - Population;
-else  
+else
       HoursPerPerson          = HoursAll - Population;
 end
 
-%Building Zt - Forecast Revisions from SPF and Michigan Index
-create_Z;
-Z = Z1;
-
-% Define the system1
-system_names  = {'TFP','PC1','PC2','PC3'};%'RealGDP','RealCons','RealInvestment','HoursPerPerson'};
-
-for i = 1:length(system_names)
-      system(:,i) = eval(system_names{i});
-end
-Zpos    = find(strcmp('Z', system_names));
-[system, truncation_point, truncation_point2] = truncate_data(system);
-
-% Detrend Variables
-which_trend = 'none';
-system = detrend_func(system,which_trend);
-
-% Tests for lags
-max_lags     = 20;
-[AIC,BIC,HQ] = aic_bic_hq(system,max_lags);
-
-% Cholesky decomposition
-nlags           = 4;
-[A,B,res,sigma] = sr_var(system, nlags);
-
-% Get Structural Shocks
-ss = (inv(A)*res')';
-
-% Create dataset from bootstrap
-nburn             = 0;
-nsimul            = 500;
-which_correction  = 'none';
-blocksize         = 4;
-[beta_tilde, data_boot2, beta_tilde_star,nonstationarities] ...
-      = bootstrap_with_kilian(B,nburn,res,nsimul,which_correction,blocksize);
-
-% Get "bootstrapped A" nsimul times
-for i_simul=1:nsimul
+subsystem_names{1} = system_names{1};
+for iss = 1:length(system_names)-1
+      subsystem_names{2} = system_names{iss+1};
+      % Create VAR System and Truncate NaN
+      for i = 1:length(subsystem_names)
+            subsystem(:,i) = eval(subsystem_names{i});
+      end
+      [subsystem, truncation_point, truncation_point2] = truncate_data(subsystem);
+      
+      % Detrend Variables
+      subsystem       = detrend_func(subsystem,which_trend);
+      
+      % Tests for lags
+      max_lags     = 40;
+      [AIC(iss),BIC(iss),HQ(iss)] = aic_bic_hq(subsystem,max_lags);
+      
       % Cholesky decomposition
-      [A_boot(:,:,i_simul),B_boot(:,:,i_simul),~,~] = sr_var(data_boot2(:,:,i_simul), nlags);
+      [A(:,:,iss),B(:,:,iss),res,sigma(:,:,iss)] = sr_var(subsystem, nlags);
+      RES{iss}                                   = res;
+      
+      % Get Structural Shocks
+      ss          = (inv(A(:,:,iss))*res')';
+      SS{iss}     = ss;
+      
+      % Create dataset from bootstrap
+      [~, data_boot2,~,~] ...
+            = bootstrap_with_kilian(B(:,:,iss),nburn,res,nsimul,which_boot,blocksize);
+      
+      % Get A and B with Cholesky decomposition for each simulated series
+      for i_simul=1:nsimul
+            [A_boot(:,:,i_simul,iss),B_boot(:,:,i_simul,iss),~,~] = ...
+                  sr_var(data_boot2(:,:,i_simul),nlags);
+      end
+      
+      % Generate IRFs with upper and lower bounds
+      [IRFs(:,:,:,iss), ub1(:,:,:,iss), lb1(:,:,:,iss), ub2(:,:,:,iss), lb2(:,:,:,iss)] = ...
+            genIRFs(A(:,:,iss),A_boot(:,:,:,iss),B(:,:,iss),B_boot(:,:,:,iss),H,sig1,sig2);
+      
+      clear subsystem data_boot2 res ss
 end
 
-% Generate IRFs with upper and lower bounds
-sig1                       = 0.05;
-sig2                       = 0.025;
-H                          = 40;
-[IRFs, ub1, lb1, ub2, lb2] = genIRFs(A,A_boot,B,B_boot,H,sig1,sig2);
+% Reshape IRFs to use "plot_IRFs_2CIs" function below
+IRFS         = IRFs(2,:,1,:);
+IRFS         = squeeze(IRFS)';
+UB1          = ub1(2,:,1,:);
+UB1          = squeeze(UB1)';
+UB2          = ub2(2,:,1,:);
+UB2          = squeeze(UB2)';
+LB1          = lb1(2,:,1,:);
+LB1          = squeeze(LB1)';
+LB2          = lb2(2,:,1,:);
+LB2          = squeeze(LB2)';
 
 % Create and Printing figures
-base_path         = pwd;
-which_ID          = 'chol_';
-print_figs        = 'no';
-use_current_time  = 1; % don't save the time
-which_shocks      = [1]; %[Uposition];
-shocknames        = {'News Shock'};
-
-
-plot_IRFs_2CIs(IRFs,ub1,lb1,ub2,lb2,H,which_shocks,shocknames,...
-      system_names,which_ID,print_figs,use_current_time,base_path)
-asd
-% Get variance Decomposition
-[IRF_vardec, ~, ~, ~, ~] = genIRFs(A,0,B,0,H,sig1,sig2);
-m = linspace(1,H,H);
-for im = 1:length(m)
-      vardec(:,:,im) = gen_vardecomp(IRF_vardec,m(im),H);
+for iend = 1:length(system_names)-1
+      endogenous_var_names{iend} = system_names{iend+1};
 end
-vardec = vardec(TFPposition,4,:);
-horz = linspace(0,H,H);
-figure
-hold on
-plot(horz,vardec(TFPposition,:),'linewidth',2)
-grid on
-legend boxoff
-xlabel('Horizon')
-ylabel('Variance Explained')
-title('Variance Explained Of Real GDP')
+base_path         = pwd;
+which_ID          = 'CHOL';
+plot_IRFs_2CIs(IRFS,UB1,LB1,UB2,LB2,H,which_shocks,shocknames,...
+      endogenous_var_names,which_ID,print_figs,use_current_time,base_path)
 
-%save workspace_nicespecification_cons_inv_adjusted_Ulast
+tech_info_table_Chol;
+
+
+
 
 
 

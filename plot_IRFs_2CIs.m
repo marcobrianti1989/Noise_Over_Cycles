@@ -14,10 +14,6 @@ nvar = size(IRFs,1);
 nshocks = size(which_shock,2);
 periods = 1:h;
 
-%Ylim
-min_y_lim = [-0.005   -0.01     -0.01     -0.01       -0.01     -0.008];
-max_y_lim = [0.03        0.07      0.035      0.02        0.02      0.001];
-
 % Draw pretty pictures
 for i_shock=1:nshocks
       for i_var=1:nvar

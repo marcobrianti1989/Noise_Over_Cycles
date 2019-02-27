@@ -96,11 +96,17 @@ for i_shock=1:nshocks
                   lb2(:,:,i_shocks) = IRFs_boot_sorted(:,:,i_shocks,perc_low2);
             end
       end
-      %         %Normalization
-      %         ub1(:,:,i_shock)   = ub1(:,:,i_shock)/IRFs(i_shock,1,i_shock);
-      %         lb1(:,:,i_shock)   = lb1(:,:,i_shock)/IRFs(i_shock,1,i_shock);
-      %         ub2(:,:,i_shock)   = ub2(:,:,i_shock)/IRFs(i_shock,1,i_shock);
-      %         lb2(:,:,i_shock)   = lb2(:,:,i_shock)/IRFs(i_shock,1,i_shock);
-      %         IRFs(:,:,i_shock) = IRFs(:,:,i_shock)/IRFs(i_shock,1,i_shock); % so that each IRF is in terms of the impact change for that shock of the shocked variable
-      
+end
+
+%Normalization
+normalization = 1;
+if normalization == 1
+      ub1(:,:,i_shock)   = ub1(:,:,1)/IRFs(1,1,1);
+      lb1(:,:,i_shock)   = lb1(:,:,1)/IRFs(1,1,1);
+      ub2(:,:,i_shock)   = ub2(:,:,1)/IRFs(1,1,1);
+      lb2(:,:,i_shock)   = lb2(:,:,1)/IRFs(1,1,1);
+      IRFs(:,:,i_shock)  = IRFs(:,:,1)/IRFs(1,1,1); % so that each IRF is in terms of the impact change for that shock of the shocked variable
+      warning('You are doing a specific normalization. Check it!')
+end
+
 end
