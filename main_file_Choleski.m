@@ -12,7 +12,7 @@ clear
 close all
 
 % Technical parameters
-nlags                      = 14;      %lags in the VAR system
+nlags                      = 18;      %lags in the VAR system
 control_pop                = 0;       % Divide key macro variables over population
 which_trend                = 'none';  %'BP', 'HP', 'lin', 'quad', 'diff', 'none', 'demean': detrending the variables before adding them in the VAR.
 which_boot                 = 'none';  % Either 'none' or 'blocks'
@@ -22,12 +22,13 @@ nburn                      = 0;       % Number of observations to burn during ea
 sig1                       = 0.16;    % Tighter Confidence Interval
 sig2                       = 0.05;    % Looser Confidence Interval
 H                          = 20;      % Horizon of IRFs
-print_figs                 = 'no';    % If you want to pring fig 'yes', otherwise 'no'
+print_figs                 = 'yes';    % If you want to pring fig 'yes', otherwise 'no'
 use_current_time           = 1;       % In order to avoid overwriting
 shocknames                 = {'Sentiment Shock'};                     % Name of the Shock(s)
 system_names               = {'ZTILDE','RealGDP','RealCons',...
       'RealInvestment','Hours','RealInventories'};             % Variables in the VAR  %'RealGDP','RealCons','RealInvestment','HoursPerPerson'};
 pos_ZTILDE                 = find(strcmp('ZTILDE',system_names)==1);  % Position of Ztilde
+pos_uTFP                   = find(strcmp('UnantTFPshock',system_names)==1); % Position of unexpected productivity shock
 which_shocks               = pos_ZTILDE;                              % Cholesky, Position of the Shock
 
 % Read main dataset
