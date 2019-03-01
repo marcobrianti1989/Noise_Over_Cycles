@@ -3,7 +3,9 @@ function pc = get_principal_components(data,Zscore)
 % data is (T, nvar)
 
 [T,n] = size(data);
-
+if nargin == 1
+      Zscore = 1;
+end
 if Zscore == 1
       for i=1:n
             data(:,i) = zscore(data(:,i));

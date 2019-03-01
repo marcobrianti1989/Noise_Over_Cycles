@@ -23,26 +23,27 @@ lags                = 4;             % Number of lags in the first step (derivin
 leads               = 0;             % Number of leads in the first step (deriving Ztilde)
 H                   = 20;            % IRFs horizon
 lags_LP             = 2;             % Number of lags in the Local Projection
-which_trend         = 'quadratic' ;  % BPfilter, HPfilter, linear, quadratic for Local Projection
-which_Z             = '1';           % Which Forecast Revision: RGDP, NGDP, RCONS, INDPROD, RINV
-which_shock         = {'Sentiment'}; % Tech, News, Sentiment
+which_trend         = 'none' ;  % BPfilter, HPfilter, linear, quadratic for Local Projection
+which_Z             = {'1','2','3','4','5'}; % Which Forecast Revision: RGDP, NGDP, RCONS, INDPROD, RINV. If it is more than one it takes the first PC
+which_shock         = {'Tech'}; % Tech, News, Sentiment
+loc_start_exogenous = 0;       % Exogenous start
 diff_LP             = 0;             % LP in levels or differences
 nPC_first           = 3;             % Number of Principal Components in the first stage
 nPC_LP              = 3;             % Number of Principal Components in the second stage
 norm_SHOCK          = 1;             % Divide shock over its own variance
-printIRFs           = 0;             % Print IRFs
+printIRFs           = 1;             % Print IRFs
 printVD             = 0;             % Print Variance Decompositions
-nsimul              = 500;           % number of simulations for bootstrap
+nsimul              = 2000;           % number of simulations for bootstrap
 control_pop         = 0;             % Divide GDP, Cons, Hours, Investment over population
-varlist             = {'TFP','Z','RealGDP','RealInvestment','RealCons','HoursAll'}; % Define endogenous variables for LP
-                                     % 'SpreadBond'  'Leverage'        'ChicagoFedIndex'  'RealExchRate' 'FFR'
-                                     % 'SpreadBonds' 'MoodySpreadBaa'  'TermYield'        'FFR'      'Y10Treasury'     'M3Treasury'
-                                     % 'RealGDP'     'RealInvestment'  'SpreadBond'       'Leverage' 'ChicagoFedIndex' 'Vix'
+varlist             = {'TermYield'};%','RealGDP','RealInvestment','RealCons','HoursAll','RealInventories'}; % Define endogenous variables for LP
+% 'SpreadBond'  'Leverage'        'ChicagoFedIndex'  'RealExchRate' 'FFR'
+% 'SpreadBonds' 'MoodySpreadBaa'  'TermYield'        'FFR'      'Y10Treasury'     'M3Treasury'
+% 'RealGDP'     'RealInvestment'  'SpreadBond'       'Leverage' 'ChicagoFedIndex' 'Vix'
 
 % Read main dataset
 filename                    = 'main_file';
 sheet                       = 'Sheet1';
-range                       = 'B1:DU300';
+range                       = 'B1:DW300';
 do_truncation               = 0; %Do not truncate data. You will have many NaN
 [dataset, var_names]        = read_data2(filename, sheet, range, do_truncation);
 dataset                     = [dataset; NaN(leads,size(dataset,2))]; % Adding some NaN at the end for technical reasons
@@ -70,32 +71,25 @@ PC                          = [PC1 PC2 PC3 PC4 PC5 PC6 PC7 PC8 PC9];
 PC_first                    = PC(:,1:nPC_first);
 SHOCKS_NARRATIVE            = [RESID08]; % TAXNARRATIVE MUNI1Y PDVMILY HAMILTON3YP  reduce number of shocks
 
-% Define dependent variable
-eval(['Z = Z', which_Z,';']);
-Y                           = Z;
+% Loop over different surveys
+for iw = 1:length(which_Z)
+      % Define dependent variable
+      eval(['Z = Z', which_Z{iw},';']);
+      Y                           = Z;
+      % Define Regressors and Dependent Variable
+      X_contemporaneous           = [TFPBP];% SHOCKS_NARRATIVE];% [TFPBP SHOCKS_NARRATIVE]; %[TFPBP];%
+      X_lag                       = [TFPBP PC_first];% SHOCKS_NARRATIVE];%[TFPBP PC SHOCKS_NARRATIVE]; %[TFPBP PC];%
+      X_lead                      = TFPBP;
+      % Control Regression
+      [~, Zhat, Ztildeiw(:,iw), regressor] = lead_lag_matrix_regression(Y,X_lead,...
+            leads,X_lag,lags,X_contemporaneous);
+end
 
-% Define Regressors and Dependent Variable
-X_contemporaneous           = [TFPBP];% SHOCKS_NARRATIVE];% [TFPBP SHOCKS_NARRATIVE]; %[TFPBP];%
-X_lag                       = [TFPBP PC_first];% SHOCKS_NARRATIVE];%[TFPBP PC SHOCKS_NARRATIVE]; %[TFPBP PC];%
-X_lead                      = TFPBP;
-
-% Control Regression
-[~, Zhat, Ztilde, regressor] = lead_lag_matrix_regression(Y,X_lead,...
-      leads,X_lag,lags,X_contemporaneous);
-
-% %Check Overreaction and Underreaction conditional on a shock  - adjust FE
-% timing
-% if which_Z == '1'
-%     [B,Bint] = regress(FE_RGDP(lags+1:end),[Ztilde, ones(length(Ztilde),1)])
-% elseif which_Z == '2'
-%     [B,Bint] = regress(FE_NGDP(lags+1:end),[Ztilde, ones(length(Ztilde),1)])
-% elseif which_Z == '3'
-%     [B,Bint] = regress(FE_RC(lags+1:end),[Ztilde, ones(length(Ztilde),1)])
-% end
-%
-% [B,Bint] = regress(FE_RGDP(lags+1:end),[UnantTFPshock(lags+1:end), ones(length(Ztilde),1)])
-% [B,Bint] = regress(FE_NGDP(lags+1:end),[UnantTFPshock(lags+1:end), ones(length(Ztilde),1)])
-% [B,Bint] = regress(FE_RC(lags+1:end),[UnantTFPshock(lags+1:end), ones(length(Ztilde),1)])
+% Get first PC over surveys
+[Ztilde_cut, tt, tt2]   = truncate_data(Ztildeiw);
+ZtildePCs               = get_principal_components(Ztilde_cut);
+ZtildePCs               = [NaN(tt-1,size(Ztildeiw,2)); ZtildePCs; NaN(size(Ztildeiw,1)-tt2,size(Ztildeiw,2))];
+Ztilde                  = ZtildePCs(:,1);
 
 %*************************************************************************%
 %                                                                         %
@@ -126,7 +120,7 @@ end
 % Other Transformations
 SP500                   = SP500 - GDPDefl;
 SpreadBonds             = MoodySpreadBaa - MoodySpreadAaa;
-%TermYield               = Y10Treasury - M3Treasury;
+TermYield               = TenYTreasury - ThreeMTreasury;
 %SpreadBankRate          = LoanPrime - TenYTreasury;
 BankLeverage            = BanksTotLiabilities - BanksTotAssets;
 CorpEqui2Assets         = NonFinEquity - NonFinTotAssets;
@@ -146,8 +140,8 @@ end
 dep_var          = dep_var(1+lags:end-leads,:);
 PC_LP            = PC(1+lags:end-leads,1:nPC_LP);
 Time             = Time(1+lags:end-leads);
-bundle           = [Time Ztilde]; 
 
+      
 % Which shock to plot
 for is = 1:length(which_shock)
       if strcmp(which_shock{is},'Sentiment') == 1
@@ -166,8 +160,8 @@ for is = 1:length(which_shock)
             disp('Barsky and Sims News Shock')
             fprintf('\n')
       end
-      IRFname = ['IRFs_',char(which_shock(is)),'Shock_lags',num2str(lags),'_','_leads',num2str(leads),'_lagsLP',num2str(lags_LP),'_trend',which_trend,'_Z',num2str(which_Z),'_diff',num2str(diff_LP),'_nPC',num2str(nPC_LP),'.pdf'];
-      VDname  = ['VD_',char(which_shock(is)),'Shock_lags',num2str(lags),'_','_leads',num2str(leads),'_lagsLP',num2str(lags_LP),'_trend',which_trend,'_Z',num2str(which_Z),'_diff',num2str(diff_LP),'_nPC',num2str(nPC_LP)','.pdf'];
+      IRFname = ['IRFs_',char(which_shock(is)),'Shock_lags',num2str(lags),'_','_leads',num2str(leads),'_lagsLP',num2str(lags_LP),'_trend',which_trend,'_diff',num2str(diff_LP),'_nPC',num2str(nPC_LP),'.pdf'];
+      VDname  = ['VD_',char(which_shock(is)),'Shock_lags',num2str(lags),'_','_leads',num2str(leads),'_lagsLP',num2str(lags_LP),'_trend',which_trend,'_diff',num2str(diff_LP),'_nPC',num2str(nPC_LP)','.pdf'];
       
       % Normilize Variance of SHOCK
       if norm_SHOCK == 1
@@ -182,10 +176,16 @@ for is = 1:length(which_shock)
             disp(['  - Projecting ',varnamekk])
             fprintf('\n')
             depvarkk                    = dep_var(:,kk);
-            [~, loc_start, loc_end]     = truncate_data([depvarkk SHOCK PC_LP]);
+            [~, loc_start(kk,is), loc_end]     = truncate_data([depvarkk SHOCK PC_LP]);
+            % Starting the Sample after loc_start_exogenous
+            lockk = find(loc_start_exogenous == Time);
+            if loc_start(kk,is) < lockk
+                  loc_start(kk,is) = lockk;
+            end
             depvarkk                    = depvarkk(loc_start:loc_end);
             SHOCKkk                     = SHOCK(loc_start:loc_end);
             pckk                        = PC_LP(loc_start:loc_end,:);
+
             % Run local_projection
             [IR{kk},res{kk},tuple{kk},VD{kk},DF{kk},nREG{kk}] = ...
                   local_projection(depvarkk,pckk,SHOCKkk,lags_LP,H,which_trend);
@@ -291,3 +291,17 @@ for iv = 1:length(varlist)
 end
 tech_info_test;
 toc
+
+% %Check Overreaction and Underreaction conditional on a shock  - adjust FE
+% timing
+% if which_Z == '1'
+%     [B,Bint] = regress(FE_RGDP(lags+1:end),[Ztilde, ones(length(Ztilde),1)])
+% elseif which_Z == '2'
+%     [B,Bint] = regress(FE_NGDP(lags+1:end),[Ztilde, ones(length(Ztilde),1)])
+% elseif which_Z == '3'
+%     [B,Bint] = regress(FE_RC(lags+1:end),[Ztilde, ones(length(Ztilde),1)])
+% end
+%
+% [B,Bint] = regress(FE_RGDP(lags+1:end),[UnantTFPshock(lags+1:end), ones(length(Ztilde),1)])
+% [B,Bint] = regress(FE_NGDP(lags+1:end),[UnantTFPshock(lags+1:end), ones(length(Ztilde),1)])
+% [B,Bint] = regress(FE_RC(lags+1:end),[UnantTFPshock(lags+1:end), ones(length(Ztilde),1)])

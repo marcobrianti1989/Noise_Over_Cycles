@@ -3,20 +3,22 @@ fprintf('\n')
 disp('-------------------------------------------------------------------')
 disp('                      Technical Parameters LP                      ')
 disp('-------------------------------------------------------------------')
-if strcmp(which_Z,'1') == 1
+for iw = 1: length(which_Z)
+if strcmp(which_Z{iw},'1') == 1
       disp('Survey                        SPF Real GDP Growth')
-elseif strcmp(which_Z,'2') == 1
+elseif strcmp(which_Z{iw},'2') == 1
       disp('Survey                        SPF Nominal GDP Growth')
-elseif strcmp(which_Z,'3') == 1
+elseif strcmp(which_Z{iw},'3') == 1
       disp('Survey                        SPF Real Consumption Growth')
-elseif strcmp(which_Z,'4') == 1
+elseif strcmp(which_Z{iw},'4') == 1
       disp('Survey                        SPF Industrial Production Growth')
-elseif strcmp(which_Z,'5') == 1
+elseif strcmp(which_Z{iw},'5') == 1
       disp('Survey                        SPF Real Total Investment Growth')
-elseif strcmp(which_Z,'6') == 1
+elseif strcmp(which_Z{iw},'6') == 1
       disp('Survey                        SPF Consumer Price Index')
-elseif strcmp(which_Z,'7') == 1
+elseif strcmp(which_Z{iw},'7') == 1
       disp('Survey                        Michigan Index Confidence')
+end
 end
 disp(['Number of lags 1st Step       ',num2str(lags)])
 disp(['Number of leads               ',num2str(leads)])
@@ -41,7 +43,7 @@ fprintf('\n')
 for ishock = 1:length(which_shock)
       disp([which_shock{ishock}])
       for ii = 1:length(varlist)
-            disp(['  - Degrees of freedom for ',varlist{ii},' are on average ',num2str(floor(mean(DFkk(ii,:,ishock))))])
+            disp(['  - Degrees of freedom for ',varlist{ii},' are on average ',num2str(floor(mean(DFkk(ii,:,ishock)))),' and first observation is in ',num2str(Time(loc_start(ii,ishock)))])
       end
       fprintf('\n')
 end
