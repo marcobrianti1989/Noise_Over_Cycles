@@ -48,7 +48,7 @@ ForecastNGDPG         = [NaN(3,1); Delta_NGDP_t(1:end-3)]; %Y(t|t-3)/Y(t-4|t-3)
 RC                    = exp(RealCons); % back to consumption levels (We are taking the log when we read data) %OTHER STUFF: RC      = [RCONS1_SPF(2:end); NaN];
 RCG                   = [NaN(4,1); RC(5:end)./RC(1:end-4) - ones(length(RC)-4,1)];  %Y(t)/Y(t-4) OTHER STUFF: %FE_RC   = [RCG(4:end) - Delta_RCONS_t(1:end-3); NaN(3,1)]; %Y(t+3)/Y(t-1) - Y(t+3|t)/Y(t-1|t)
 ForecastErrorRCG      = [NaN(3,1); RCG(4:end) - Delta_RCONS_t(1:end-3) ]; %Y(t)/Y(t-4) - Y(t|t-3)/Y(t-4|t-3) OTHER STUFF: %[B,Bint] = regress( FE_RC , [Z3, ones(length(Z3),1)] ) %replicates Gennaioli OTHER STUFF: %[B,Bint] = regress( FE_RC(2:end) , [Z3(2:end),FE_RC(1:end-1),ones(length(Z3)-1,1)] )%not robust, forecast errors are highly autocorrelated 
-ForecastRCG           = [NaN(3,1); Delta_NGDP_t(1:end-3)]; %Y(t|t-3)/Y(t-4|t-3)
+ForecastRCG           = [NaN(3,1); Delta_RCONS_t(1:end-3)]; %Y(t|t-3)/Y(t-4|t-3)
 
 
 
