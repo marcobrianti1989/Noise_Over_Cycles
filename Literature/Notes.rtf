@@ -14,7 +14,7 @@
 {\list\listtemplateid3\listhybrid{\listlevel\levelnfc0\levelnfcn0\leveljc0\leveljcn0\levelfollow0\levelstartat1\levelspace360\levelindent0{\*\levelmarker \{decimal\}.}{\leveltext\leveltemplateid201\'02\'00.;}{\levelnumbers\'01;}\fi-360\li720\lin720 }{\listlevel\levelnfc4\levelnfcn4\leveljc0\leveljcn0\levelfollow0\levelstartat1\levelspace360\levelindent0{\*\levelmarker \{lower-alpha\}.}{\leveltext\leveltemplateid202\'02\'01.;}{\levelnumbers\'01;}\fi-360\li1440\lin1440 }{\listname ;}\listid3}
 {\list\listtemplateid4\listhybrid{\listlevel\levelnfc0\levelnfcn0\leveljc0\leveljcn0\levelfollow0\levelstartat1\levelspace360\levelindent0{\*\levelmarker \{decimal\}.}{\leveltext\leveltemplateid301\'02\'00.;}{\levelnumbers\'01;}\fi-360\li720\lin720 }{\listlevel\levelnfc4\levelnfcn4\leveljc0\leveljcn0\levelfollow0\levelstartat1\levelspace360\levelindent0{\*\levelmarker \{lower-alpha\}.}{\leveltext\leveltemplateid302\'02\'01.;}{\levelnumbers\'01;}\fi-360\li1440\lin1440 }{\listname ;}\listid4}}
 {\*\listoverridetable{\listoverride\listid1\listoverridecount0\ls1}{\listoverride\listid2\listoverridecount0\ls2}{\listoverride\listid3\listoverridecount0\ls3}{\listoverride\listid4\listoverridecount0\ls4}}
-\margl1440\margr1440\vieww19060\viewh16580\viewkind1\viewscale160
+\margl1440\margr1440\vieww19360\viewh16580\viewkind1\viewscale160
 \deftab720
 \pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardeftab720\ri0\partightenfactor0
 
@@ -343,7 +343,7 @@ The relevant questions we need to answer are: \
 	5. What does generate the bust? Credit supply or credit demand? \
 
 \f0\b \
-	- \cf16 On theoretical models of credit booms that end up in a recession\
+	- \cf6 On theoretical models of credit booms that end up in a recession\cf16 \
 
 \f1\b0 \cf4 \
 
@@ -386,12 +386,23 @@ Leverage
 \f1\b0 and highly volatile. Models that explain procyclical leverage rely on procyclical leverage constraints in the form of Value at Risk (VaR) constraints, see Adrian and Shin (2010, 2011, 2014), Coimbra and Rey, Nuno and Thomas. In particular Nuno and Thomas build a model where second moment shocks are responsible for the leverage cyclicality, as opposed to technology or shocks to the quality of capital. This is because while the latter shocks affect primarily asset prices which are negatively correlated with leverage, a positive volatility tightens the leverage constraint due to increasing banks\'92 incentives to take risk (option value effect is at work as banks are not exposed to the downside risk). 
 \f0\b \
 Look at https://voxeu.org/article/bank-leverage-cycles for a brief summary of Nuno and Thomas\
-\
-\
-- On empirical findings\
 
-\f1\b0 For a quite concise and exhaustive review of the relevant empirical literature on credit cycles see Bordalo Gennaioli and Shleifer JF
+\f1\b0 \
+** note that as argued in Lopez-Salido et al, the credit supply retrenchment generating a boom disproportionally affects the lower credit quality firms, this is because their proxy of sentiment forecast changes in the aggregate effective cost of credit and lower credit quality firms typically have a higher loading on the aggregate market conditions. 
 \f0\b \
+\'b0 
+\f1\b0 Their measure of distance-to-insolvency (DI) that is the inverse of the volatility of a firm\'92s equity return can be of interest for our empirical analysis. They predict that DI decreases during a bad boom. 
+\f0\b \
+
+\f1\b0 \'a7 indicates overlapping generation\
+\'86 indicates model of deterministic cycle
+\f0\b \
+\
+		- \cf6 Empirical findings\
+\cf4 \
+
+\f1\b0 For a quite concise and exhaustive review of the relevant empirical literature on credit cycles see 
+\f0\b Bordalo Gennaioli and Shleifer JF\
 \
 (Measures of) Systemic risk 
 \f1\b0 captures changes in the tail comovement of institutions\'92 assets and liabilities that can arise due to the spreading of financial distress across institutions (see
@@ -411,20 +422,22 @@ Mian, Sufi, and Verner 2017 QJE
 \f1\b0 . \
 
 \f0\b \
-\
 Greenwood Hanson \'93Reflexivity in the credit market\'94 
 \f1\b0 matches the fact that credit and real cycles display different periodicities through a model with reflexivity that is the idea of a feedback between investors beliefs and the economy activity 
 \f0\b \
 
-\f1\b0 ** note that as argued in Lopez-Salido et al, the credit supply retrenchment generating a boom disproportionally affects the lower credit quality firms, this is because their proxy of sentiment forecast changes in the aggregate effective cost of credit and lower credit quality firms typically have a higher loading on the aggregate market conditions. 
-\f0\b \
-\'b0 
-\f1\b0 Their measure of distance-to-insolvency (DI) that is the inverse of the volatility of a firm\'92s equity return can be of interest for our empirical analysis. They predict that DI decreases during a bad boom. 
-\f0\b \
-
-\f1\b0 \'a7 indicates overlapping generation\
-\'86 indicates model of deterministic cycle\
+\f1\b0 \
 \
+\
+
+\f0\b \cf6 		- Non rational expectations: theory and empirics   \
+\
+\cf4 Greenwood Shleifer 2014 RFS: 
+\f1\b0 survey evidence on expectations on stock market returns and evidence of extrapolation.  \
+\
+
+\f0\b Greenwood Hanson Jin 
+\f1\b0 \
 \
 
 \f0\b Is there always asymmetric information in these models? Note that in the context of imperfect information a sentiment shock may arise (see Angeletos and La\'92O). No in the textbook model of Kyotaki and Moore there is no asymmetric info\
@@ -443,21 +456,34 @@ Check domestic credit to private sector (as in Gorton Ordonez) \
 Check leverage data from Nuno and Thomas (data are available as it is published in the AEJ, should be from 1981 to 2014 at a monthly level)\
 \
 TODO econometrically: \
-- Instrumental VAR\
+- take SPF measure of realized series of GDP\
 - Around each revision of GDP growth we have analysts dispersion. I believe in the first stage we should weight the observation by the dispersion \
 - Check analysts dispersion (and skewness) and see whether it is correlated with the sentiment shocks and technology shock \
-- Principal component of the forecast revision (similar to Kamdar JMP). Results are very good when we use consumption forecast. \
 - Find a measure of SRISK (Engle has it but it is annual), find a measure that captures high risk debt \
-- Why did we rule out Gennaioli story? In particular, did we focus on finding differences between the reaction to tech shock and to sentiment shock. Additionally, the shock which behaves better is the consumption revision shock, did we analyze that? The exercise has been performed and there is evidence of under-reaction in response to the sentiment shock and tech shock, if anything the latter is not significant. \
-- look for excessive credit spread movements \
-\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardeftab720\ri0\partightenfactor0
-\cf0 - Get a measure of debt quality as in Greenwood and Hanson\
+- look for excessive credit spread movements \cf0 \
 - look at household debt measures from Mian, Sufi, and Verner\
 - eye balling the graph it does not seem that the 2009 crisis was foreseen \
-- the lower spread following the boom is indicative of a credit supply shock.\
-\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardeftab720\ri0\partightenfactor0
-\cf4 - I am more and more convinced that writing a model with rational expectations that match our findings is a per se important contribution. \
+- the lower spread following the boom is indicative of a credit supply shock.\cf4 \
 - check non linearities \
+- check Rsquared of credit market sentiment with our sentiment shock\
 \
 Would it make sense to check the effect on GDP vulnerability (as in Adrian et al) conditioning on the two shocks?\
-A caveat of our analysis is that financial cycle exhibit a much longer duration  (Filardo Lombardi Raczko 2018). However a long standing literature stresses the importance of the financial sector in amplifying business cycle fluctuations. }
+A caveat of our analysis is that financial cycle exhibit a much longer duration  (Filardo Lombardi Raczko 2018). However a long standing literature stresses the importance of the financial sector in amplifying business cycle fluctuations. \
+\
+TermYield is typically procyclical \
+Our results for Tech shock are consistent with Gali Lopez-Salido Valles 2003 JME\
+\
+				Relation with credit market sentiment\
+The literature (Greenwood Hanson Jin among others) focuses on measures of credit market sentiment that predicts future low returns on high yield bonds. Typically they proxy market sentiment taking one measure at a time (such as HYS, EBP, Growth of corporate credit) or altogether as in Lopez-Salido et al. We could check (via Rsquared) how much these measures explain of our Sentiment variable. This could be informative for the model. \
+\
+Our CONTRIBUTIONS\
+\
+- Inform the literature on sentiment: need a model that generates boom and bust - very few match the result (Benhabib series, Beaudry et al) and many don\'92t (Angeletos series, Milani series, Levchenko etc)\
+- Bridge sentiment shock literature with credit market sentiment: is the shock originating from expectations of better economic conditions or change in investors\'92 beliefs on financial conditions - not necessarily the same thing. Overall we bring the financial cycle literature closer to the real bc literature\
+- Variance explained by this shock is large - true in the sentiment literature, not quite in the financial one\
+- Quarterly analysis on US variables and boom and bust responses - nobody has done that \
+- Fundamental vs non fundamental shocks in generating the boom and bust - Gorton and Ordonez somewhat similar but not quite, Greenwood et al not sure -  inform also NRE literature (Bordalo et al don\'92t match it) \
+- Evidence in favor of RE or NRE? Echoing Coibion and Gorodnichenko, important for BC literature \'97 closer to Shiller\'92s view that confidence is critical for the economy and rational expectations are unsatisfying  \
+- Bubbles?\
+\
+}
