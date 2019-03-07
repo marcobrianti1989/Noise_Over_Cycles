@@ -23,9 +23,9 @@ lags                = 4;             % Number of lags in the first step (derivin
 leads               = 0;             % Number of leads in the first step (deriving Ztilde)
 H                   = 20;            % IRFs horizon
 lags_LP             = 2;             % Number of lags in the Local Projection
-which_trend         = 'quadratic' ;  % BPfilter, HPfilter, linear, quadratic for Local Projection
+which_trend         = 'quadratic' ;  %BPfilter, HPfilter, linear, quadratic for Local Projection
 which_Z             = {'1','2','3','4','5'}; % Which Forecast Revision: RGDP, NGDP, RCONS, INDPROD, RINV. If it is more than one it takes the first PC
-which_shock         = {'Sentiment'}; % Tech, News, Sentiment
+which_shock         = {'Tech', 'Sentiment'}; % Tech, News, Sentiment
 loc_start_exogenous = 0;       % Exogenous start
 diff_LP             = 0;             % LP in levels or differences
 nPC_first           = 3;             % Number of Principal Components in the first stage
@@ -35,7 +35,7 @@ printIRFs           = 1;             % Print IRFs
 printVD             = 0;             % Print Variance Decompositions
 nsimul              = 2000;           % number of simulations for bootstrap
 control_pop         = 0;             % Divide GDP, Cons, Hours, Investment over population
-varlist             = {'TermYield','RealGDP','SpreadBond'};%','RealGDP','RealInvestment','RealCons','HoursAll','RealInventories'}; % Define endogenous variables for LP
+varlist             = {'SpreadBond','RealGDP','HYS','HYS4SMOOTH', 'SP500'};%','RealGDP','RealInvestment','RealCons','HoursAll','RealInventories'}; % Define endogenous variables for LP
 % 'SpreadBond'  'Leverage'        'ChicagoFedIndex'  'RealExchRate' 'FFR'
 % 'SpreadBonds' 'MoodySpreadBaa'  'TermYield'        'FFR'      'Y10Treasury'     'M3Treasury'
 % 'RealGDP'     'RealInvestment'  'SpreadBond'       'Leverage' 'ChicagoFedIndex' 'Vix'
