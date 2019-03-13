@@ -7,6 +7,7 @@ function [IRF,res,tuple_store,VDstore,degreeFreedom,nRegressor] = ...
 % lags is how many lags of x and u we want to take in the regression
 % regression: y(t+h) = alpha + B*u(t) + C1*u(t-1) + D1*y(t-1) + G1*x(t-1) + ...
 NUM = 0;
+y = detrend_func(y,which_trend);
 for h = 1:H
       Y          = y(lags+h:end,:);
       X          = u(lags+1:end-h+1,:); %Plus 1 because when jj = 1 is contemporaneous
@@ -25,20 +26,6 @@ for h = 1:H
                         end
                   end
             end
-      end
-      switch which_trend
-            case 'BPfilter'
-                  Y     = bpass(Y,4,32);
-            case 'HPfilter'
-                  [~,Y] = hpfilter(Y,1600);
-            case 'linear'
-                  trend = [1:1:length(Y)]';
-            case 'quadratic'
-                  trend = [1:1:length(Y)]';
-                  trend = [trend trend.^2];
-                  X     = [X trend];
-            case 'none'
-                  Y     = Y;
       end
       X                  = [X, ones(length(Y),1)];
       [T,n]              = size(X);
