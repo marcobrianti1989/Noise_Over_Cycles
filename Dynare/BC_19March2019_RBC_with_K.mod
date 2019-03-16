@@ -4,7 +4,6 @@
 
 var 
                               
-rho                    % Probability of default
 c                      % Consumption
 k                      % capital
 y                      % output
@@ -19,12 +18,9 @@ varexo epsz epsF;
 
 % Parameterization
 parameters
-Z XX EPS FF ALP BET GAM DEL SIG RHOZ RHOF;
+Z ALP BET GAM DEL SIG RHOZ RHOF;
 
 Z          = 2;      % mean of productivity of all the firms 
-XX         = 1;   % fixed cost of production
-EPS        = 0.8;    % percentage of capital recover if default
-FF         = 0.2;      % fixed cost of recovering capital if default
 ALP        = 2/3;    % Convexity of Production Function
 BET        = 0.99;   % Discount Factor
 GAM        = 0.7;    % habit consumption formation
@@ -37,17 +33,15 @@ RHOF       = 0.5;      % persistence of sentiment shock
 
 model; 
 
-r*k = EPS*Z*exp(logz)*rho(+1)*k^ALP - FF;
+r = ALP*k^(ALP-1);
 
-exp(logz)*Z*rho(+1)*k^ALP - r*k = XX;
+c + i = y;
 
-c + i = y  - (1 - rho)*XX;
+1 = BET*((c - GAM*c(-1))/(c(+1)- GAM*c))^SIG*(1+ALP*k^(ALP-1)-DEL)*exp(logF);
 
-1 = BET*((c - GAM*c(-1))/(c(+1)- GAM*c))^SIG*(1+r-DEL)*exp(logF);
+y = 1/2*Z*exp(logz)*k(-1)^ALP;
 
-y = 1/2*Z*exp(logz)*(1 - rho^2)*k(-1)^ALP;
-
-k*(1 - rho(+1)) = (1-DEL)*k(-1)*(1 - rho) + i;
+k = (1-DEL)*k(-1) + i;
 
 logz       = RHOZ*logz(-1) + epsz;  
 
@@ -57,17 +51,15 @@ logF       = RHOF*logF(-1) - epsF;
 
 end;
 
-rhoss  = 0.1726;
-kss    =  133.1092;
-css    = 18.9591;
 rss    = 1/BET - 1 + DEL;
-yss    = 1/2*Z*(1 - rhoss^2)*kss^ALP;
+kss    = 133.1092;
+css    = 18.9591;
+yss    = 1/2*Z*kss^ALP;
 iss    = kss*DEL;
                          
 %%%%% Initialization %%%%%
 initval;
 
-rho              = rhoss;  
 k                = kss; 
 c                = css;
 r                = rss;
@@ -85,7 +77,7 @@ end;
 steady;
 check;
 
-stoch_simul(irf=60, order=1) rho k r c y i;
+stoch_simul(irf=60, order=1) k r c y i;
 
 
 %stoch_simul(periods=100000, hp_filter = 1600, order=2,ar = 0, nofunctions,nograph,nodecomposition,nocorr) jobphim logz logR logU logV logFPHIC;

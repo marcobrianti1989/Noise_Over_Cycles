@@ -13,10 +13,10 @@ Preprocessing completed.
 STEADY-STATE RESULTS:
 
 rho  		 0.147527
-c    		 9.91355
+c    		 10.2817
 k    		 49.916
 y    		 13.2618
-i    		 2.4958
+i    		 2.1276
 r    		 0.060101
 logz 		 0
 logF 		 0
@@ -24,84 +24,59 @@ logF 		 0
 EIGENVALUES:
          Modulus             Real        Imaginary
 
+       1.308e-15        1.308e-15                0
              0.5              0.5                0
              0.5              0.5                0
-          0.7082           0.7082                0
-          0.9619           0.9619                0
-           1.194            1.194                0
-             Inf              Inf                0
+          0.7061           0.7061                0
+          0.9621           0.9621                0
+           1.214            1.214                0
+       1.704e+20       -1.704e+20                0
 
 
 There are 2 eigenvalue(s) larger than 1 in modulus 
-for 2 forward-looking variable(s)
+for 3 forward-looking variable(s)
 
-The rank condition is verified.
+The rank condition ISN'T verified!
 
+{Error using <a href="matlab:matlab.internal.language.introspective.errorDocCallback('print_info', 'c:\dynare\4.5.4\matlab\print_info.m', 45)" style="font-weight:bold">print_info</a> (<a href="matlab: opentoline('c:\dynare\4.5.4\matlab\print_info.m',45,0)">line 45</a>)
+Blanchard Kahn conditions are not satisfied: indeterminacy
 
-MODEL SUMMARY
+Error in <a href="matlab:matlab.internal.language.introspective.errorDocCallback('stoch_simul', 'c:\dynare\4.5.4\matlab\stoch_simul.m', 100)" style="font-weight:bold">stoch_simul</a> (<a href="matlab: opentoline('c:\dynare\4.5.4\matlab\stoch_simul.m',100,0)">line 100</a>)
+    print_info(info, options_.noprint, options_);
 
-  Number of variables:         8
-  Number of stochastic shocks: 2
-  Number of state variables:   4
-  Number of jumpers:           2
-  Number of static variables:  3
+Error in <a href="matlab:matlab.internal.language.introspective.errorDocCallback('BC_19March2019_model2', 'C:\Users\th3\Documents\Noise_Over_Cycles\Dynare\BC_19March2019_model2.m', 202)" style="font-weight:bold">BC_19March2019_model2</a> (<a href="matlab: opentoline('C:\Users\th3\Documents\Noise_Over_Cycles\Dynare\BC_19March2019_model2.m',202,0)">line 202</a>)
+info = stoch_simul(var_list_);
 
+Error in <a href="matlab:matlab.internal.language.introspective.errorDocCallback('dynare', 'c:\dynare\4.5.4\matlab\dynare.m', 223)" style="font-weight:bold">dynare</a> (<a href="matlab: opentoline('c:\dynare\4.5.4\matlab\dynare.m',223,0)">line 223</a>)
+evalin('base',fname) ;
 
-MATRIX OF COVARIANCE OF EXOGENOUS SHOCKS
-Variables        epsz      epsF
-epsz         1.000000  0.000000
-epsF         0.000000  1.000000
+Error in <a href="matlab:matlab.internal.language.introspective.errorDocCallback('run_file', 'C:\Users\th3\Documents\Noise_Over_Cycles\Dynare\run_file.m', 7)" style="font-weight:bold">run_file</a> (<a href="matlab: opentoline('C:\Users\th3\Documents\Noise_Over_Cycles\Dynare\run_file.m',7,0)">line 7</a>)
+dynare BC_19March2019_model2
+} 
+run_file
 
-POLICY AND TRANSITION FUNCTIONS
-                                 rho               k               r               c               y               i
-Constant                    0.147527       49.915966        0.060101        9.913552       13.261824        2.495798
-k(-1)                      -0.001970        1.083682       -0.001204        0.064173        0.199825        0.133682
-logz(-1)                   -0.073763        7.365200               0        0.791540        8.230504        7.365200
-logF(-1)                           0        1.302414               0       -1.071728        0.230686        1.302414
-c(-1)                              0       -0.712603               0        0.586385       -0.126218       -0.712603
-epsz                       -0.147527       14.730401               0        1.583081       16.461008       14.730401
-epsF                               0       -2.604828               0        2.143456       -0.461372       -2.604828
+Configuring Dynare ...
+[mex] Generalized QZ.
+[mex] Sylvester equation solution.
+[mex] Kronecker products.
+[mex] Sparse kronecker products.
+[mex] Local state space iteration (second order).
+[mex] Bytecode evaluation.
+[mex] k-order perturbation solver.
+[mex] k-order solution simulation.
+[mex] Quasi Monte-Carlo sequence (Sobol).
+[mex] Markov Switching SBVAR.
 
+Using 64-bit preprocessor
+Starting Dynare (version 4.5.4).
+Starting preprocessing of the model file ...
+Found 7 equation(s).
+Evaluating expressions...done
+Computing static model derivatives:
+ - order 1
+Computing dynamic model derivatives:
+ - order 1
+Processing outputs ...
+done
+Preprocessing completed.
 
-THEORETICAL MOMENTS
-VARIABLE          MEAN   STD. DEV.    VARIANCE
-rho             0.1475      0.3332      0.1111
-k              49.9160    134.9041  18199.1226
-r               0.0601      0.1624      0.0264
-c               9.9136     21.6087    466.9358
-y              13.2618     32.7826   1074.7009
-i               2.4958     19.1093    365.1658
-
-
-
-VARIANCE DECOMPOSITION (in percent)
-         epsz    epsF
-rho     86.81   13.19
-k       79.27   20.73
-r       79.27   20.73
-c       79.99   20.01
-y       87.99   12.01
-i       88.61   11.39
-
-
-
-MATRIX OF CORRELATIONS
-Variables       rho       k       r       c       y       i
-rho          1.0000 -0.9188  0.8619 -0.8714 -0.9959 -0.7058
-k           -0.9188  1.0000 -0.9908  0.9595  0.8837  0.4150
-r            0.8619 -0.9908  1.0000 -0.9701 -0.8159 -0.2877
-c           -0.8714  0.9595 -0.9701  1.0000  0.8240  0.2675
-y           -0.9959  0.8837 -0.8159  0.8240  1.0000  0.7664
-i           -0.7058  0.4150 -0.2877  0.2675  0.7664  1.0000
-
-
-
-COEFFICIENTS OF AUTOCORRELATION
-Order         1       2       3       4       5
-rho      0.8891  0.8239  0.7805  0.7473  0.7190
-k        0.9908  0.9712  0.9460  0.9178  0.8881
-r        0.9908  0.9712  0.9460  0.9178  0.8881
-c        0.9871  0.9620  0.9315  0.8991  0.8663
-y        0.8543  0.7719  0.7204  0.6839  0.6547
-i        0.6101  0.3899  0.2616  0.1843  0.1361
-Total computing time : 0h00m02s

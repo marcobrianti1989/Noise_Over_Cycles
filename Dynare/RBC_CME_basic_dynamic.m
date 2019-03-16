@@ -1,4 +1,4 @@
-function [residual, g1, g2, g3] = BC_19March2019_model2_dynamic(y, x, params, steady_state, it_)
+function [residual, g1, g2, g3] = RBC_CME_basic_dynamic(y, x, params, steady_state, it_)
 %
 % Status : Computes dynamic model for Dynare
 %
@@ -33,88 +33,77 @@ function [residual, g1, g2, g3] = BC_19March2019_model2_dynamic(y, x, params, st
 % Model equations
 %
 
-residual = zeros(8, 1);
-T20 = y(7)^params(5);
-T51 = params(6)*((y(6)-params(7)*y(1))/(y(14)-y(6)*params(7)))^params(9);
-T66 = exp(y(11))*params(1)*0.5*(1-y(5)^2);
-lhs =y(10)*y(7);
-rhs =params(3)*params(1)*exp(y(11))*y(13)*T20-params(4);
+residual = zeros(7, 1);
+Rbar__ = 1/params(1);
+T13 = params(1)/y(10);
+T19 = y(5)^(params(3)-1);
+T23 = params(3)*y(11)*T19+1-params(2);
+T33 = y(1)^params(3);
+T34 = y(6)*T33;
+lhs =1/y(4);
+rhs =T13*T23;
 residual(1)= lhs-rhs;
-lhs =T20*y(13)*params(1)*exp(y(11))-y(10)*y(7);
-rhs =params(2);
+lhs =1/y(4);
+rhs =T13*y(8)/y(12);
 residual(2)= lhs-rhs;
-lhs =y(6)+y(9);
-rhs =y(8)-params(2)*(1-y(5));
+lhs =T34;
+rhs =y(4)+y(5)-(1-params(2))*y(1);
 residual(3)= lhs-rhs;
-lhs =1;
-rhs =T51*(1+y(15)-params(8))*exp(y(12));
+lhs =y(3);
+rhs =T34;
 residual(4)= lhs-rhs;
-lhs =y(8);
-rhs =T20*T66;
+lhs =y(8)/Rbar__;
+rhs =(y(9)/params(6))^params(5);
 residual(5)= lhs-rhs;
-lhs =y(7)*(1-y(13));
-rhs =y(9)+(1-y(5))*(1-params(8))*y(2);
+lhs =y(6);
+rhs =exp(y(7));
 residual(6)= lhs-rhs;
-lhs =y(11);
-rhs =params(10)*y(3)+x(it_, 1);
+lhs =y(7);
+rhs =params(4)*y(2)+x(it_, 1);
 residual(7)= lhs-rhs;
-lhs =y(12);
-rhs =params(11)*y(4)-x(it_, 2);
-residual(8)= lhs-rhs;
 if nargout >= 2,
-  g1 = zeros(8, 17);
+  g1 = zeros(7, 13);
 
   %
   % Jacobian matrix
   %
 
-T102 = getPowerDeriv((y(6)-params(7)*y(1))/(y(14)-y(6)*params(7)),params(9),1);
-T126 = getPowerDeriv(y(7),params(5),1);
-  g1(1,13)=(-(params(3)*params(1)*exp(y(11))*T20));
-  g1(1,7)=y(10)-params(3)*params(1)*exp(y(11))*y(13)*T126;
-  g1(1,10)=y(7);
-  g1(1,11)=(-(params(3)*params(1)*exp(y(11))*y(13)*T20));
-  g1(2,13)=T20*params(1)*exp(y(11));
-  g1(2,7)=y(13)*params(1)*exp(y(11))*T126-y(10);
-  g1(2,10)=(-y(7));
-  g1(2,11)=T20*y(13)*params(1)*exp(y(11));
-  g1(3,5)=(-params(2));
-  g1(3,6)=1;
-  g1(3,8)=(-1);
-  g1(3,9)=1;
-  g1(4,1)=(-(exp(y(12))*(1+y(15)-params(8))*params(6)*(-params(7))/(y(14)-y(6)*params(7))*T102));
-  g1(4,6)=(-(exp(y(12))*(1+y(15)-params(8))*params(6)*T102*(y(14)-y(6)*params(7)-(y(6)-params(7)*y(1))*(-params(7)))/((y(14)-y(6)*params(7))*(y(14)-y(6)*params(7)))));
-  g1(4,14)=(-(exp(y(12))*(1+y(15)-params(8))*params(6)*T102*(-(y(6)-params(7)*y(1)))/((y(14)-y(6)*params(7))*(y(14)-y(6)*params(7)))));
-  g1(4,15)=(-(T51*exp(y(12))));
-  g1(4,12)=(-(T51*(1+y(15)-params(8))*exp(y(12))));
-  g1(5,5)=(-(T20*exp(y(11))*params(1)*0.5*(-(2*y(5)))));
-  g1(5,7)=(-(T66*T126));
-  g1(5,8)=1;
-  g1(5,11)=(-(T20*T66));
-  g1(6,5)=(1-params(8))*y(2);
-  g1(6,13)=(-y(7));
-  g1(6,2)=(-((1-y(5))*(1-params(8))));
-  g1(6,7)=1-y(13);
-  g1(6,9)=(-1);
-  g1(7,3)=(-params(10));
-  g1(7,11)=1;
-  g1(7,16)=(-1);
-  g1(8,4)=(-params(11));
-  g1(8,12)=1;
-  g1(8,17)=1;
+T68 = y(6)*getPowerDeriv(y(1),params(3),1);
+  g1(1,4)=(-1)/(y(4)*y(4));
+  g1(1,10)=(-(T23*(-params(1))/(y(10)*y(10))));
+  g1(1,5)=(-(T13*params(3)*y(11)*getPowerDeriv(y(5),params(3)-1,1)));
+  g1(1,11)=(-(T13*params(3)*T19));
+  g1(2,4)=(-1)/(y(4)*y(4));
+  g1(2,10)=(-(y(8)/y(12)*(-params(1))/(y(10)*y(10))));
+  g1(2,8)=(-(T13*1/y(12)));
+  g1(2,12)=(-(T13*(-y(8))/(y(12)*y(12))));
+  g1(3,4)=(-1);
+  g1(3,1)=T68-(-(1-params(2)));
+  g1(3,5)=(-1);
+  g1(3,6)=T33;
+  g1(4,3)=1;
+  g1(4,1)=(-T68);
+  g1(4,6)=(-T33);
+  g1(5,8)=1/Rbar__;
+  g1(5,9)=(-(1/params(6)*getPowerDeriv(y(9)/params(6),params(5),1)));
+  g1(6,6)=1;
+  g1(6,7)=(-exp(y(7)));
+  g1(7,2)=(-params(4));
+  g1(7,7)=1;
+  g1(7,13)=(-1);
 
 if nargout >= 3,
   %
   % Hessian matrix
   %
 
-  g2 = sparse([],[],[],8,289);
+  g2 = sparse([],[],[],7,169);
 if nargout >= 4,
   %
   % Third order derivatives
   %
 
-  g3 = sparse([],[],[],8,4913);
+  g3 = sparse([],[],[],7,2197);
 end
 end
 end

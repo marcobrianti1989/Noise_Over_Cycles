@@ -1,0 +1,91 @@
+Starting Dynare (version 4.5.4).
+Starting preprocessing of the model file ...
+Found 7 equation(s).
+Evaluating expressions...done
+Computing static model derivatives:
+ - order 1
+Computing dynamic model derivatives:
+ - order 1
+Processing outputs ...
+done
+Preprocessing completed.
+
+STEADY-STATE RESULTS:
+
+y  		 3.01533
+c  		 2.30662
+k  		 28.3484
+A  		 1
+z  		 0
+R  		 1.0101
+Pi 		 1
+
+EIGENVALUES:
+         Modulus             Real        Imaginary
+
+          0.9621           0.9621                0
+            0.97             0.97                0
+            1.05             1.05                0
+             1.5              1.5                0
+             Inf             -Inf                0
+
+
+There are 3 eigenvalue(s) larger than 1 in modulus 
+for 3 forward-looking variable(s)
+
+The rank condition is verified.
+
+
+MODEL SUMMARY
+
+  Number of variables:         7
+  Number of stochastic shocks: 1
+  Number of state variables:   2
+  Number of jumpers:           3
+  Number of static variables:  2
+
+
+MATRIX OF COVARIANCE OF EXOGENOUS SHOCKS
+Variables       eps_z
+eps_z        0.000046
+
+POLICY AND TRANSITION FUNCTIONS
+                                   y               c               k               A               z               R              Pi
+Constant                    3.015328        2.306617       28.348419        1.000000               0        1.010101        1.000000
+k(-1)                       0.035101        0.048040        0.962061               0               0       -0.002225       -0.001469
+z(-1)                       2.924868        0.883635        2.041233        0.970000        0.970000        0.080107        0.052871
+eps_z                       3.015328        0.910964        2.104364        1.000000        1.000000        0.082585        0.054506
+
+
+MOMENTS OF SIMULATED VARIABLES
+VARIABLE              MEAN       STD. DEV.        VARIANCE        SKEWNESS        KURTOSIS
+y                 2.945627        0.070500        0.004970        0.066656       -1.163152
+c                 2.265171        0.046488        0.002161        0.389009       -1.063054
+k                27.789132        0.748796        0.560695        0.447779       -1.032450
+A                 0.983225        0.017812        0.000317       -0.125227       -1.040404
+z                -0.016775        0.017812        0.000317       -0.125227       -1.040404
+R                 1.009928        0.001621        0.000003        0.197953       -0.691784
+Pi                0.999886        0.001070        0.000001        0.197953       -0.691784
+
+
+CORRELATION OF SIMULATED VARIABLES
+VARIABLE         y       c       k       A       z       R      Pi
+y           1.0000  0.9129  0.7728  0.9435  0.9435  0.0809  0.0809
+c           0.9129  1.0000  0.9645  0.7262  0.7262 -0.3330 -0.3330
+k           0.7728  0.9645  1.0000  0.5190  0.5190 -0.5700 -0.5700
+A           0.9435  0.7262  0.5190  1.0000  1.0000  0.4065  0.4065
+z           0.9435  0.7262  0.5190  1.0000  1.0000  0.4065  0.4065
+R           0.0809 -0.3330 -0.5700  0.4065  0.4065  1.0000  1.0000
+Pi          0.0809 -0.3330 -0.5700  0.4065  0.4065  1.0000  1.0000
+
+
+AUTOCORRELATION OF SIMULATED VARIABLES
+VARIABLE         1       2       3       4       5
+y           0.9529  0.9090  0.8707  0.8449  0.8181
+c           0.9868  0.9743  0.9615  0.9499  0.9369
+k           0.9958  0.9913  0.9852  0.9776  0.9688
+A           0.9236  0.8521  0.7913  0.7530  0.7140
+z           0.9236  0.8521  0.7913  0.7530  0.7140
+R           0.9311  0.8665  0.8130  0.7823  0.7518
+Pi          0.9311  0.8665  0.8130  0.7823  0.7518
+Total computing time : 0h00m01s
