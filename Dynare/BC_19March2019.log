@@ -1,0 +1,98 @@
+Starting Dynare (version 4.5.4).
+Starting preprocessing of the model file ...
+Found 5 equation(s).
+Evaluating expressions...done
+Computing static model derivatives:
+ - order 1
+Computing dynamic model derivatives:
+ - order 1
+Processing outputs ...
+done
+Preprocessing completed.
+
+rhoss =
+
+    0.3804
+
+
+nss =
+
+    0.7396
+
+
+STEADY-STATE RESULTS:
+
+rho  		 0.978529
+y    		 0.0492224
+logz 		 0
+logF 		 0
+n    		 3.47112
+
+EIGENVALUES:
+         Modulus             Real        Imaginary
+
+               0                0                0
+               0                0                0
+               0                0                0
+          0.4906          -0.4906                0
+
+
+There are 0 eigenvalue(s) larger than 1 in modulus 
+for 0 forward-looking variable(s)
+
+The rank condition is verified.
+
+
+MODEL SUMMARY
+
+  Number of variables:         5
+  Number of stochastic shocks: 2
+  Number of state variables:   4
+  Number of jumpers:           0
+  Number of static variables:  1
+
+
+MATRIX OF COVARIANCE OF EXOGENOUS SHOCKS
+Variables        epsz      epsF
+epsz         1.000000  0.000000
+epsF         0.000000  1.000000
+
+POLICY AND TRANSITION FUNCTIONS
+                                   n             rho               y
+Constant                    3.471116        0.978529        0.049222
+rho(-1)                   -24.299219       -0.591880        1.127178
+n(-1)                       0.101303        0.002468       -0.004699
+epsz                      -15.987195       -0.420259        0.812313
+epsF                       -5.090469       -0.133814        0.258648
+
+
+THEORETICAL MOMENTS
+VARIABLE         MEAN  STD. DEV.   VARIANCE
+n              3.4711    19.7127   388.5903
+rho            0.9785     0.5080     0.2581
+y              0.0492     0.9784     0.9572
+
+
+
+VARIANCE DECOMPOSITION (in percent)
+         epsz    epsF
+n       90.79    9.21
+rho     90.79    9.21
+y       90.79    9.21
+
+
+
+MATRIX OF CORRELATIONS
+Variables         n     rho       y
+n            1.0000  0.9994 -0.9992
+rho          0.9994  1.0000 -1.0000
+y           -0.9992 -1.0000  1.0000
+
+
+
+COEFFICIENTS OF AUTOCORRELATION
+Order         1       2       3       4       5
+n       -0.5245  0.2573 -0.1262  0.0619 -0.0304
+rho     -0.4962  0.2434 -0.1194  0.0586 -0.0287
+y       -0.4907  0.2407 -0.1181  0.0579 -0.0284
+Total computing time : 0h00m01s

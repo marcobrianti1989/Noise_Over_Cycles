@@ -4,88 +4,70 @@
 
 var 
                               
-Z                      % (1) Endogenous Technology
-K                      % (2) Level of Capital
-R                      % (3) Default Rate
-EPS                    % (4) Weights for new Tech level          
-I                      % (5) Investment
-Y                      % (6) Output
-Rf                     % (7) Risk free
-RHO                    % (8) Probability of default
+rho                    % Probability of default
+y                      % Production
+logz                   % stochastic productivity
+logF                   % stochastic fixed cost
+n;                     % labor
 
 %%%%% Aggregate Productivity Shock %%%%%
 
-varexo eps;  
+varexo epsz epsF;  
 
 % Parameterization
 parameters
-BET GAM ALP DELT ETA1 ETA2 EPSI LAMBD SIGM;
+Z X EPS F ALP BET PSI CHI RHOZ RHOF;
 
-GAM1       = 1;
-GAM2       = -1;
-ETA2       = -1;
-EPSI       = 0.1;
-LAMBD      = 1;
+Z          = 2;      % mean of productivity of all the firms 
+X          = 0.01;   % fixed cost of production
+EPS        = 0.7;    % percentage of capital recover if default
+F          = 1;      % fixed cost of recovering capital if default
 ALP        = 2/3;    % Convexity of Production Function
-DELT       = 0.05;   % Capital Depreciation Rate 
 BET        = 0.99;   % Discount Factor
-SIGM       = 0.5;    % IES
+PSI        = 0.1;    % linear consumption disutility
+CHI        = 4;      % Frish
+RHOZ       = 0;   % persistence of productivity shock
+RHOF       = 0;   % persistence of sentiment shock 
 
 % Defining functional forms and derivatives
 
 model; 
 
-1 = BET*( ( Y - I + Rf(-1)*I(-1) ) / ( Y(+1) - I(+1) + Rf*I ) )^SIGM *Rf;   %(1)
+PSI*(1 - rho^2)*n^(1+CHI) = EPS*Z*exp(logz)*rho*n^ALP - F*exp(logF);
 
-Y = Z * K^ALP;  %(2)
+rho*n^ALP - PSI*(1 - rho^2)*n^(1+CHI) - X/(1/2*Z*(1-rho(-1)^2)*n(-1)^ALP) = 0;
 
-I = ETA1*K(-1) + ETA2*R; %(3)
+y = (1 - rho)*n^ALP;
 
-( 1 - RHO ) * R = Rf;  %(4)
+logz       = RHOZ*logz(-1) + epsz;  
 
-K = ( 1 - DEL ) * K(-1) + ( 1 - RHO ) * I;         %(5)
+logF       = RHOF*logF(-1) - epsF;            
 
-RHO = GAM * Y;   %(6)
 
-Z = ( 1 - EPS ) * Z(-1) + EPS * LAMBD * R + epsZ;    %(7)
-
-EPS = ( 1 - RHO ) * I / K;
-
-R = R + epsS;
 
 end;
 
-logthetss        = 0;
-logzetass        = 0;
-ess              = 0.777146777146777;
-rpss             = 1.03609362949245;
-xss              = 5.06155342500016;
-css              = xss + ess^ALP;                                
+rhoss = 0.3804  
+nss   = 0.7396
+                         
 %%%%% Initialization %%%%%
 initval;
 
-logthet              = logthetss;  
-logzeta              = logzetass;
-e                    = ess;
-rp                   = rpss;
-x                    = xss;
-c                    = css;
+rho              = rhoss;  
+n                = nss; 
+
 end;
 
 
 shocks;
-  var eps_thet     = 1;
-  var eps_zeta    = 1;
-  var eps_thet, eps_zeta = 0;
+  var epsz     = 1;
+var epsF = 1;
 end;
 
 steady;
 check;
 
-
-stoch_simul(irf=30, order=1) logthet logzeta e x c;
-
-stoch_simul(irf=20, order=1) logthet logzeta e x rp;
+stoch_simul(irf=20, order=1) n rho y;
 
 
 %stoch_simul(periods=100000, hp_filter = 1600, order=2,ar = 0, nofunctions,nograph,nodecomposition,nocorr) jobphim logz logR logU logV logFPHIC;
