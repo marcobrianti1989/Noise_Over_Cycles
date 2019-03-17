@@ -19,23 +19,32 @@ tic
 
 %
 % Technical Parameters
-lags                = 4;             % Number of lags in the first step (deriving Ztilde)
+lags                = 2;             % Number of lags in the first step (deriving Ztilde)
 leads               = 0;             % Number of leads in the first step (deriving Ztilde)
 H                   = 20;            % IRFs horizon
+<<<<<<< HEAD
 lags_LP             = 1;             % Number of lags in the Local Projection
 which_trend         = 'quadratic' ;  %BPfilter, HPfilter, linear, quadratic for Local Projection
+=======
+lags_LP             = 2;             % Number of lags in the Local Projection
+which_trend         = 'quad' ;  %'BP', 'HP', 'lin', 'quad', 'diff', 'none', 'demean' for Local Projection
+>>>>>>> 235fc58d8ccf12a11016cd6502ce405f122b56d7
 which_Z             = {'1','2','3','4','5'}; % Which Forecast Revision: RGDP, NGDP, RCONS, INDPROD, RINV. If it is more than one it takes the first PC
 which_shock         = {'Sentiment'}; % Tech, News, Sentiment
 loc_start_exogenous = 0;       % Exogenous start
 diff_LP             = 0;             % LP in levels or differences
-nPC_first           = 3;             % Number of Principal Components in the first stage
-nPC_LP              = 3;             % Number of Principal Components in the second stage
+nPC_first           = 4;             % Number of Principal Components in the first stage
+nPC_LP              = 4;             % Number of Principal Components in the second stage
 norm_SHOCK          = 1;             % Divide shock over its own variance
-printIRFs           = 1;             % Print IRFs
+printIRFs           = 0;             % Print IRFs
 printVD             = 0;             % Print Variance Decompositions
-nsimul              = 2000;           % number of simulations for bootstrap
+nsimul              = 500;           % number of simulations for bootstrap
 control_pop         = 0;             % Divide GDP, Cons, Hours, Investment over population
+<<<<<<< HEAD
 varlist             = {'LeverageALL','RealGDP'};%','RealGDP','RealInvestment','RealCons','HoursAll','RealInventories'}; % Define endogenous variables for LP
+=======
+varlist             = {'RealGDP','RealCons','RealInvestment', 'HoursAll'};%','RealGDP','RealInvestment','RealCons','HoursAll','RealInventories'}; % Define endogenous variables for LP
+>>>>>>> 235fc58d8ccf12a11016cd6502ce405f122b56d7
 % 'SpreadBond'  'Leverage'        'ChicagoFedIndex'  'RealExchRate' 'FFR'
 % 'SpreadBonds' 'MoodySpreadBaa'  'TermYield'        'FFR'      'Y10Treasury'     'M3Treasury'
 % 'RealGDP'     'RealInvestment'  'SpreadBond'       'Leverage' 'ChicagoFedIndex' 'Vix'
@@ -108,13 +117,15 @@ CPIServices     = create_inflation(CPIServices,ninfl);
 % Per capita adjustment
 if control_pop == 1
       RealGDP                 = RealGDP - Population;
-      RealCons                = RealCons - Population;
+      RealCons                = RServiceCons + RNonDurableCons - Population;
       RealInvestment          = RealInvestment - Population;
       HoursPerPerson          = HoursAll - Population;
       RealInventories         = RealInventories - Population;
       RealSales               = RealSales - Population;
 else
       HoursPerPerson          = HoursAll - Population;
+      RealCons                = RServiceCons + RNonDurableCons;
+      RealInvestment          = RealInvestment;% + RDurableCons;
 end
 
 % Other Transformations

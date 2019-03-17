@@ -1,0 +1,187 @@
+\documentclass[hyperref={pdfpagelabels=false}]{beamer}
+\setbeamercolor{background canvas}{bg=white}
+\usepackage{graphicx,lmodern,subfigure,ulem,color,graphicx,tikz,booktabs,natbib}
+\usepackage{mathrsfs}
+\usetheme{Warsaw}
+%\definecolor{beamer@blendedblue}{rgb}{0.1,0.5,0.1}
+%\definecolor{ForestGreen}{RGB}{60, 140, 60}
+%\setbeamercolor{structure}{fg=beamer@blendedblue}
+\setbeamertemplate{navigation symbols}{}
+\setbeamertemplate{footline}[frame number]
+\bibliographystyle{chicago}
+\newcommand{\spitem}{\vspace{.3cm}\item}
+\newcommand{\elas}{$E_{labor}$}
+\def \ourFigPath {../../} 
+
+\usetheme[
+outer/progressbar=foot,
+outer/numbering=none
+]{metropolis}
+
+
+
+\title{Title}
+\author{Marco Brianti\\Vito Cormun}
+\institute{Boston College}
+\date{March 2019}
+
+
+\begin{document}
+	
+	\frame{
+		
+		
+		\maketitle
+}
+
+
+
+
+\frame{\frametitle{Equations}
+\tiny{
+\begin{eqnarray*}
+\begin{aligned}
+1 &= \beta E \Bigg[ \Bigg( \frac{\{Z_{t}K_{t}^{\alpha} - \eta_1 K_{t-1} - \eta_2 R_t + [ 1 - \gamma_2 Z_{t-1} K_{t-1}^{\alpha}] R_{t-1} (\eta_1K_{t-2} + \eta_2 R_{t-1}) \}}{\{Z_{t+1}K_{t+1}^{\alpha} - \eta_1 K_{t} - \eta_2 R_{t+1} + [ 1 - \gamma_2 Z_t K_t^{\alpha}] R_t (\eta_1 K_{t-1} + \eta_2 R_t) \}}   \Bigg)^{\sigma} \Bigg] [1 + \gamma_2Z_tK_t^{\alpha}]R_t
+\end{aligned}
+\end{eqnarray*}
+}
+
+\begin{eqnarray*}
+	K_t = (1 - \delta)K_{t-1} + [ 1 - \gamma_2 (Z_t K_t^{\alpha}) ] (\eta_1 K_{t-1} + \eta_2 R_t )
+	\end{eqnarray*}
+
+\begin{eqnarray*}
+	Z_t = (1 - \varepsilon_t)Z_{t-1} + \varepsilon_t \lambda R_t
+\end{eqnarray*}
+
+\begin{eqnarray*}
+\varepsilon_t = \frac{(1 - \rho_t)I_t}{K_t}
+\end{eqnarray*}
+	
+	
+}
+
+\frame{\frametitle{Equations}
+	
+\tiny{
+	\begin{eqnarray*}
+		\begin{aligned}
+			1 &= \beta [1 + \gamma_2 Z_{ss} K_{ss}^{\alpha}]R_{ss}
+		\end{aligned}
+	\end{eqnarray*}
+}
+
+\begin{eqnarray*}
+	K_{ss} = (1 - \delta)K_{ss} + [ 1 - \gamma_2 (Z_{ss} K_{ss}^{\alpha}) ] (\eta_1 K_{ss} + \eta_2 R_{ss} )
+\end{eqnarray*}
+
+\begin{eqnarray*}
+	Z_{ss} = \lambda R_{ss}
+\end{eqnarray*}
+
+\begin{eqnarray*}
+	\varepsilon_{ss} = \frac{(1 - \rho_{ss})I_{ss}}{K_{ss}}
+\end{eqnarray*}
+	
+		
+}
+
+
+\frame{\frametitle{Equations}
+	
+	\tiny{
+		\begin{eqnarray*}
+			\begin{aligned}
+				1 &= \beta [1 + \gamma_2 \lambda R_{ss} K_{ss}^{\alpha}]R_{ss} \ \ \Rightarrow \ \ K_{ss} = \bigg(  \frac{1 - \beta R_{ss}}{\gamma_2 \lambda R_{ss}^2}  \bigg)^\frac{1}{\alpha}
+			\end{aligned}
+		\end{eqnarray*}
+	}
+	
+	\begin{eqnarray*}
+		\begin{aligned}
+		K_{ss} &= (1 - \delta)K_{ss} + [ 1 - \gamma_2 (\lambda R_{ss} K_{ss}^{\alpha}) ] (\eta_1 K_{ss} + \eta_2 R_{ss} ) \\
+		 &\Rightarrow \\
+		  	\bigg(  \frac{1 - \beta R_{ss}}{\gamma_2 \lambda R_{ss}^2}  \bigg)^\frac{1}{\alpha} &= (1 - \delta)\bigg(  \frac{1 - \beta R_{ss}}{\gamma_2 \lambda R_{ss}^2}  \bigg)^\frac{1}{\alpha} + \bigg[ 1 - \gamma_2 \bigg( \lambda R_{ss}  \frac{1 - \beta R_{ss}}{\gamma_2 \lambda R_{ss}^2}  \bigg) \bigg] \bigg[ \eta_1 \bigg(  \frac{1 - \beta R_{ss}}{\gamma_2 \lambda R_{ss}^2}  \bigg)^\frac{1}{\alpha} + \eta_2 R_{ss} \bigg]
+		  			\end{aligned}
+	\end{eqnarray*}
+	
+	\begin{eqnarray*}
+		Z_{ss} = \lambda R_{ss}
+	\end{eqnarray*}
+	
+	\begin{eqnarray*}
+		\varepsilon_{ss} = \frac{(1 - \rho_{ss})I_{ss}}{K_{ss}}
+	\end{eqnarray*}
+	
+	
+}
+
+
+
+\frame{\frametitle{Empirical Strategy}
+
+
+	
+}
+
+
+\frame{\frametitle{Empirical Results}
+	
+	
+	
+}
+
+
+
+
+
+
+
+
+\frame{\frametitle{Robustness Checks}
+	
+	
+	
+}
+
+
+
+\frame{\frametitle{Test}
+	
+	
+	
+}
+
+\frame{\frametitle{Takeaway}
+	
+	
+	
+}
+
+
+\frame{\frametitle{Model}
+	
+	
+	
+}
+
+\frame{\frametitle{Conclusions}
+	
+
+	
+	
+}
+
+
+
+\end{document}
+
+
+
+
+
+
+
+
+
+\end{document}
