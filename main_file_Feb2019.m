@@ -22,10 +22,10 @@ tic
 lags                = 4;             % Number of lags in the first step (deriving Ztilde)
 leads               = 0;             % Number of leads in the first step (deriving Ztilde)
 H                   = 20;            % IRFs horizon
-lags_LP             = 2;             % Number of lags in the Local Projection
+lags_LP             = 1;             % Number of lags in the Local Projection
 which_trend         = 'quadratic' ;  %BPfilter, HPfilter, linear, quadratic for Local Projection
 which_Z             = {'1','2','3','4','5'}; % Which Forecast Revision: RGDP, NGDP, RCONS, INDPROD, RINV. If it is more than one it takes the first PC
-which_shock         = {'Tech', 'Sentiment'}; % Tech, News, Sentiment
+which_shock         = {'Sentiment'}; % Tech, News, Sentiment
 loc_start_exogenous = 0;       % Exogenous start
 diff_LP             = 0;             % LP in levels or differences
 nPC_first           = 3;             % Number of Principal Components in the first stage
@@ -35,15 +35,15 @@ printIRFs           = 1;             % Print IRFs
 printVD             = 0;             % Print Variance Decompositions
 nsimul              = 2000;           % number of simulations for bootstrap
 control_pop         = 0;             % Divide GDP, Cons, Hours, Investment over population
-varlist             = {'SpreadBond','RealGDP','HYS','HYS4SMOOTH', 'SP500'};%','RealGDP','RealInvestment','RealCons','HoursAll','RealInventories'}; % Define endogenous variables for LP
+varlist             = {'LeverageALL','RealGDP'};%','RealGDP','RealInvestment','RealCons','HoursAll','RealInventories'}; % Define endogenous variables for LP
 % 'SpreadBond'  'Leverage'        'ChicagoFedIndex'  'RealExchRate' 'FFR'
 % 'SpreadBonds' 'MoodySpreadBaa'  'TermYield'        'FFR'      'Y10Treasury'     'M3Treasury'
 % 'RealGDP'     'RealInvestment'  'SpreadBond'       'Leverage' 'ChicagoFedIndex' 'Vix'
-
+% 'DepositRate (Change)
 % Read main dataset
 filename                    = 'main_file';
 sheet                       = 'Sheet1';
-range                       = 'B1:DW300';
+range                       = 'B1:DX300';
 do_truncation               = 0; %Do not truncate data. You will have many NaN
 [dataset, var_names]        = read_data2(filename, sheet, range, do_truncation);
 dataset                     = [dataset; NaN(leads,size(dataset,2))]; % Adding some NaN at the end for technical reasons
