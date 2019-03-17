@@ -23,6 +23,9 @@ IRF_up     = IRF_up*100;
 IRF_up2    = IRF_up2*100;
 IRF        = IRF*100;
 
+% Periods for shadowed areas
+periods = 0:H-1;
+
 %Impulse Response Functions using Local Projection - Figure
 hfig        = findobj('type','figure');
 nfig        = length(hfig);
@@ -42,12 +45,26 @@ for j = 1:length(varlist)
       set(gcf,'Position',[1 41 1920 963])
       set(gcf,'color','w');
       hold on
-      plot([0:H-1]',IRF_low(j,:), '--k','linewidth', 1);
-      plot([0:H-1]',IRF_up(j,:), '--k','linewidth', 1);
-      plot([0:H-1]',IRF_low2(j,:), '--k','linewidth', 2);
-      plot([0:H-1]',IRF_up2(j,:), '--k','linewidth', 2);
-      plot([0:H-1]',IRF(j,:), '-k', 'linewidth', 3);
-      plot([0:H-1]',0*[1:H]',':k');
+      
+        x2 = [periods, fliplr(periods)];
+        % The smaller CI
+        inBetween = [IRF_low(j,:),fliplr(IRF_up(j,:))];
+        hh2 = fill(x2, inBetween, [0.55 0.55 0.55],'LineStyle','none');
+        set(hh2,'facealpha',.5)
+        % The bigger CI
+        inBetween = [IRF_low2(j,:),fliplr(IRF_up2(j,:))];
+        hh1 = fill(x2, inBetween, [0.15 0.15 0.15],'LineStyle','none');
+        set(hh1,'facealpha',.5)        
+
+        
+%       plot([0:H-1]',IRF_low(j,:), '--k','linewidth', 1);
+%       plot([0:H-1]',IRF_up(j,:), '--k','linewidth', 1);
+%       plot([0:H-1]',IRF_low2(j,:), '--k','linewidth', 2);
+%       plot([0:H-1]',IRF_up2(j,:), '--k','linewidth', 2);
+        plot([0:H-1]',IRF(j,:), '--k', 'linewidth', 2,'color','r');
+        plot([0:H-1]',0*[1:H]','-k','color','b');
+
+
       set(gca,'TickLabelInterpreter','latex')
       title(varlist{j},'interpreter', 'latex', 'fontsize', 26);
       if unique == 1 && j == 1

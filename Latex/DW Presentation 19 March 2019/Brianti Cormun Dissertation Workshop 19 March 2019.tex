@@ -228,18 +228,48 @@ outer/numbering=none
 	
 }
 
-\frame{\frametitle{Data on Expectations}
+\frame{\frametitle{Data Treatment on Expectations}
 	
-	We use quarterly Survey of Professional Forecasters (SPF) from 1982 to 2018 on,
-	\begin{eqnarray*}
-	E ( X_{t+k} |I_t) = \begin{bmatrix}
-	E ( \text{RGDP}_{t+k} |I_t) \\
-	E ( \text{NGDP}_{t+k} |I_t) \\
-	E ( \text{RI}_{t+k} |I_t) \\
-	E ( \text{RC}_{t+k} |I_t) \\
-	E ( \text{IP}_{t+k} |I_t) \\
-    \end{bmatrix}
-	\end{eqnarray*}
+	\bigskip 
+	
+	We use quarterly \textbf{Survey of Professional Forecasters} (\textbf{SPF}) from 1982 to 2018 on endogenous macroeconomic variables $X^s_t$
+	
+	\bigskip
+	
+	Define, 
+	\begin{itemize}
+		\item $E^i_t ( X^s_{t+k} )$ as the expectation on $X^s_{t+k}$ given the information set at time $t$ released by professional forecaster i
+		
+		\bigskip
+		
+		\item $E_t ( X^s_{t+k} )$ as the mean (median) across $i$ of $E^i_t ( X^s_{t+k} )$
+		
+		\bigskip
+		
+		\item $E_t(\hat{x}_{t+k}^s) =  E_t ( X_{t+k}^s ) / E_t ( X_{t}^s )  - 1$ as the expectation of the growth rate of $X^s$ from $t$ to $t+k$ given information set $t$
+		
+		\bigskip
+		
+		\item $R_{t,k}^s =  E_t(\hat{x}_{t+k}^s) -  E_{t-1}(\hat{x}_{t+k}^s)$ as the revision on expectations from $t-1$ to $t$ of the growth rate of $X^s$ from $t$ to $t+k$
+		%\begin{itemize}
+			%\item due to data availability, $k = 1,2,3$.
+		%\end{itemize}
+	
+	\bigskip
+	
+	\item $R_t^k$ is the first principal component $R_{t,k}^s$
+	\end{itemize}
+	
+	
+	%\begin{eqnarray*}
+	%E ( X_{t+k} |I_t) = \begin{bmatrix}
+	%E ( \text{RGDP}_{t+k} |I_t) \\
+	%E ( \text{NGDP}_{t+k} |I_t) \\
+	%E ( \text{RI}_{t+k} |I_t) \\
+	%E ( \text{RC}_{t+k} |I_t) \\
+	%E ( \text{IP}_{t+k} |I_t) \\
+   % \end{bmatrix}
+%	\end{eqnarray*}
 
 
 %to estimate forecast revisions on the growth rate of macroeconomic aggregates
@@ -249,34 +279,82 @@ outer/numbering=none
 }
 
 
-\frame{\frametitle{Empirical Results}
+\frame{\frametitle{Instrument $Z_t$}
 	
+	\bigskip
 	
+	$R_t$ is correlated with past and current fundamentals
 	
-}
-
-
-
-
-
-
-
-
-\frame{\frametitle{Robustness Checks}
+	\bigskip
 	
+	We estimate instrument $Z_t$ as the unpredictable component of $R_t$ orthogonal to fundamentals,
+	\begin{eqnarray*}
+	R_t^k = c + \sum_{j=0}^J \beta_j \Delta TFP_{t-j} + \sum_{q=1}^Q \gamma^q S_t^q + \sum_{l=1}^L \sum_{g=1}^G \mu^l_g PC_{t-g}^l + Z_t^k
+	\end{eqnarray*}
 	
-	
-}
-
-
-
-\frame{\frametitle{Test}
-	
+	where,
+	\begin{itemize}
+		\item $\Delta TFP$ is the first difference of utilization-adjusted TFP 
+		\item $S^q$ is a structural shock provided by the literature
+		\item $PC^l$ is the $l$th principal component from a dataset with more than a hundred U.S. aggregates
+		\item $J = 8,\dots,20$, $Q = 4$, $L = 2,\dots,4$, and $G = 2,\dots,6$
+	\end{itemize}
 	
 	
 }
 
-\frame{\frametitle{Takeaway}
+
+\frame{\frametitle{IV-LP Estimator}
+	
+	\bigskip
+	
+	Dynamic response of endogenous variable $Y_{t+h}$ to $R_t$ is
+	\begin{eqnarray}\label{endo_reg}
+	Y_{t+h} = \Theta_{h}^Y R_t^k + u^Y_{h,t+h}
+	\end{eqnarray}
+
+	
+	\bigskip
+	
+	Because $R_t$ is endogenous OLS estimation of \ref{endo_reg} is not valid. Eq. \ref{endo_reg} can be estimated by IV if $Z_t$ satisfies the following conditions
+	\begin{enumerate}
+		\item $E(\varepsilon_{1,t}Z_t^k) = \alpha \neq 0$ (relevance)
+		\item $E(\varepsilon_{2:N,t}Z_t^k) = 0$ (contemporaneous exogeneity)
+		\item $E(\varepsilon_{1:N,t+j}Z_t^k) = 0$ for $j \neq 0$ (lead-lag exogeneity)
+	\end{enumerate}
+
+%Condition LP-IV (iii) arises because of the dynamics. The key idea of this condition is that Y,t+h generally depends on the entire history of the shocks, so if Zt is to identify the effect of shock ɛ1,t alone, it must be uncorrelated with all shocks at all leads and lags. The requirement that Zt be uncorrelated with future e’s is generally not restrictive: when Zt contains only variables realised at date t or earlier, it follows from the definition of shocks as unanticipated structural disturbances. In contrast, the requirement that Zt be uncorrelated with past e’s is restrictive and strong. We will refer to Condition LP-IV (iii) as requiring that Zt be unpredictable given past e’s, although strictly the requirement is that it not be linearly predictable given past e’s. Note that Zt could be serially correlated yet satisfy this condition. For example, suppose Zt = dɛ1,t + ft, where ft is a serially correlated error that is independent of {et}; then Zt satisfies Condition LP-IV.
+
+Given the validity of previous conditions, an unbiased estimator for $\Theta_h^Y$ is defined as
+\begin{eqnarray}
+\Theta_h^Y = \frac{E(Y_{t+h}Z_t^k)}{E(R_t^k Z_t^k)}
+\end{eqnarray}
+
+}
+
+
+
+\frame{\frametitle{Miscellaneous Technical Details}\label{slide:technical_main_body}
+	
+	\begin{itemize}
+		\item Forecast horizon $k$ from SPF data is either $2$ or $3$ 
+		\item Forecasted variables $X^s$ are real GDP, nominal GDP, real consumption, real investment, and industrial production
+		\item We estimate $Y_{t+h} = \Theta_h^Y R^k_t  + \gamma W_t + u^Y_{h,t+h}$ 
+		\begin{itemize}
+			\item[-] where $R_t$ is instrumented with $Z_t$
+			\item[-] $W_{t-1}$ is a series of controls at $t-1$
+		\end{itemize}
+		\item If $Y_{t}$ is non-stationary, 
+		\begin{itemize}
+		\item[-] Detrend $Y_t$ with low-frequency filters
+		\item[-] Take the first difference of $Y_t$ and $\Gamma_h^Y = \sum_{i=0}^h \Theta_h^Y$ is the response of $Y_{t+h}$
+		\end{itemize} 
+	    \item Bootstrap method is from Kilian and Kim (2011) \hyperlink{slide:boot_technique}{\beamerbutton{Bootstrap Technique}}
+	\end{itemize}
+	
+}
+
+\frame{\frametitle{Results}
 	
 	
 	
@@ -295,6 +373,38 @@ outer/numbering=none
 	
 	
 }
+
+\frame{\frametitle{Bootstrapping Technique}\label{slide:boot_technique}
+	
+	\begin{enumerate}
+		\item Consider tuple $\Lambda_{h,t}^Y = \{ Y_{t+h} \ \ R_t \ \  W_t \ \ u^Y_{h-1,t+h} \}$
+		
+		\bigskip
+		
+		\item Create $\Lambda_{h,t,1}^Y$ of the same length of $T$ of $\Lambda_{h,t}^Y$ where $\Lambda_{h,t,1}^Y$ is formed by randomly extracted blocks of length $l$ from $\Lambda_{h,t}^Y$
+		
+		\bigskip
+		
+		\item Estimate $\Theta_{h,1}^Y$ from $\Lambda_{h,t,1}^Y$ using IV-LP estimator
+		
+		\bigskip
+				
+		\item Redo first 3 steps $B = 2000$ times and get $\Theta_{h,b}^Y$ where $b = 1,\dots,B$
+		
+		\bigskip
+						
+		\item Select confidence bands of $\Theta_{h,b}^Y$ across $b$ for all $h$
+	\end{enumerate}
+
+\
+
+\hyperlink{slide:technical_main_body}{\beamerbutton{Return}}
+	
+	
+	
+	
+}
+
 
 
 
