@@ -18,9 +18,9 @@ dseries('initialize');
 global M_ options_ oo_ estim_params_ bayestopt_ dataset_ dataset_info estimation_info ys0_ ex0_
 options_ = [];
 M_.fname = 'BGP_Jan2019';
-M_.dynare_version = '4.5.6';
-oo_.dynare_version = '4.5.6';
-options_.dynare_version = '4.5.6';
+M_.dynare_version = '4.5.4';
+oo_.dynare_version = '4.5.4';
+options_.dynare_version = '4.5.4';
 %
 % Some global variables initialization
 %
@@ -170,11 +170,11 @@ M_.params( 11 ) = 0.99;
 BET = M_.params( 11 );
 M_.params( 10 ) = 1/(M_.params(11)*0.9417^M_.params(4))*.9976;
 THET = M_.params( 10 );
-M_.params( 12 ) = 0.9985;
+M_.params( 12 ) = 0.85;
 RHO_THET = M_.params( 12 );
 M_.params( 13 ) = 1;
 SIGMA_THET = M_.params( 13 );
-M_.params( 14 ) = 0.74;
+M_.params( 14 ) = 0.54;
 RHO_ZETA = M_.params( 14 );
 M_.params( 15 ) = .01;
 SIGMA_ZETA = M_.params( 15 );

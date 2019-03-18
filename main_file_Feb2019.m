@@ -6,6 +6,8 @@
 %    last change 02/14/2019
 %
 %   todo: Allow for setting up the time period
+%   It does not produce significant estimates if one introduces zero lags
+%   in the LP
 %   considered, the NFCI, for example, is extremely volatile before 1980
 %   Code by Brianti, Marco e Cormun, Vito
 %*************************************************************************%
@@ -21,24 +23,32 @@ tic
 % Technical Parameters
 lags                = 2;             % Number of lags in the first step (deriving Ztilde)
 leads               = 0;             % Number of leads in the first step (deriving Ztilde)
-H                   = 20;            % IRFs horizon
-lags_LP             = 2;             % Number of lags in the Local Projection
-which_trend         = 'quad' ;  %'BP', 'HP', 'lin', 'quad', 'diff', 'none', 'demean' for Local Projection
+H                   = 25;            % IRFs horizon
+lags_LP             = 1;             % Number of lags in the Local Projection
+which_trend         = 'quad' ;       %'BP', 'HP', 'lin', 'quad', 'diff', 'none', 'demean' for Local Projection
 which_Z             = {'1','2','3','4','5'}; % Which Forecast Revision: RGDP, NGDP, RCONS, INDPROD, RINV. If it is more than one it takes the first PC
-which_shock         = {'Sentiment'}; % Tech, News, Sentiment
-loc_start_exogenous = 0;       % Exogenous start
+which_shock         = {'Tech'}; % Tech, News, Sentiment
+loc_start_exogenous = 0;             % Exogenous start
 diff_LP             = 0;             % LP in levels or differences
-nPC_first           = 4;             % Number of Principal Components in the first stage
-nPC_LP              = 4;             % Number of Principal Components in the second stage
+nPC_first           = 3;             % Number of Principal Components in the first stage
+nPC_LP              = 1;             % Number of Principal Components in the second stage
 norm_SHOCK          = 1;             % Divide shock over its own variance
-printIRFs           = 0;             % Print IRFs
-printVD             = 0;             % Print Variance Decompositions
-nsimul              = 500;           % number of simulations for bootstrap
+printIRFs           = 1;             % Print IRFs
+printVD             = 0;              % Print Variance Decompositions
+nsimul              = 2000;           % number of simulations for bootstrap
 control_pop         = 0;             % Divide GDP, Cons, Hours, Investment over population
-varlist             = {'RealGDP','RealCons','RealInvestment', 'HoursAll'};%','RealGDP','RealInvestment','RealCons','HoursAll','RealInventories'}; % Define endogenous variables for LP
-% 'SpreadBond'  'Leverage'        'ChicagoFedIndex'  'RealExchRate' 'FFR'
+  varlist             = {'RealGDP','RealInvestment','HoursAll', ...
+        'RealInventories','RealCons','GDPDefl'};%','RealGDP','RealInvestment','RealCons','HoursAll','RealInventories'}; % Define endogenous variables for LP
+%varlist             = {'MichIndexConfidence','SP500','Vix', ...
+   %   'FFR','SpreadBond','TermYield'};
+% 'SpreadBond'  'Leverage'        'ChicagoFedIndex'  'SpreadBond''RealExchRate' 'FFR'
 % 'SpreadBonds' 'MoodySpreadBaa'  'TermYield'        'FFR'      'Y10Treasury'     'M3Treasury'
 % 'RealGDP'     'RealInvestment'  'SpreadBond'       'Leverage' 'ChicagoFedIndex' 'Vix'
+
+ varlist_graph              = {'Real GDP','Real Investment','Total Hours', ...
+       'Real Inventories','Real Consumption','GDP Deflator'};
+%varlist_graph             = {'Michigan Confidence','S\&P 500','VIX', ...
+     % 'Federal Funds Rate','(Baa - Aaa) Spread','(10yr - 3m) Treasury'};
 
 % Read main dataset
 filename                    = 'main_file';
@@ -89,7 +99,12 @@ end
 [Ztilde_cut, tt, tt2]   = truncate_data(Ztildeiw);
 ZtildePCs               = get_principal_components(Ztilde_cut);
 ZtildePCs               = [NaN(tt-1,size(Ztildeiw,2)); ZtildePCs; NaN(size(Ztildeiw,1)-tt2,size(Ztildeiw,2))];
-Ztilde                  = ZtildePCs(:,1);
+Ztilde                  = - ZtildePCs(:,1);
+
+
+mdl  = fitlm(Ztilde,Z1(1+lags:end-leads))
+
+asd
 
 %*************************************************************************%
 %                                                                         %
@@ -162,8 +177,8 @@ for is = 1:length(which_shock)
             disp('Barsky and Sims News Shock')
             fprintf('\n')
       end
-      IRFname = ['IRFs_',char(which_shock(is)),'Shock_lags',num2str(lags),'_','_leads',num2str(leads),'_lagsLP',num2str(lags_LP),'_trend',which_trend,'_diff',num2str(diff_LP),'_nPC',num2str(nPC_LP),'.pdf'];
-      VDname  = ['VD_',char(which_shock(is)),'Shock_lags',num2str(lags),'_','_leads',num2str(leads),'_lagsLP',num2str(lags_LP),'_trend',which_trend,'_diff',num2str(diff_LP),'_nPC',num2str(nPC_LP)','.pdf'];
+      IRFname = ['OO_IRFs_',char(which_shock(is)),'Shock_lags',num2str(lags),'_','_leads',num2str(leads),'_lagsLP',num2str(lags_LP),'_trend',which_trend,'_diff',num2str(diff_LP),'_nPC',num2str(nPC_LP),'.png'];
+      VDname  = ['VD_',char(which_shock(is)),'Shock_lags',num2str(lags),'_','_leads',num2str(leads),'_lagsLP',num2str(lags_LP),'_trend',which_trend,'_diff',num2str(diff_LP),'_nPC',num2str(nPC_LP)','.png'];
       
       % Normilize Variance of SHOCK
       if norm_SHOCK == 1
@@ -180,13 +195,13 @@ for is = 1:length(which_shock)
             depvarkk                    = dep_var(:,kk);
             [~, loc_start(kk,is), loc_end]     = truncate_data([depvarkk SHOCK PC_LP]);
             % Starting the Sample after loc_start_exogenous
-            lockk = find(loc_start_exogenous == Time);
-            if loc_start(kk,is) < lockk
-                  loc_start(kk,is) = lockk;
-            end
-            depvarkk                    = depvarkk(loc_start:loc_end);
-            SHOCKkk                     = SHOCK(loc_start:loc_end);
-            pckk                        = PC_LP(loc_start:loc_end,:);
+            %lockk = find(loc_start_exogenous == Time);
+%             if loc_start(kk,is) < lockk
+%                   loc_start(kk,is) = lockk;
+%             end
+            depvarkk                    = depvarkk(loc_start(kk,is):loc_end);
+            SHOCKkk                     = SHOCK(loc_start(kk,is):loc_end);
+            pckk                        = PC_LP(loc_start(kk,is):loc_end,:);
 
             % Run local_projection
             [IR{kk},res{kk},tuple{kk},VD{kk},DF{kk},nREG{kk}] = ...
@@ -233,7 +248,7 @@ for is = 1:length(which_shock)
       end
       
       % Plot IRFs
-      plot_IRF(varlist,IRF_low,IRF_low2,IRF_up,IRF_up2,IRF(:,:,is),H,printIRFs,IRFname); %change this function
+      plot_IRF(varlist_graph,IRF_low,IRF_low2,IRF_up,IRF_up2,IRF(:,:,is),H,printIRFs,IRFname); %change this function
       % Plot VD
       plot_IRF(varlist,VDkk,VDkk,VDkk,VDkk,VDkk,H,printVD,VDname)
       close

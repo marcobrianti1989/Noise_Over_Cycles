@@ -18,21 +18,21 @@ varexo eps_thet eps_zeta;
 parameters
 OMEG GAM PSI PHIE PHI PHIBIG S ALP DEL THET BET RHO_THET SIGMA_THET RHO_ZETA SIGMA_ZETA; 
 
-OMEG       = 0.2408; % CRRA Parameter
-GAM        = 0.5;     %0.5876; % Habit
-PSI        = 0.2994; % 1 - depreciation of durables in the first period 
-PHIE       = 0.0467; % Taylor Rule Parameter
-PHI        = 0.95; %0.8827; % Probability of recovering impaired loans
-PHIBIG     = 0.0458; % Recovery Cost
-S          = 1;      % Other Tech Parameter
-ALP        = 2/3;    % Convexity of Production Function
-DEL        = 0.05;   % Durable Goods Depreciation Rate 
-BET        = 0.99;   % It could be WRONG! Discount Factor
+OMEG       = 0.2408;  % CRRA Parameter
+GAM        = 0.5;     % 0.5876; % Habit
+PSI        = 0.2994;  % 1 - depreciation of durables in the first period 
+PHIE       = 0.0467;  % Taylor Rule Parameter
+PHI        = 0.95;    % 0.8827; % Probability of recovering impaired loans
+PHIBIG     = 0.0458;  % Recovery Cost
+S          = 1;       % Other Tech Parameter
+ALP        = 2/3;     % Convexity of Production Function
+DEL        = 0.05;    % Durable Goods Depreciation Rate 
+BET        = 0.99;    % It could be WRONG! Discount Factor
 THET       = 1/(BET*(1 - 0.0583)^PHIE)*.9976; % It should be set to have a ss unemployment rate of 0.0583
 RHO_THET   = 0.85;    % Persistence of tech shock
-SIGMA_THET = 1;      % SD of tech shock
-RHO_ZETA   = 0.74;    % Persistence of Preference Shocks
-SIGMA_ZETA = .01;      % SD of preference shock  
+SIGMA_THET = 1;       % SD of tech shock
+RHO_ZETA   = 0.54;    % Persistence of Preference Shocks
+SIGMA_ZETA = .01;     % SD of preference shock  
 
 % Defining functionals forms and derivatives
 

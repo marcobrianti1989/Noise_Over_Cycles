@@ -63,18 +63,22 @@ for j = 1:length(varlist)
 %       plot([0:H-1]',IRF_up2(j,:), '--k','linewidth', 2);
         plot([0:H-1]',IRF(j,:), '--k', 'linewidth', 2,'color','r');
         plot([0:H-1]',0*[1:H]','-k','color','b');
-
+set(gca,'FontSize',15);
 
       set(gca,'TickLabelInterpreter','latex')
       title(varlist{j},'interpreter', 'latex', 'fontsize', 26);
       if unique == 1 && j == 1
             xlabel('Quarter','interpreter','latex','fontsize',20);
             ylabel('\% deviation from s.s.','interpreter','latex','fontsize',18);
+%        elseif unique == 1 && j == 4
+%              ylabel('Basis Points','interpreter','latex','fontsize',18);
       elseif unique == 0
             xlabel('Quarter','interpreter','latex','fontsize',20);
             ylabel('\% deviation from s.s.','interpreter','latex','fontsize',18);
       end
       axis tight
+      
+      
       
       % Print Fig
       if exp_fig == 1
