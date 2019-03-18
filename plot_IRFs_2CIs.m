@@ -49,7 +49,7 @@ for i_shock=1:nshocks
       if strcmp(print_figs, 'yes')
             invoke_export_fig([shockname], which_ID_strat,...
                   use_current_time, base_path)
-            close all
+            %close all
             pause(0.5)
       end
 end

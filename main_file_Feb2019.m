@@ -27,13 +27,13 @@ H                   = 25;            % IRFs horizon
 lags_LP             = 1;             % Number of lags in the Local Projection
 which_trend         = 'quad' ;       %'BP', 'HP', 'lin', 'quad', 'diff', 'none', 'demean' for Local Projection
 which_Z             = {'1','2','3','4','5'}; % Which Forecast Revision: RGDP, NGDP, RCONS, INDPROD, RINV. If it is more than one it takes the first PC
-which_shock         = {'Tech'}; % Tech, News, Sentiment
+which_shock         = {'Sentiment'}; % Tech, News, Sentiment
 loc_start_exogenous = 0;             % Exogenous start
 diff_LP             = 0;             % LP in levels or differences
 nPC_first           = 3;             % Number of Principal Components in the first stage
 nPC_LP              = 1;             % Number of Principal Components in the second stage
 norm_SHOCK          = 1;             % Divide shock over its own variance
-printIRFs           = 1;             % Print IRFs
+printIRFs           = 0;             % Print IRFs
 printVD             = 0;              % Print Variance Decompositions
 nsimul              = 2000;           % number of simulations for bootstrap
 control_pop         = 0;             % Divide GDP, Cons, Hours, Investment over population
@@ -53,7 +53,7 @@ control_pop         = 0;             % Divide GDP, Cons, Hours, Investment over 
 % Read main dataset
 filename                    = 'main_file';
 sheet                       = 'Sheet1';
-range                       = 'B1:DW300';
+range                       = 'B1:DX300';
 do_truncation               = 0; %Do not truncate data. You will have many NaN
 [dataset, var_names]        = read_data2(filename, sheet, range, do_truncation);
 dataset                     = [dataset; NaN(leads,size(dataset,2))]; % Adding some NaN at the end for technical reasons
@@ -104,7 +104,7 @@ Ztilde                  = - ZtildePCs(:,1);
 
 mdl  = fitlm(Ztilde,Z1(1+lags:end-leads))
 
-asd
+
 
 %*************************************************************************%
 %                                                                         %
@@ -158,7 +158,7 @@ dep_var          = dep_var(1+lags:end-leads,:);
 PC_LP            = PC(1+lags:end-leads,1:nPC_LP);
 Time             = Time(1+lags:end-leads);
 
-      
+ asd     
 % Which shock to plot
 for is = 1:length(which_shock)
       if strcmp(which_shock{is},'Sentiment') == 1
