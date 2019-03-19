@@ -23,32 +23,31 @@ tic
 % Technical Parameters
 lags                = 2;             % Number of lags in the first step (deriving Ztilde)
 leads               = 0;             % Number of leads in the first step (deriving Ztilde)
-H                   = 25;            % IRFs horizon
+H                   = 20;            % IRFs horizon
 lags_LP             = 1;             % Number of lags in the Local Projection
-which_trend         = 'quad' ;       %'BP', 'HP', 'lin', 'quad', 'diff', 'none', 'demean' for Local Projection
+which_trend         = 'quad' ;       %'BP', 'HP', 'lin', 'quad', 'none', 'demean' for Local Projection
 which_Z             = {'1','2','3','4','5'}; % Which Forecast Revision: RGDP, NGDP, RCONS, INDPROD, RINV. If it is more than one it takes the first PC
-which_shock         = {'Sentiment'}; % Tech, News, Sentiment
+which_shock         = {'Sentiment','Tech'}; % Tech, News, Sentiment
 loc_start_exogenous = 0;             % Exogenous start
 diff_LP             = 0;             % LP in levels or differences
 nPC_first           = 3;             % Number of Principal Components in the first stage
 nPC_LP              = 1;             % Number of Principal Components in the second stage
 norm_SHOCK          = 1;             % Divide shock over its own variance
-printIRFs           = 0;             % Print IRFs
+printIRFs           = 1;             % Print IRFs
 printVD             = 0;              % Print Variance Decompositions
-nsimul              = 2000;           % number of simulations for bootstrap
+nsimul              = 1000;           % number of simulations for bootstrap
 control_pop         = 0;             % Divide GDP, Cons, Hours, Investment over population
-  varlist             = {'RealGDP','RealInvestment','HoursAll', ...
-        'RealInventories','RealCons','GDPDefl'};%','RealGDP','RealInvestment','RealCons','HoursAll','RealInventories'}; % Define endogenous variables for LP
-%varlist             = {'MichIndexConfidence','SP500','Vix', ...
-   %   'FFR','SpreadBond','TermYield'};
+varlist             = {'RealGDP','RealGDP','RealInvestment','RealCons','HoursAll','RealInventories'}; % Define endogenous variables for LP
+% varlist             = {'MichIndexConfidence','SP500','Vix', ...
+%      'FFR','SpreadBond','TermYield'};
 % 'SpreadBond'  'Leverage'        'ChicagoFedIndex'  'SpreadBond''RealExchRate' 'FFR'
 % 'SpreadBonds' 'MoodySpreadBaa'  'TermYield'        'FFR'      'Y10Treasury'     'M3Treasury'
 % 'RealGDP'     'RealInvestment'  'SpreadBond'       'Leverage' 'ChicagoFedIndex' 'Vix'
 
- varlist_graph              = {'Real GDP','Real Investment','Total Hours', ...
-       'Real Inventories','Real Consumption','GDP Deflator'};
-%varlist_graph             = {'Michigan Confidence','S\&P 500','VIX', ...
-     % 'Federal Funds Rate','(Baa - Aaa) Spread','(10yr - 3m) Treasury'};
+varlist_graph              = {'Real GDP','Real Investment','Total Hours', ...
+      'Real Inventories','Real Consumption','GDP Deflator'};
+% varlist_graph             = {'Michigan Confidence','S\&P 500','VIX', ...
+%      'Federal Funds Rate','(Baa - Aaa) Spread','(10yr - 3m) Treasury'};
 
 % Read main dataset
 filename                    = 'main_file';
@@ -102,8 +101,7 @@ ZtildePCs               = [NaN(tt-1,size(Ztildeiw,2)); ZtildePCs; NaN(size(Ztild
 Ztilde                  = - ZtildePCs(:,1);
 
 
-mdl  = fitlm(Ztilde,Z1(1+lags:end-leads))
-
+mdl  = fitlm(Ztilde,Z5(1+lags:end-leads))
 
 
 %*************************************************************************%
@@ -158,7 +156,7 @@ dep_var          = dep_var(1+lags:end-leads,:);
 PC_LP            = PC(1+lags:end-leads,1:nPC_LP);
 Time             = Time(1+lags:end-leads);
 
- asd     
+
 % Which shock to plot
 for is = 1:length(which_shock)
       if strcmp(which_shock{is},'Sentiment') == 1
@@ -196,13 +194,13 @@ for is = 1:length(which_shock)
             [~, loc_start(kk,is), loc_end]     = truncate_data([depvarkk SHOCK PC_LP]);
             % Starting the Sample after loc_start_exogenous
             %lockk = find(loc_start_exogenous == Time);
-%             if loc_start(kk,is) < lockk
-%                   loc_start(kk,is) = lockk;
-%             end
+            %             if loc_start(kk,is) < lockk
+            %                   loc_start(kk,is) = lockk;
+            %             end
             depvarkk                    = depvarkk(loc_start(kk,is):loc_end);
             SHOCKkk                     = SHOCK(loc_start(kk,is):loc_end);
             pckk                        = PC_LP(loc_start(kk,is):loc_end,:);
-
+            
             % Run local_projection
             [IR{kk},res{kk},tuple{kk},VD{kk},DF{kk},nREG{kk}] = ...
                   local_projection(depvarkk,pckk,SHOCKkk,lags_LP,H,which_trend);
@@ -257,8 +255,6 @@ end
 % Technical Parameters
 tech_info_table;
 
-return
-
 
 %*************************************************************************%
 %                                                                         %
@@ -294,12 +290,43 @@ for is = 1:length(which_shock)
       end
 end
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Plot figure if showfig = 1
+per_start = 10;
+per_end   = 200;
+%plot spectral density of AR(1) from LP
+hfig        = findobj('type','figure');
+nfig        = length(hfig);
+figure(1+nfig)
+set(gcf,'Position',[-1919 41 1920 963])
+set(gcf,'color','w');
+for ii = 1:2
+      subplot(1,2,ii)
+      plot(period(per_start:per_end)',SD_MED(per_start:per_end,1,ii),'-r','LineWidth',2); hold on; %step dependent
+      plot(period(per_start:per_end)',SD_UP2(per_start:per_end,1,ii),'--k','LineWidth',2); hold on;
+      plot(period(per_start:per_end)',SD_LOW2(per_start:per_end,1,ii),'--k','LineWidth',2); hold on; %the point estimate is not included in the CI, is it because we don't correct for the bias in the LP?
+      plot(period(per_start:per_end)',SD_UP(per_start:per_end,1,ii),'--k','LineWidth',1); hold on;
+      plot(period(per_start:per_end)',SD_LOW(per_start:per_end,1,ii),'--k','LineWidth',1); hold on; %the point estimate is not included in the CI, is it because we don't correct for the bias in the LP?
+      set(gca,'FontSize',22);
+      if ii == 1
+            title('Sentiment Shock','fontsize',40)
+            xlabel('Periodicity','interpreter','latex','fontsize',30);
+            ylabel('Spectral Density','interpreter','latex','fontsize',30);
+      elseif ii == 2
+            title('Technology Shock','fontsize',40)
+      end
+      set(gca,'YTickLabel',[]);
+      axis tight
+end
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 %Compute average spectral density, D1, around the peak  and average
 %spectral density around the trough, D2
-lpeak_low    = 24; %should be adjusted with steps and IRF horizon
-lpeak_up     = 26;
-ltrough_low  = 58;
-ltrough_up   = 60;
+lpeak_low    = 35; %should be adjusted with steps and IRF horizon
+lpeak_up     = 45;
+ltrough_low  = 60;
+ltrough_up   = 70;
 for iv = 1:length(varlist)
       for is = 1:length(which_shock)
             pval(is,iv) = test_canova_peak_sdensity(lpeak_low,lpeak_up,ltrough_low,ltrough_up,...

@@ -7,7 +7,7 @@ close all
 % Parameterization
 alp0 = 0.4;
 alp1 = - 0.1; 
-alp2 = 1;
+alp2 = 1.2;
 del  = 0.05;
 
 % Steady State

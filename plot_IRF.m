@@ -46,57 +46,62 @@ for j = 1:length(varlist)
       set(gcf,'color','w');
       hold on
       
-        x2 = [periods, fliplr(periods)];
-        % The smaller CI
-        inBetween = [IRF_low(j,:),fliplr(IRF_up(j,:))];
-        hh2 = fill(x2, inBetween, [0.55 0.55 0.55],'LineStyle','none');
-        set(hh2,'facealpha',.5)
-        % The bigger CI
-        inBetween = [IRF_low2(j,:),fliplr(IRF_up2(j,:))];
-        hh1 = fill(x2, inBetween, [0.15 0.15 0.15],'LineStyle','none');
-        set(hh1,'facealpha',.5)        
-
-        
-%       plot([0:H-1]',IRF_low(j,:), '--k','linewidth', 1);
-%       plot([0:H-1]',IRF_up(j,:), '--k','linewidth', 1);
-%       plot([0:H-1]',IRF_low2(j,:), '--k','linewidth', 2);
-%       plot([0:H-1]',IRF_up2(j,:), '--k','linewidth', 2);
-        plot([0:H-1]',IRF(j,:), '--k', 'linewidth', 2,'color','r');
-        plot([0:H-1]',0*[1:H]','-k','color','b');
-set(gca,'FontSize',15);
-
+      x2 = [periods, fliplr(periods)];
+      % The smaller CI
+      inBetween = [IRF_low(j,:),fliplr(IRF_up(j,:))];
+      hh2 = fill(x2, inBetween, [0.55 0.55 0.55],'LineStyle','none');
+      set(hh2,'facealpha',.5)
+      % The bigger CI
+      inBetween = [IRF_low2(j,:),fliplr(IRF_up2(j,:))];
+      hh1 = fill(x2, inBetween, [0.15 0.15 0.15],'LineStyle','none');
+      set(hh1,'facealpha',.5)
+      
+      
+      %       plot([0:H-1]',IRF_low(j,:), '--k','linewidth', 1);
+      %       plot([0:H-1]',IRF_up(j,:), '--k','linewidth', 1);
+      %       plot([0:H-1]',IRF_low2(j,:), '--k','linewidth', 2);
+      %       plot([0:H-1]',IRF_up2(j,:), '--k','linewidth', 2);
+      plot([0:H-1]',IRF(j,:), '--k', 'linewidth', 2,'color','r');
+      plot([0:H-1]',0*[1:H]','-k','color','b');
+      set(gca,'FontSize',22);
+      
       set(gca,'TickLabelInterpreter','latex')
-      title(varlist{j},'interpreter', 'latex', 'fontsize', 26);
+      title(varlist{j},'interpreter', 'latex', 'fontsize', 40);
       if unique == 1 && j == 1
-            xlabel('Quarter','interpreter','latex','fontsize',20);
-            ylabel('\% deviation from s.s.','interpreter','latex','fontsize',18);
-%        elseif unique == 1 && j == 4
-%              ylabel('Basis Points','interpreter','latex','fontsize',18);
+            xlabel('Quarter','interpreter','latex','fontsize',32);
+            ylabel('\% deviation from s.s.','interpreter','latex','fontsize',26);
+            %        elseif unique == 1 && j == 4
+            %              ylabel('Basis Points','interpreter','latex','fontsize',26);
       elseif unique == 0
             xlabel('Quarter','interpreter','latex','fontsize',20);
             ylabel('\% deviation from s.s.','interpreter','latex','fontsize',18);
       end
       axis tight
-      
-      
-      
-      % Print Fig
-      if exp_fig == 1
-            % Create the correct path
-            base_path = pwd;
-            warning off
-            if exist([base_path '\Figures'], 'dir')
-                  cd([base_path '\Figures']) %for Microsoft
-            else
-                  cd([base_path '/Figures']) %for Mac
-            end
-            if exist([base_path '\Export_Fig'], 'dir')
-                  addpath([base_path '\Export_Fig']) %for Microsoft
-            else
-                  addpath([base_path '/Export_Fig']) %for Mac
-            end
-            warning on
-            export_fig(fig_name)
-            cd(base_path) %back to the original path
+end
+
+lgd = legend('90% Confidence Intervals','68% Confidence Intervals','Point Estimates');
+set(lgd,'Position',...
+      [0.247395833333333 -0.00111856823266219 0.539583333333333 0.0626398210290828],...
+      'Orientation','horizontal','FontSize',18);
+pause(1)
+legend boxoff
+
+% Print Fig
+if exp_fig == 1
+      % Create the correct path
+      base_path = pwd;
+      warning off
+      if exist([base_path '\Figures'], 'dir')
+            cd([base_path '\Figures']) %for Microsoft
+      else
+            cd([base_path '/Figures']) %for Mac
       end
+      if exist([base_path '\Export_Fig'], 'dir')
+            addpath([base_path '\Export_Fig']) %for Microsoft
+      else
+            addpath([base_path '/Export_Fig']) %for Mac
+      end
+      warning on
+      export_fig(fig_name)
+      cd(base_path) %back to the original path
 end

@@ -39,12 +39,25 @@ for i_shock=1:nshocks
             plot(zeros(1,h), 'Color','b')
             plot(periods,IRFs(i_var,1:h,which_shock(i_shock)),'linewidth',1,'Color','r')
             xt = get(gca, 'XTick');
-            set(gca, 'FontSize', 14)
-            title([varname],'fontsize',24)
+            set(gca, 'FontSize', 22)
+            title([varname],'fontsize',40)
             %ylim([min_y_lim(i_var) max_y_lim(i_var)]);
-            hold off
+            axis tight
             grid on
+            if i_var == 1
+                  xlabel('Quarter','interpreter','latex','fontsize',32);
+                  ylabel('\% deviation from s.s.','interpreter','latex','fontsize',26);
+            end
       end
+      axis tight
+      lgd = legend('95% Confidence Intervals','90% Confidence Intervals','Point Estimates');
+      set(lgd,'Position',...
+            [0.247395833333333 -0.00111856823266219 0.539583333333333 0.0626398210290828],...
+            'Orientation','horizontal','FontSize',18);
+      pause(1)
+      legend boxoff
+      axis tight
+      hold off
       % Save figures if you want to
       if strcmp(print_figs, 'yes')
             invoke_export_fig([shockname], which_ID_strat,...
