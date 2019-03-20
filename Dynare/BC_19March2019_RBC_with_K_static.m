@@ -31,28 +31,28 @@ residual = zeros( 7, 1);
 % Model equations
 %
 
-T13 = params(2)*y(2)^(params(2)-1);
-T40 = 0.5*params(1)*exp(y(6))*y(2)^params(2);
+T16 = exp(y(6))*params(2)*y(2)^(params(2)-1);
+T41 = exp(y(6))*0.5*params(1)*y(2)^params(2);
 lhs =y(5);
-rhs =T13;
+rhs =T16;
 residual(1)= lhs-rhs;
 lhs =y(1)+y(4);
 rhs =y(3);
 residual(2)= lhs-rhs;
 lhs =1;
-rhs =params(3)*(1+T13-params(5))*exp(y(7));
+rhs =params(3)*(1+y(5)-params(5))*exp(y(7));
 residual(3)= lhs-rhs;
 lhs =y(3);
-rhs =T40;
+rhs =T41;
 residual(4)= lhs-rhs;
 lhs =y(2);
 rhs =y(4)+y(2)*(1-params(5));
 residual(5)= lhs-rhs;
 lhs =y(6);
-rhs =y(6)*params(7)+x(1);
+rhs =y(6)*params(8)+x(1);
 residual(6)= lhs-rhs;
 lhs =y(7);
-rhs =y(7)*params(8)-x(2);
+rhs =y(7)*params(9)-x(2);
 residual(7)= lhs-rhs;
 if ~isreal(residual)
   residual = real(residual)+imag(residual).^2;
@@ -64,21 +64,21 @@ if nargout >= 2,
   % Jacobian matrix
   %
 
-T57 = params(2)*getPowerDeriv(y(2),params(2)-1,1);
-  g1(1,2)=(-T57);
+  g1(1,2)=(-(exp(y(6))*params(2)*getPowerDeriv(y(2),params(2)-1,1)));
   g1(1,5)=1;
+  g1(1,6)=(-T16);
   g1(2,1)=1;
   g1(2,3)=(-1);
   g1(2,4)=1;
-  g1(3,2)=(-(exp(y(7))*params(3)*T57));
-  g1(3,7)=(-(params(3)*(1+T13-params(5))*exp(y(7))));
-  g1(4,2)=(-(0.5*params(1)*exp(y(6))*getPowerDeriv(y(2),params(2),1)));
+  g1(3,5)=(-(params(3)*exp(y(7))));
+  g1(3,7)=(-(params(3)*(1+y(5)-params(5))*exp(y(7))));
+  g1(4,2)=(-(exp(y(6))*0.5*params(1)*getPowerDeriv(y(2),params(2),1)));
   g1(4,3)=1;
-  g1(4,6)=(-T40);
+  g1(4,6)=(-T41);
   g1(5,2)=1-(1-params(5));
   g1(5,4)=(-1);
-  g1(6,6)=1-params(7);
-  g1(7,7)=1-params(8);
+  g1(6,6)=1-params(8);
+  g1(7,7)=1-params(9);
   if ~isreal(g1)
     g1 = real(g1)+2*imag(g1);
   end

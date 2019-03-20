@@ -20,6 +20,7 @@ Dar = D1ar./D2ar;
 
 % Test. H0: Empirical IRFs are AR(1). If pvalue is close to zero. Reject
 % H0. Empirical IRFs are cyclical. 
+format longG
 Diff_D = D - Dar;
 pval   = 1 - length(find(Diff_D>0))/nsimul; 
 

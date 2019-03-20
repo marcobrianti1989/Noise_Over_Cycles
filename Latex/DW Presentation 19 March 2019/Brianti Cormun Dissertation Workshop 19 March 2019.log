@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.18 (MiKTeX 2.9.6350 64-bit) (preloaded format=pdflatex 2017.8.21)  16 MAR 2019 22:00
+This is pdfTeX, Version 3.14159265-2.6-1.40.18 (MiKTeX 2.9.6350 64-bit) (preloaded format=pdflatex 2017.8.21)  19 MAR 2019 14:48
 entering extended mode
 **"./Brianti Cormun Dissertation Workshop 19 March 2019.tex"
 ("Brianti Cormun Dissertation Workshop 19 March 2019.tex"
@@ -1105,105 +1105,112 @@ Overfull \vbox (39.70624pt too high) detected at line 35
 [1
 
 {C:/Users/th3/AppData/Local/MiKTeX/2.9/pdftex/config/pdftex.map}]
-LaTeX Font Info:    Try loading font information for OMS+lmss on input line 86.
-
-LaTeX Font Info:    No file OMSlmss.fd. on input line 86.
+LaTeX Font Info:    Try loading font information for OMS+lmss on input line 125
+.
+LaTeX Font Info:    No file OMSlmss.fd. on input line 125.
 
 
 LaTeX Font Warning: Font shape `OMS/lmss/m/n' undefined
 (Font)              using `OMS/cmsy/m/n' instead
-(Font)              for symbol `textbullet' on input line 86.
+(Font)              for symbol `textbullet' on input line 125.
 
-LaTeX Font Info:    Try loading font information for OML+lmm on input line 86.
+LaTeX Font Info:    Try loading font information for OML+lmm on input line 125.
+
 ("C:\Program Files\MiKTeX 2.9\tex\latex\lm\omllmm.fd"
 File: omllmm.fd 2009/10/30 v1.6 Font defs for Latin Modern
 )
-LaTeX Font Info:    Try loading font information for OMS+lmsy on input line 86.
-
+LaTeX Font Info:    Try loading font information for OMS+lmsy on input line 125
+.
 
 ("C:\Program Files\MiKTeX 2.9\tex\latex\lm\omslmsy.fd"
 File: omslmsy.fd 2009/10/30 v1.6 Font defs for Latin Modern
 )
-LaTeX Font Info:    Try loading font information for OMX+lmex on input line 86.
-
+LaTeX Font Info:    Try loading font information for OMX+lmex on input line 125
+.
 
 ("C:\Program Files\MiKTeX 2.9\tex\latex\lm\omxlmex.fd"
 File: omxlmex.fd 2009/10/30 v1.6 Font defs for Latin Modern
 )
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <9> on input line 86.
+(Font)              <10> on input line 125.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <6> on input line 86.
+(Font)              <7> on input line 125.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <5> on input line 86.
-LaTeX Font Info:    Try loading font information for U+msa on input line 86.
+(Font)              <5> on input line 125.
+LaTeX Font Info:    Try loading font information for U+msa on input line 125.
 
 ("C:\Program Files\MiKTeX 2.9\tex\latex\amsfonts\umsa.fd"
 File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 )
-LaTeX Font Info:    Try loading font information for U+msb on input line 86.
+LaTeX Font Info:    Try loading font information for U+msb on input line 125.
 
 ("C:\Program Files\MiKTeX 2.9\tex\latex\amsfonts\umsb.fd"
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 )
-LaTeX Font Info:    Try loading font information for U+rsfs on input line 86.
+LaTeX Font Info:    Try loading font information for U+rsfs on input line 125.
 
 ("C:\Program Files\MiKTeX 2.9\tex\latex\jknappen\ursfs.fd"
 File: ursfs.fd 1998/03/24 rsfs font definition file (jk)
 )
-LaTeX Font Info:    Font shape `OT1/lmss/m/it' in size <9> not available
-(Font)              Font shape `OT1/lmss/m/sl' tried instead on input line 86.
-LaTeX Font Info:    Font shape `OT1/lmss/m/it' in size <6> not available
-(Font)              Font shape `OT1/lmss/m/sl' tried instead on input line 86.
-LaTeX Font Info:    Font shape `OT1/lmss/m/it' in size <5> not available
-(Font)              Font shape `OT1/lmss/m/sl' tried instead on input line 86.
+LaTeX Font Info:    Font shape `OT1/lmss/m/it' in size <10> not available
+(Font)              Font shape `OT1/lmss/m/sl' tried instead on input line 125.
 
-Overfull \vbox (0.14784pt too high) detected at line 86
+LaTeX Font Info:    Font shape `OT1/lmss/m/it' in size <7> not available
+(Font)              Font shape `OT1/lmss/m/sl' tried instead on input line 125.
+
+LaTeX Font Info:    Font shape `OT1/lmss/m/it' in size <5> not available
+(Font)              Font shape `OT1/lmss/m/sl' tried instead on input line 125.
+
+LaTeX Font Info:    External font `lmex10' loaded for size
+(Font)              <10.95> on input line 125.
+LaTeX Font Info:    External font `lmex10' loaded for size
+(Font)              <8> on input line 125.
+LaTeX Font Info:    External font `lmex10' loaded for size
+(Font)              <6> on input line 125.
+LaTeX Font Info:    Font shape `OT1/lmss/m/it' in size <10.95> not available
+(Font)              Font shape `OT1/lmss/m/sl' tried instead on input line 125.
+
+LaTeX Font Info:    Font shape `OT1/lmss/m/it' in size <8> not available
+(Font)              Font shape `OT1/lmss/m/sl' tried instead on input line 125.
+
+LaTeX Font Info:    Font shape `OT1/lmss/m/it' in size <6> not available
+(Font)              Font shape `OT1/lmss/m/sl' tried instead on input line 125.
+
+LaTeX Font Info:    External font `lmex10' loaded for size
+(Font)              <9> on input line 125.
+LaTeX Font Info:    Font shape `OT1/lmss/m/it' in size <9> not available
+(Font)              Font shape `OT1/lmss/m/sl' tried instead on input line 125.
+
+
+Overfull \vbox (12.57292pt too high) detected at line 125
  []
 
 [2
 
-] [3
+]
+Overfull \vbox (2.73717pt too high) detected at line 156
+ []
+
+[3
 
 ]
-Overfull \vbox (21.30272pt too high) detected at line 183
+Overfull \vbox (10.30278pt too high) detected at line 229
  []
 
 [4
 
 ]
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <12> on input line 197.
-LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <8> on input line 197.
+(Font)              <12> on input line 242.
 LaTeX Font Info:    Font shape `OT1/lmss/m/it' in size <12> not available
-(Font)              Font shape `OT1/lmss/m/sl' tried instead on input line 197.
-
-LaTeX Font Info:    Font shape `OT1/lmss/m/it' in size <8> not available
-(Font)              Font shape `OT1/lmss/m/sl' tried instead on input line 197.
+(Font)              Font shape `OT1/lmss/m/sl' tried instead on input line 242.
 
  [5
 
-]
-LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <10.95> on input line 229.
-LaTeX Font Info:    Font shape `OT1/lmss/m/it' in size <10.95> not available
-(Font)              Font shape `OT1/lmss/m/sl' tried instead on input line 229.
-
-LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <10> on input line 229.
-LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <7> on input line 229.
-LaTeX Font Info:    Font shape `OT1/lmss/m/it' in size <10> not available
-(Font)              Font shape `OT1/lmss/m/sl' tried instead on input line 229.
-
-LaTeX Font Info:    Font shape `OT1/lmss/m/it' in size <7> not available
-(Font)              Font shape `OT1/lmss/m/sl' tried instead on input line 229.
-
- [6
+] [6
 
 ]
-Overfull \vbox (19.1303pt too high) detected at line 279
+Overfull \vbox (13.34618pt too high) detected at line 325
  []
 
 [7
@@ -1211,20 +1218,116 @@ Overfull \vbox (19.1303pt too high) detected at line 279
 ] [8
 
 ]
-Overfull \vbox (8.43388pt too high) detected at line 333
+Overfull \vbox (0.4655pt too high) detected at line 390
  []
 
 [9
 
 ] [10
 
-] [11
+] <main_IRFs.png, id=90, 1196.97188pt x 692.5875pt>
+File: main_IRFs.png Graphic file (type png)
+ <use main_IRFs.png>
+Package pdftex.def Info: main_IRFs.png used on input line 420.
+(pdftex.def)             Requested size: 299.24223pt x 173.14644pt.
 
-] [12
+[11
 
-] [13
+ <./main_IRFs.png (PNG copy)>]
+<additional_IRFs.png, id=96, 1217.2978pt x 692.5875pt>
+File: additional_IRFs.png Graphic file (type png)
+
+<use additional_IRFs.png>
+Package pdftex.def Info: additional_IRFs.png used on input line 429.
+(pdftex.def)             Requested size: 304.3237pt x 173.14644pt.
+ [12
+
+ <./additional_IRFs.png (PNG copy)>] [13
 
 ] [14
+
+]
+Overfull \vbox (6.17206pt too high) detected at line 506
+ []
+
+[15
+
+] [16
+
+]
+LaTeX Font Info:    Font shape `OT1/lmss/bx/it' in size <10> not available
+(Font)              Font shape `OT1/lmss/bx/sl' tried instead on input line 549
+.
+ [17
+
+] <spectral.png, id=139, 1161.58969pt x 700.86844pt>
+File: spectral.png Graphic file (type png)
+
+<use spectral.png>
+Package pdftex.def Info: spectral.png used on input line 557.
+(pdftex.def)             Requested size: 290.39671pt x 175.21667pt.
+ [18
+
+ <./spectral.png (PNG copy)>]
+Overfull \vbox (14.9166pt too high) detected at line 589
+ []
+
+[19
+
+] [20
+
+]
+Overfull \vbox (6.10548pt too high) detected at line 625
+ []
+
+[21
+
+]
+Overfull \vbox (6.10548pt too high) detected at line 625
+ []
+
+[22
+
+] [23
+
+] [24
+
+] [25
+
+] [26
+
+] <tech_IRFs.png, id=188, 1196.97188pt x 692.5875pt>
+File: tech_IRFs.png Graphic file (type png)
+
+<use tech_IRFs.png>
+Package pdftex.def Info: tech_IRFs.png used on input line 721.
+(pdftex.def)             Requested size: 299.24223pt x 173.14644pt.
+ [27
+
+ <./tech_IRFs.png (PNG copy)>]
+<var8.png, id=195, 1209.76968pt x 718.93594pt>
+File: var8.png Graphic file (type png)
+ <use var8.png>
+Package pdftex.def Info: var8.png used on input line 731.
+(pdftex.def)             Requested size: 314.5327pt x 186.91893pt.
+
+Overfull \hbox (7.24283pt too wide) in paragraph at lines 731--731
+[][]  
+ []
+
+
+Overfull \vbox (12.55261pt too high) detected at line 731
+ []
+
+[28
+
+ <./var8.png (PNG copy)>] [29
+
+]
+Overfull \vbox (19.29703pt too high) detected at line 790
+ []
+
+[30
 
 ]
 \tf@nav=\write6
@@ -1236,12 +1339,11 @@ Overfull \vbox (8.43388pt too high) detected at line 333
 \tf@snm=\write8
 \openout8 = `"Brianti Cormun Dissertation Workshop 19 March 2019.snm"'.
 
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 411.
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 411.
-
-("Brianti Cormun Dissertation Workshop 19 March 2019.aux")
-Package atveryend Info: Empty hook `AtVeryEndDocument' on input line 411.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 411.
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 795.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 795.
+ ("Brianti Cormun Dissertation Workshop 19 March 2019.aux")
+Package atveryend Info: Empty hook `AtVeryEndDocument' on input line 795.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 795.
 Package rerunfilecheck Info: File `"Brianti Cormun Dissertation Workshop 19 Mar
 ch 2019".out' has not changed.
 (rerunfilecheck)             Checksum: D41D8CD98F00B204E9800998ECF8427E;0.
@@ -1251,33 +1353,39 @@ LaTeX Font Warning: Some font shapes were not available, defaults substituted.
 
  ) 
 Here is how much of TeX's memory you used:
- 21160 strings out of 493323
- 424255 string characters out of 3139072
- 486354 words of memory out of 3000000
- 24131 multiletter control sequences out of 15000+200000
- 74873 words of font info for 81 fonts, out of 3000000 for 9000
+ 21273 strings out of 493323
+ 425697 string characters out of 3139072
+ 486502 words of memory out of 3000000
+ 24197 multiletter control sequences out of 15000+200000
+ 80594 words of font info for 84 fonts, out of 3000000 for 9000
  1141 hyphenation exceptions out of 8191
- 56i,14n,98p,1845b,789s stack positions out of 5000i,500n,10000p,200000b,50000s
-{C:/Program Files/MiKTeX 2.9/fonts/enc/dvips/lm/lm-mathsy.enc}{C:/Program Fil
-es/MiKTeX 2.9/fonts/enc/dvips/lm/lm-mathex.enc}{C:/Program Files/MiKTeX 2.9/fon
-ts/enc/dvips/lm/lm-rm.enc}{C:/Program Files/MiKTeX 2.9/fonts/enc/dvips/lm/lm-ma
-thit.enc}<C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmsy10.pfb
-><C:/Program Files/MiKTeX 2.9/fonts/type1/public/lm/lmex10.pfb><C:/Program File
-s/MiKTeX 2.9/fonts/type1/public/lm/lmmi10.pfb><C:/Program Files/MiKTeX 2.9/font
-s/type1/public/lm/lmmi8.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/lm/
-lmss10.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/lm/lmss12.pfb><C:/Pr
-ogram Files/MiKTeX 2.9/fonts/type1/public/lm/lmss8.pfb><C:/Program Files/MiKTeX
- 2.9/fonts/type1/public/lm/lmss9.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/p
-ublic/lm/lmssbx10.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/lm/lmsso1
-0.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/lm/lmsso12.pfb><C:/Progra
-m Files/MiKTeX 2.9/fonts/type1/public/lm/lmsso8.pfb><C:/Program Files/MiKTeX 2.
-9/fonts/type1/public/lm/lmsy10.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/pub
-lic/lm/lmsy7.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/lm/lmsy8.pfb><
-C:/Program Files/MiKTeX 2.9/fonts/type1/public/lm/lmsy9.pfb>
-Output written on "Brianti Cormun Dissertation Workshop 19 March 2019.pdf" (14 
-pages, 232245 bytes).
+ 56i,14n,98p,1845b,795s stack positions out of 5000i,500n,10000p,200000b,50000s
+pdfTeX warning (dest): name{slide:test_technical_spectral} has been reference
+d but does not exist, replaced by a fixed one
+
+{C:/Program Files/MiKTeX 2.9/fonts/enc/dvips/lm/lm-mathsy.enc}{C:/Program Files
+/MiKTeX 2.9/fonts/enc/dvips/lm/lm-rm.enc}{C:/Program Files/MiKTeX 2.9/fonts/enc
+/dvips/lm/lm-mathit.enc}{C:/Program Files/MiKTeX 2.9/fonts/enc/dvips/lm/lm-math
+ex.enc}<C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmsy10.pfb><
+C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmsy9.pfb><C:/Progra
+m Files/MiKTeX 2.9/fonts/type1/public/lm/lmex10.pfb><C:/Program Files/MiKTeX 2.
+9/fonts/type1/public/lm/lmmi10.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/pub
+lic/lm/lmmi7.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/lm/lmmi8.pfb><
+C:/Program Files/MiKTeX 2.9/fonts/type1/public/lm/lmss10.pfb><C:/Program Files/
+MiKTeX 2.9/fonts/type1/public/lm/lmss12.pfb><C:/Program Files/MiKTeX 2.9/fonts/
+type1/public/lm/lmss8.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/lm/lm
+ss9.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/lm/lmssbo10.pfb><C:/Pro
+gram Files/MiKTeX 2.9/fonts/type1/public/lm/lmssbx10.pfb><C:/Program Files/MiKT
+eX 2.9/fonts/type1/public/lm/lmsso10.pfb><C:/Program Files/MiKTeX 2.9/fonts/typ
+e1/public/lm/lmsso12.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/lm/lms
+so8.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/lm/lmsy10.pfb><C:/Progr
+am Files/MiKTeX 2.9/fonts/type1/public/lm/lmsy7.pfb><C:/Program Files/MiKTeX 2.
+9/fonts/type1/public/lm/lmsy8.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/publ
+ic/lm/lmsy9.pfb>
+Output written on "Brianti Cormun Dissertation Workshop 19 March 2019.pdf" (30 
+pages, 946963 bytes).
 PDF statistics:
- 174 PDF objects out of 1000 (max. 8388607)
- 32 named destinations out of 1000 (max. 500000)
- 55 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 294 PDF objects out of 1000 (max. 8388607)
+ 71 named destinations out of 1000 (max. 500000)
+ 80 words of extra memory for PDF output out of 10000 (max. 10000000)
 

@@ -12,29 +12,30 @@ clear
 close all
 
 % Technical parameters
-nlags                      = 18;      %lags in the VAR system
+nlags                      = 8;      %lags in the VAR system
 control_pop                = 0;       % Divide key macro variables over population
-which_trend                = 'none';  %'BP', 'HP', 'lin', 'quad', 'diff', 'none', 'demean': detrending the variables before adding them in the VAR.
+which_trend                = 'quad';  %'BP', 'HP', 'lin', 'quad', 'diff', 'none', 'demean': detrending the variables before adding them in the VAR.
 which_boot                 = 'none';  % Either 'none' or 'blocks'
 blocksize                  = 4;       % if which_boot = 'blocks', then decide the block of residuals
-nsimul                     = 500;     % Number of bootstrap simulations
+nsimul                     = 20;     % Number of bootstrap simulations
 nburn                      = 0;       % Number of observations to burn during each bootstrap
 sig1                       = 0.16;    % Tighter Confidence Interval
 sig2                       = 0.05;    % Looser Confidence Interval
-H                          = 20;      % Horizon of IRFs
+H                          = 25;      % Horizon of IRFs
 print_figs                 = 'yes';    % If you want to pring fig 'yes', otherwise 'no'
 use_current_time           = 1;       % In order to avoid overwriting
 shocknames                 = {'Sentiment Shock'};                     % Name of the Shock(s)
-system_names               = {'ZTILDE','RealGDP','RealCons',...
-      'RealInvestment','Hours','RealInventories'};             % Variables in the VAR  %'RealGDP','RealCons','RealInvestment','HoursPerPerson'};
+system_names               = {'ZTILDE','RealGDP','RealInvestment','HoursAll',...
+      'RealInventories','RealCons','GDPDefl'};             % Variables in the VAR  %'RealGDP','RealCons','RealInvestment','HoursPerPerson'};
 pos_ZTILDE                 = find(strcmp('ZTILDE',system_names)==1);  % Position of Ztilde
 pos_uTFP                   = find(strcmp('UnantTFPshock',system_names)==1); % Position of unexpected productivity shock
 which_shocks               = pos_ZTILDE;                              % Cholesky, Position of the Shock
-
+system_names_graph         = {'Real GDP','Real Investment','Total Hours',...
+      'Real Inventories','Real Consumption','GDP Deflator'};  
 % Read main dataset
 filename                    = 'main_file';
 sheet                       = 'Sheet1';
-range                       = 'B1:DV300';
+range                       = 'B1:DX300';
 do_truncation               = 0; %Do not truncate data. You will have many NaN
 [dataset, var_names]        = read_data2(filename, sheet, range, do_truncation);
 tf                          = isreal(dataset);
@@ -104,15 +105,15 @@ end
 
 % Reshape IRFs to use "plot_IRFs_2CIs" function below
 IRFS         = IRFs(2,:,1,:);
-IRFS         = squeeze(IRFS)';
+IRFS         = 100*squeeze(IRFS)';
 UB1          = ub1(2,:,1,:);
-UB1          = squeeze(UB1)';
+UB1          = 100*squeeze(UB1)';
 UB2          = ub2(2,:,1,:);
-UB2          = squeeze(UB2)';
+UB2          = 100*squeeze(UB2)';
 LB1          = lb1(2,:,1,:);
-LB1          = squeeze(LB1)';
+LB1          = 100*squeeze(LB1)';
 LB2          = lb2(2,:,1,:);
-LB2          = squeeze(LB2)';
+LB2          = 100*squeeze(LB2)';
 
 % Create and Printing figures
 for iend = 1:length(system_names)-1
@@ -120,8 +121,9 @@ for iend = 1:length(system_names)-1
 end
 base_path         = pwd;
 which_ID          = 'CHOL';
+which_shocks      = 1;
 plot_IRFs_2CIs(IRFS,UB1,LB1,UB2,LB2,H,which_shocks,shocknames,...
-      endogenous_var_names,which_ID,print_figs,use_current_time,base_path)
+      system_names_graph,which_ID,print_figs,use_current_time,base_path)
 
 tech_info_table_Chol;
 

@@ -1,0 +1,67 @@
+Starting Dynare (version 4.5.4).
+Starting preprocessing of the model file ...
+Found 6 equation(s).
+Evaluating expressions...done
+Computing static model derivatives:
+ - order 1
+Computing dynamic model derivatives:
+ - order 1
+Processing outputs ...
+done
+Preprocessing completed.
+
+
+
+
+Residuals of the static equations:
+
+Equation number 1 : 0
+Equation number 2 : -0.052404
+Equation number 3 : 0
+Equation number 4 : 0
+Equation number 5 : 0
+Equation number 6 : 0
+
+
+{Error using <a href="matlab:matlab.internal.language.introspective.errorDocCallback('print_info', 'c:\dynare\4.5.4\matlab\print_info.m', 76)" style="font-weight:bold">print_info</a> (<a href="matlab: opentoline('c:\dynare\4.5.4\matlab\print_info.m',76,0)">line 76</a>)
+The steadystate file did not compute the steady state
+
+Error in <a href="matlab:matlab.internal.language.introspective.errorDocCallback('steady', 'c:\dynare\4.5.4\matlab\steady.m', 104)" style="font-weight:bold">steady</a> (<a href="matlab: opentoline('c:\dynare\4.5.4\matlab\steady.m',104,0)">line 104</a>)
+    print_info(info,options_.noprint, options_);
+
+Error in <a href="matlab:matlab.internal.language.introspective.errorDocCallback('BC_19March2019_RBC_with_K_N', 'C:\Users\th3\Documents\Noise_Over_Cycles\Dynare\BC_19March2019_RBC_with_K_N.m', 133)" style="font-weight:bold">BC_19March2019_RBC_with_K_N</a> (<a href="matlab: opentoline('C:\Users\th3\Documents\Noise_Over_Cycles\Dynare\BC_19March2019_RBC_with_K_N.m',133,0)">line 133</a>)
+steady;
+
+Error in <a href="matlab:matlab.internal.language.introspective.errorDocCallback('dynare', 'c:\dynare\4.5.4\matlab\dynare.m', 223)" style="font-weight:bold">dynare</a> (<a href="matlab: opentoline('c:\dynare\4.5.4\matlab\dynare.m',223,0)">line 223</a>)
+evalin('base',fname) ;
+
+Error in <a href="matlab:matlab.internal.language.introspective.errorDocCallback('run_file', 'C:\Users\th3\Documents\Noise_Over_Cycles\Dynare\run_file.m', 7)" style="font-weight:bold">run_file</a> (<a href="matlab: opentoline('C:\Users\th3\Documents\Noise_Over_Cycles\Dynare\run_file.m',7,0)">line 7</a>)
+dynare BC_19March2019_RBC_with_K_N
+} 
+run_file
+
+Configuring Dynare ...
+[mex] Generalized QZ.
+[mex] Sylvester equation solution.
+[mex] Kronecker products.
+[mex] Sparse kronecker products.
+[mex] Local state space iteration (second order).
+[mex] Bytecode evaluation.
+[mex] k-order perturbation solver.
+[mex] k-order solution simulation.
+[mex] Quasi Monte-Carlo sequence (Sobol).
+[mex] Markov Switching SBVAR.
+
+Using 64-bit preprocessor
+Starting Dynare (version 4.5.4).
+Starting preprocessing of the model file ...
+Found 6 equation(s).
+Evaluating expressions...done
+Computing static model derivatives:
+ - order 1
+Computing dynamic model derivatives:
+ - order 1
+Processing outputs ...
+done
+Preprocessing completed.
+
