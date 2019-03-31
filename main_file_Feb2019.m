@@ -15,6 +15,9 @@ clc
 clear
 close all
 tic
+create_TFP_surprise;
+clear all
+load('TechShock_identification.mat');
 % Start date and end date
 
 % Decide whether or not include policy shocks in the controls
@@ -23,11 +26,11 @@ tic
 % Technical Parameters
 lags                = 2;             % Number of lags in the first step (deriving Ztilde)
 leads               = 0;             % Number of leads in the first step (deriving Ztilde)
-H                   = 20;            % IRFs horizon
-lags_LP             = 1;             % Number of lags in the Local Projection
+H                   = 40;            % IRFs horizon
+lags_LP             = 12;             % Number of lags in the Local Projection
 which_trend         = 'quad' ;       %'BP', 'HP', 'lin', 'quad', 'none', 'demean' for Local Projection
 which_Z             = {'1','2','3','4','5'}; % Which Forecast Revision: RGDP, NGDP, RCONS, INDPROD, RINV. If it is more than one it takes the first PC
-which_shock         = {'Sentiment','Tech'}; % Tech, News, Sentiment
+which_shock         = {'Tech'}; % Tech, News, Sentiment
 loc_start_exogenous = 0;             % Exogenous start
 diff_LP             = 0;             % LP in levels or differences
 nPC_first           = 3;             % Number of Principal Components in the first stage
@@ -35,17 +38,16 @@ nPC_LP              = 1;             % Number of Principal Components in the sec
 norm_SHOCK          = 1;             % Divide shock over its own variance
 printIRFs           = 1;             % Print IRFs
 printVD             = 0;              % Print Variance Decompositions
-nsimul              = 1000;           % number of simulations for bootstrap
+nsimul              = 500;           % number of simulations for bootstrap
 control_pop         = 0;             % Divide GDP, Cons, Hours, Investment over population
-varlist             = {'RealGDP','RealGDP','RealInvestment','RealCons','HoursAll','RealInventories'}; % Define endogenous variables for LP
+varlist             = {'RealGDP','RealInvestment','RealCons','GDPDefl','FFR'}; % Define endogenous variables for LP
 % varlist             = {'MichIndexConfidence','SP500','Vix', ...
 %      'FFR','SpreadBond','TermYield'};
 % 'SpreadBond'  'Leverage'        'ChicagoFedIndex'  'SpreadBond''RealExchRate' 'FFR'
 % 'SpreadBonds' 'MoodySpreadBaa'  'TermYield'        'FFR'      'Y10Treasury'     'M3Treasury'
 % 'RealGDP'     'RealInvestment'  'SpreadBond'       'Leverage' 'ChicagoFedIndex' 'Vix'
 
-varlist_graph              = {'Real GDP','Real Investment','Total Hours', ...
-      'Real Inventories','Real Consumption','GDP Deflator'};
+varlist_graph              = varlist; %{'Real GDP','Real Investment','Real Consumption','Total Hours'};
 % varlist_graph             = {'Michigan Confidence','S\&P 500','VIX', ...
 %      'Federal Funds Rate','(Baa - Aaa) Spread','(10yr - 3m) Treasury'};
 
@@ -78,16 +80,17 @@ TFPBP                       = [TFPBP; NaN(length(TFP) - length(TFPBP),1)];
 dTFP                        = [NaN; diff(TFP)];
 PC                          = [PC1 PC2 PC3 PC4 PC5 PC6 PC7 PC8 PC9];
 PC_first                    = PC(:,1:nPC_first);
-SHOCKS_NARRATIVE            = [RESID08]; % TAXNARRATIVE MUNI1Y PDVMILY HAMILTON3YP  reduce number of shocks
+SHOCKS_NARRATIVE            = [  TAXNARRATIVE  PDVMILY HAMILTON3YP RESID08 ];  % RESID08 reduce number of shocks
 
 % Loop over different surveys
 for iw = 1:length(which_Z)
       % Define dependent variable
       eval(['Z = Z', which_Z{iw},';']);
       Y                           = Z;
+      %Y                           = RESID08;
       % Define Regressors and Dependent Variable
-      X_contemporaneous           = [TFPBP];% SHOCKS_NARRATIVE];% [TFPBP SHOCKS_NARRATIVE]; %[TFPBP];%
-      X_lag                       = [TFPBP PC_first];% SHOCKS_NARRATIVE];%[TFPBP PC SHOCKS_NARRATIVE]; %[TFPBP PC];%
+      X_contemporaneous           = [TFPBP SHOCKS_NARRATIVE];% [TFPBP SHOCKS_NARRATIVE]; %[TFPBP];%
+      X_lag                       = [TFPBP PC_first Y SHOCKS_NARRATIVE];%[TFPBP PC SHOCKS_NARRATIVE]; %[TFPBP PC];%
       X_lead                      = TFPBP;
       % Control Regression
       [~, Zhat, Ztildeiw(:,iw), regressor] = lead_lag_matrix_regression(Y,X_lead,...
@@ -98,7 +101,7 @@ end
 [Ztilde_cut, tt, tt2]   = truncate_data(Ztildeiw);
 ZtildePCs               = get_principal_components(Ztilde_cut);
 ZtildePCs               = [NaN(tt-1,size(Ztildeiw,2)); ZtildePCs; NaN(size(Ztildeiw,1)-tt2,size(Ztildeiw,2))];
-Ztilde                  = - ZtildePCs(:,1);
+Ztilde                  = - ZtildePCs(:,1); 
 
 
 mdl  = fitlm(Ztilde,Z5(1+lags:end-leads))
@@ -141,7 +144,7 @@ BankLeverage            = BanksTotLiabilities - BanksTotAssets;
 CorpEqui2Assets         = NonFinEquity - NonFinTotAssets;
 CorpDebt2Assets         = NonFinDebtSecurities - NonFinTotAssets;
 
-% Matrix of dependen variables - All the variables are in log levels
+% Matrix of dependent variables - All the variables are in log levels
 for i = 1:length(varlist)
       dep_var(:,i) = eval(varlist{i});
 end
@@ -165,7 +168,7 @@ for is = 1:length(which_shock)
             disp('Sentiment Shock')
             fprintf('\n')
       elseif strcmp(which_shock{is},'Tech') == 1
-            SHOCK = UnantTFPshock(1+lags:end-leads);
+            SHOCK = TechSurprise(1+lags:end-leads);      %UnantTFPshock(1+lags:end-leads);
             fprintf('\n')
             disp('Unexpected Technology Shock')
             fprintf('\n')
@@ -249,13 +252,13 @@ for is = 1:length(which_shock)
       plot_IRF(varlist_graph,IRF_low,IRF_low2,IRF_up,IRF_up2,IRF(:,:,is),H,printIRFs,IRFname); %change this function
       % Plot VD
       plot_IRF(varlist,VDkk,VDkk,VDkk,VDkk,VDkk,H,printVD,VDname)
-      close
+    
 end
 
 % Technical Parameters
 tech_info_table;
 
-
+asd
 %*************************************************************************%
 %                                                                         %
 %                        Test Cyclicality - Canova                        %

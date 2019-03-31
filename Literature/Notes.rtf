@@ -4,11 +4,13 @@
 {\colortbl;\red255\green255\blue255;\red128\green0\blue128;\red251\green0\blue255;\red127\green0\blue128;
 \red0\green0\blue0;\red253\green139\blue9;\red0\green0\blue255;\red65\green113\blue255;\red25\green60\blue255;
 \red36\green255\blue255;\red252\green87\blue8;\red46\green0\blue141;\red20\green0\blue57;\red118\green118\blue118;
-\red62\green62\blue62;\red217\green148\blue77;}
+\red62\green62\blue62;\red217\green148\blue77;\red253\green139\blue9;\red0\green0\blue0;\red0\green0\blue0;
+}
 {\*\expandedcolortbl;;\csgenericrgb\c50196\c0\c50196;\cssrgb\c100000\c7248\c100000;\csgenericrgb\c49804\c0\c50196;
 \cssrgb\c0\c1\c1;\cssrgb\c100000\c61456\c0;\csgenericrgb\c0\c0\c100000;\cssrgb\c31805\c54119\c100000;\cssrgb\c12594\c35385\c100000;
 \cssrgb\c4983\c100000\c100000;\cssrgb\c100000\c43066\c0;\cssrgb\c24324\c6455\c62064;\cssrgb\c10346\c3056\c28896;\cssrgb\c53691\c53693\c53692;
-\cssrgb\c31124\c31124\c31124;\cssrgb\c88569\c64418\c37353;}
+\cssrgb\c31124\c31124\c31124;\cssrgb\c88569\c64418\c37353;\cssrgb\c100000\c61456\c0;\cssrgb\c0\c0\c0;\cssrgb\c0\c1\c1;
+}
 {\*\listtable{\list\listtemplateid1\listhybrid{\listlevel\levelnfc0\levelnfcn0\leveljc0\leveljcn0\levelfollow0\levelstartat1\levelspace360\levelindent0{\*\levelmarker \{decimal\}.}{\leveltext\leveltemplateid1\'02\'00.;}{\levelnumbers\'01;}\fi-360\li720\lin720 }{\listname ;}\listid1}
 {\list\listtemplateid2\listhybrid{\listlevel\levelnfc0\levelnfcn0\leveljc0\leveljcn0\levelfollow0\levelstartat1\levelspace360\levelindent0{\*\levelmarker \{decimal\}.}{\leveltext\leveltemplateid101\'02\'00.;}{\levelnumbers\'01;}\fi-360\li720\lin720 }{\listname ;}\listid2}
 {\list\listtemplateid3\listhybrid{\listlevel\levelnfc0\levelnfcn0\leveljc0\leveljcn0\levelfollow0\levelstartat1\levelspace360\levelindent0{\*\levelmarker \{decimal\}.}{\leveltext\leveltemplateid201\'02\'00.;}{\levelnumbers\'01;}\fi-360\li720\lin720 }{\listlevel\levelnfc4\levelnfcn4\leveljc0\leveljcn0\levelfollow0\levelstartat1\levelspace360\levelindent0{\*\levelmarker \{lower-alpha\}.}{\leveltext\leveltemplateid202\'02\'01.;}{\levelnumbers\'01;}\fi-360\li1440\lin1440 }{\listname ;}\listid3}
@@ -27,7 +29,7 @@ Importance of expectation shocks, common references (Beaudry and Portier 2006, 2
 - \cf2 Beaudry Portier 2014: survey pape\cf3 r\cf0 \
 \
 - \cf4 Beaudry Galizia Portier 2018 Restud: \cf0 Link Hayek\'92s view to Keynes\'92 one. Hayek maintains that recessions reflect period of needed liquidations resulting from past over-investment. Keynes views recession as periods of deficient demand that should be counteracted with policy intervention. This paper reconciles both view by asserting modelling the trade-off and concluding that while policy intervention postpones the adjustment, some of it is still needed during recessions. \
-\
+- \cf3 Huo Takayama: \cf5 a DSGE model with sentiments \cf0 \
 - \cf4 Beaudry Galizia Portier AER: \cf5 note that in this model, unlike hopefully ours, the probability of default is countercyclical \
 \cf0 \
 - \cf4 Benhabib Wang 2013 JME: \cf0 model with financial constraint that generates indeterminacy of equilibria. In this context, shocks of all kinds produce boom-bust dynamics. Labor demand is effectively upward sloping and steeper than labor supply, this is due to the presence of an incentive compatibility constraint which gives pro cyclical lending, if one HH lends then also others are incentivized to do so, hence strategic complementarity in actions. \
@@ -119,12 +121,6 @@ Stock and Watson (2018) \'96 The Economic Journal\
 \
 It is a technical survey on IV on LP.\
 \
-Three points are interesting for us:\
-\
-1.	In the second stage regression is useful to control for other variables because it increases the Rsquared and shrinks the CI. \'97 in short, improve econometric efficiency\
-2.	Exposure of a serious method to calculate variance decomposition.\
-3.	We need to find a formal normalization for our noise shock. They provide some tips.\
-\
 \
 Suppose the forecast revision only happens when GDP was expected to decrease\
 \
@@ -144,10 +140,6 @@ Thoughts:\
 \
 - Sentiment shocks pertain to the broader concept of sunspot shocks, thus not necessarily related to expectations on future technology. Hence as we are interested in the estimation of this broader category of noise shocks, following Barsky and Sims to extract noise would be fallacious. \
 \
-- Deflationary noise shocks are consistent with a model of customer capital or a model with sticky prices a la Calvo.\
-\
-- Crucially we need a VAR that encompasses both news and noise shocks together with their effect on inflation. We expect that the effect on inflation is milder for noise shocks.\
-\
 \
 
 \f0\b \cf7 Vito & Marco - November 15: Meeting with Gennaioli \
@@ -158,7 +150,7 @@ Thoughts:\
 \f2\i via
 \f1\i0  a regression of the forecast error on the z-tilde. Compute new IRFs\
 \
-- A model inspired by \cf2 Greenwood and Hansen (2014 QJE) \cf0 paper on ships, or more generally on the literature carried by Gennaioli \'97 Inventory/overheads inputs seems to work. Related, there is a paper by a Stanford grad student and also a paper on Credit cycles by Stefano Rossi (working paper is not available right now) who highlight how overreaction can be generating boom and bust type of behavior.\
+- A model inspired by \cf2 Greenwood and Hanson  \cf0 paper on ships, or more generally on the literature carried by Gennaioli \'97 Inventory/overheads inputs seems to work. Related, there is a paper by a Stanford grad student and also a paper on Credit cycles by Stefano Rossi (working paper is not available right now) who highlight how overreaction can be generating boom and bust type of behavior.\
 \
 - Gennaioli points out that there are no paper looking at macro consequences of overreaction as we possibly might do.\
 \
@@ -210,17 +202,11 @@ c.	b.	Empirical literature on managers\'92 expectations\
 
 \f1\b0 \cf0 \
 0. Read on literature on boom and bust (e.g. Asriyan et al 2018)\
-1. Monetary policy in a bubbly world (Asriyan Fornaro et al 2018)\
+1. 
+\f0\b Monetary policy in a bubbly world
+\f1\b0  (Asriyan Fornaro et al 2018)\
 \
 \
-Answer: \
-\
-What is the general idea?\
-	 - see Minsky \
-\
-How can sentiment shocks arise? \
-	- see Milani - near rational expectations \
-	- We need a shock that does not originate from a change in the expectations of future fundamentals, perhaps in this context it is desirable to have sunspots \
 \
 \
 \
@@ -229,12 +215,9 @@ They do have strategic complementarities into actions, if agent i responds by in
 \
 Perhaps we could think of a framework where sentiment shocks originate from local interactions among agents. \
 \
-Need to check how to get boom and busts from belief reversal. \
 \
 Check sentiment shocks in Yang \
 \
-\cf4 January 7: a comment\
-\cf0 It appears that to generate boom and bust responses indeterminacy is sufficient. I cannot find a paper that explains exactly why this is the case yet. It is certainly due to a circular manifold that converges to the sink. On the other hand, obtaining contemporaneously both monotonic responses and cyclical is very difficult, perhaps we need to rely on the distinction between aggregate and idiosyncratic shock and the associate learning. \
 \
 \
 Farmer macroeconomic dynamics 2012 the evolution of endogenous bc \
@@ -248,11 +231,7 @@ Ordonez good booms bad booms\
  - Sentiments should be uncorrelated with TFP and policy shocks \
  - Expected response of sentiment shocks is of a boom-bust with periodicity around 30 quarters\
  - Expected response of a tech shock does not generate any cyclicality, quite the same is true for other policy shocks \
- - Sentiments generate comovement but are non inflationary \
- - Sentiments explain more than one third of output \
- - Sentiments generate Boom-Bust-type of fluctuations of Gilchrist financial distress index but only an increase in stock prices (of which they explain about 12%). \
- - What did we conclude about over and under estimation? \
-\
+ - - Sentiments explain more than one third of output \
 \
 Stress financial aspects using data\
 \
@@ -420,7 +399,7 @@ Greenwood Hanson \'93Reflexivity in the credit market\'94
 \f1\b0 \
 \
 \pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardeftab720\ri0\partightenfactor0
-\cf3 Martin: endogenous credit cycles RFS\
+\cf3 Martin: endogenous credit cycles RFS. \cf5 Under adverse selection contracts can be the same to all borrowers (pooling regime) or different (separation regime). Moving from one regime to another gives rise to endogenous cycles. \cf3 \
 \pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardeftab720\ri0\partightenfactor0
 \cf5 \
 
@@ -444,6 +423,12 @@ Greenwood Hanson \'93Reflexivity in the credit market\'94
 Martin Ventura 2012 AER\
 \
 \cf5 \
+\
+		\cf6 - 
+\f0\b \cf6 Overbuilding/Overaccumulation \
+Rognlie Shleifer Simsek 2017 AEJ Macro: 
+\f1\b0 \cf5 Collapse of home prices affects financial constraint because banks suffered losses so they give less lending to firms and because home owners have to cut their borrowings as the value of their collateral decreases. The model has the household and capital sector. A negative permanent shock of preferences towards houses and adjustment costs in the housing sector lead to a recession where housing sector recover much later than the other variables. The reallocation from housing to capital is slowed down by the constrained monetary policy (Keynesian effect). Similar in style and general idea (Hayek vs Keynes) to BGP Restud. \
+\
 
 \f0\b Is there always asymmetric information in these models? Note that in the context of imperfect information a sentiment shock may arise (see Angeletos and La\'92O). No in the textbook model of Kyotaki and Moore there is no asymmetric info\
 \
@@ -548,4 +533,68 @@ We want a model where the interest rate reflects expected default and expected o
 \
 Estimate from data a model consistent TFP and use that to orthogonalize for sentiment \
 \
-Working capital loans }
+Working capital loans \
+\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardeftab720\ri0\partightenfactor0
+\cf6 March 20\
+\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardeftab720\ri0\partightenfactor0
+\cf5 What\'92s special about residuals of expectation relative to residuals to  current GDP growth or other macro variables? Nothing really, the answer should be model dependent. \
+- Modified detrending in Local projection\
+\
+- If I regress (erroneously) RESID08 on SHOCK NARRATIVE which contains RESID08 the LP gives boom and bust and explains a lot of output at future horizon. MAKES NO SENSE, it needs to be sorted out. \
+- If I use as Y a series of 1s then it can explain more than the 20% of output at longer horizons. MAKES NO SENSE. The Variance Decomposition has to be revised\
+- I added the past of forecast revisions in the first stage. Results are not robust across the number of principal components and lags. \
+\
+\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardeftab720\ri0\partightenfactor0
+\cf6 March 22\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardeftab720\ri0\partightenfactor0
+\cf5 The story could be that in times where technology is not expanding there are incentives to create financial instability which ultimately lead to recessions. The very same incentives can be tamed by Pigouvian taxation equal to the social cost of the negative externality (see also Malherbe on social costs) or other forms of policy. \
+\
+Reading Jeanne and Korinek, see also Bianchi Mendoza 2010, Drehmann et al 2018 and Davila and Korinek 2018 see also the three period model of Jeanne and Korinek Restud\
+\
+March 25\
+Distinguish between aggregate demand externality and pecuniary externality (Korinek and Simsek 2016)\
+In a model with standard pricing equation, if you want to get the right stock prices response together with humpshaped consumption then you need consumption habit. For more on stock prices and habit see Cochrane and Campbell JPE. \
+Note that empirical Stock prices response does not have hump shape.\
+\
+https://hbr.org/2012/03/the-incentive-bubble\
+\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardeftab720\ri0\partightenfactor0
+\cf6 March 28\
+\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardeftab720\ri0\partightenfactor0
+\cf5 I believe the bubble story is hard to square with a model where there are both positive and negative sentiment shocks. The reason is because while a positive sentiment shock can be fed by a bubble which ultimately leads to a bust, therefore acting as an amplification mechanism, the negative sentiment shock would unlikely lead to a negative bubble. Although the bubble could emerge after the reversal, when the growth rate is again positive, hence leading to overshooting. Yet it is not clear why variations in technology should discourage from the emergence of a bubble. \
+\
+Occasionally binding constraint: how to insert technology? Need to insert it in the constraint. Still does not necessarily work because if both shocks are transitory then it does not play a difference whether the constraint is relaxed or not. If shocks are medium run then the economy might accumulate too much in the short run due to a relaxation of the constraint which brings the economy to a temporarily high borrowing equiibrium. Of course it\'92s hard to understand how agents act in anticipation of the absorption of the shock. All in all I think we need to write models that match our reduced form, at least we know we could get the result. \
+\
+I believe the narrative of quality of the assets could be compelling. Nonetheless we would need to find supporting evidence. \
+\
+\cf17 March 29\cf5 \
+Study Basu\'92s material \
+King: misallocation as in Khan and Thomas is a property of non technology shocks. In these models the distribution of firms is a state variable and ideally could be responsible for the boom and bust. The question is whether this is consistent with data that is in such modelling environment one would capture our dynamics even though once is controlling for measured tfp. \
+Tech shocks produce higher markup and lower prices \
+\
+Ryan comment: invertibility may always be an issue unless we define the sentiment shock as arising from intratemporal expectations \
+See Khorrami introduction \
+\
+\cf17 March 30\
+\cf19 From 
+\f0\b Boldrin and Woodford 1989
+\f1\b0 : technical survey paper on chaos and endogenous cycles \'97 need to cite it as a survey of old literature on endogenous cycle. Not too difficult to read if you are interested in understanding under what conditions cycles can emerge. The focus is on a single state variable satisfying specific properties.  They mention Bewley 1986 as the first demonstration that borrowing constraints could make endogenous business cycle possible in a standard context with infinitely lived hh and one-sector production technology. Deneckere and Judd 1986 obtain endogenous cycle in a model of endogenous product creation. \
+\
+We really want to write a paper as Boldrin and Woodford 1990 . Very elegant in the exposition, clear distinction and intersections between olg and infinitely-lived agents models. They clearly state the conditions under which endogenous cycles are 
+\f0\b possible
+\f1\b0 .  My guess is that we also need to work with those conditions and add an additional state to get conditional cycles. I need to understand how they can get endogenous cycle using only one state variable. \
+I am trying to understand the non linear framework in Boldrin and Woodford which consists in only one state variable vis a vis the linearized model in BGP: how BGP discuss nonlinearities? Can a system with only one state variable admit dynamics that are shock dependent? There indeterminacy does not arise because there is no forward looking element. \
+I guess the answer is that you can think the specification in BW as being approximated by an AR(2) process which of course can display periodic cycles. The same applies to a setup similar to BCS. \
+\
+In the introduction do Dickey Fuller test and select those variables that are not cyclical. Hence shock that IRF are cyclical only after sentiment. \
+\
+We want to write a model where there are oppositive productivity cutoff variations in response to the two shocks. Is this true in the data? Is the entrant more or less productive? Entry and exit models are based on Hopenhayn 1992\
+\
+Could extend BGP in two directions: 1. Conditional cyclicality 2. Heterogenous firms \
+\
+\
+Tips: remember that with log utility a constant fraction of wealth is consumed every period. }

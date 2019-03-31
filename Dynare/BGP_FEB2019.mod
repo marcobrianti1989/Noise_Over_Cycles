@@ -28,19 +28,19 @@ S          = 1;      % Other Tech Parameter
 ALP        = 2/3;    % Convexity of Production Function
 DEL        = 0.05;   % Durable Goods Depreciation Rate 
 BET        = 0.99;   % It could be WRONG! Discount Factor
-<<<<<<< HEAD
+
 THET       = 1/(BET*(1 - 0.0583)^PHIE)*.9976; % It should be set to have a ss unemployment rate of 0.0583
 RHO_THET   = 0.85;    % Persistence of tech shock
 SIGMA_THET = 1;      % SD of tech shock
 RHO_ZETA   = 0.74;    % Persistence of Preference Shocks
 SIGMA_ZETA = .01;      % SD of preference shock  
-=======
+
 THET       = 1/(BET*(1 - 0.0583)^PHIE); % It should be set to have a ss unemployment rate of 0.0583
 RHO_THET   = 0.9;    % Persistence of tech shock
 SIGMA_THET = 1;      % SD of tech shock
 RHO_ZETA   = 0.4;    % Persistence of Preference Shocks
 SIGMA_ZETA = 1;      % SD of preference shock  
->>>>>>> e006909e2d0d57d43d122b1a743af23eb2277219
+
 
 % Defining functionals forms and derivatives
 
@@ -86,11 +86,8 @@ end;
 steady;
 check;
 
-<<<<<<< HEAD
 stoch_simul(irf=30, order=1) logthet logzeta e x c;
-=======
-stoch_simul(irf=20, order=1) logthet logzeta e x rp;
->>>>>>> e006909e2d0d57d43d122b1a743af23eb2277219
+
 
 %stoch_simul(periods=100000, hp_filter = 1600, order=2,ar = 0, nofunctions,nograph,nodecomposition,nocorr) jobphim logz logR logU logV logFPHIC;
 

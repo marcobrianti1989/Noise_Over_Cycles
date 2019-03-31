@@ -18,9 +18,9 @@ dseries('initialize');
 global M_ options_ oo_ estim_params_ bayestopt_ dataset_ dataset_info estimation_info ys0_ ex0_
 options_ = [];
 M_.fname = 'BGP_FEB2019';
-M_.dynare_version = '4.5.4';
-oo_.dynare_version = '4.5.4';
-options_.dynare_version = '4.5.4';
+M_.dynare_version = '4.5.6';
+oo_.dynare_version = '4.5.6';
+options_.dynare_version = '4.5.6';
 %
 % Some global variables initialization
 %
@@ -168,7 +168,6 @@ M_.params( 9 ) = 0.05;
 DEL = M_.params( 9 );
 M_.params( 11 ) = 0.99;
 BET = M_.params( 11 );
-<<<<<<< HEAD
 M_.params( 10 ) = 1/(M_.params(11)*0.9417^M_.params(4))*.9976;
 THET = M_.params( 10 );
 M_.params( 12 ) = 0.85;
@@ -179,7 +178,6 @@ M_.params( 14 ) = 0.74;
 RHO_ZETA = M_.params( 14 );
 M_.params( 15 ) = .01;
 SIGMA_ZETA = M_.params( 15 );
-=======
 M_.params( 10 ) = 1/(M_.params(11)*0.9417^M_.params(4));
 THET = M_.params( 10 );
 M_.params( 12 ) = 0.9;
@@ -190,7 +188,6 @@ M_.params( 14 ) = 0.4;
 RHO_ZETA = M_.params( 14 );
 M_.params( 15 ) = 1;
 SIGMA_ZETA = M_.params( 15 );
->>>>>>> e006909e2d0d57d43d122b1a743af23eb2277219
 logthetss        = 0;
 logzetass        = 0;
 ess              = 0.777146777146777;
@@ -224,17 +221,14 @@ M_.Sigma_e(2, 1) = M_.Sigma_e(1, 2);
 M_.sigma_e_is_diagonal = 0;
 steady;
 oo_.dr.eigval = check(M_,options_,oo_);
-<<<<<<< HEAD
 options_.irf = 30;
 options_.order = 1;
 var_list_ = char('logthet','logzeta','e','x','c');
 info = stoch_simul(var_list_);
-=======
 options_.irf = 20;
 options_.order = 1;
 var_list_ = char('logthet','logzeta','e','x','rp');
 info = stoch_simul(var_list_);
->>>>>>> e006909e2d0d57d43d122b1a743af23eb2277219
 save('BGP_FEB2019_results.mat', 'oo_', 'M_', 'options_');
 if exist('estim_params_', 'var') == 1
   save('BGP_FEB2019_results.mat', 'estim_params_', '-append');
