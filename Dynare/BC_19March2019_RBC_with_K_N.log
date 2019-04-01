@@ -18,9 +18,10 @@ Residuals of the static equations:
 Equation number 1 : 0
 Equation number 2 : -0.052404
 Equation number 3 : 0
-Equation number 4 : 0
-Equation number 5 : 0
-Equation number 6 : 0
+Equation number 4 : 2.1857
+Equation number 5 : 3.6065
+Equation number 6 : -3.6065
+Equation number 7 : 0
 
 
 {Error using <a href="matlab:matlab.internal.language.introspective.errorDocCallback('print_info', 'c:\dynare\4.5.4\matlab\print_info.m', 76)" style="font-weight:bold">print_info</a> (<a href="matlab: opentoline('c:\dynare\4.5.4\matlab\print_info.m',76,0)">line 76</a>)
@@ -29,7 +30,7 @@ The steadystate file did not compute the steady state
 Error in <a href="matlab:matlab.internal.language.introspective.errorDocCallback('steady', 'c:\dynare\4.5.4\matlab\steady.m', 104)" style="font-weight:bold">steady</a> (<a href="matlab: opentoline('c:\dynare\4.5.4\matlab\steady.m',104,0)">line 104</a>)
     print_info(info,options_.noprint, options_);
 
-Error in <a href="matlab:matlab.internal.language.introspective.errorDocCallback('BC_19March2019_RBC_with_K_N', 'C:\Users\th3\Documents\Noise_Over_Cycles\Dynare\BC_19March2019_RBC_with_K_N.m', 133)" style="font-weight:bold">BC_19March2019_RBC_with_K_N</a> (<a href="matlab: opentoline('C:\Users\th3\Documents\Noise_Over_Cycles\Dynare\BC_19March2019_RBC_with_K_N.m',133,0)">line 133</a>)
+Error in <a href="matlab:matlab.internal.language.introspective.errorDocCallback('BC_19March2019_RBC_with_K_N', 'C:\Users\th3\Documents\Noise_Over_Cycles\Dynare\BC_19March2019_RBC_with_K_N.m', 137)" style="font-weight:bold">BC_19March2019_RBC_with_K_N</a> (<a href="matlab: opentoline('C:\Users\th3\Documents\Noise_Over_Cycles\Dynare\BC_19March2019_RBC_with_K_N.m',137,0)">line 137</a>)
 steady;
 
 Error in <a href="matlab:matlab.internal.language.introspective.errorDocCallback('dynare', 'c:\dynare\4.5.4\matlab\dynare.m', 223)" style="font-weight:bold">dynare</a> (<a href="matlab: opentoline('c:\dynare\4.5.4\matlab\dynare.m',223,0)">line 223</a>)
@@ -65,3 +66,152 @@ Processing outputs ...
 done
 Preprocessing completed.
 
+
+
+
+
+Residuals of the static equations:
+
+Equation number 1 : 0
+Equation number 2 : -0.052404
+Equation number 3 : 0
+Equation number 4 : 2.1857
+Equation number 5 : 3.6065
+Equation number 6 : 0
+
+
+{Error using <a href="matlab:matlab.internal.language.introspective.errorDocCallback('print_info', 'c:\dynare\4.5.4\matlab\print_info.m', 76)" style="font-weight:bold">print_info</a> (<a href="matlab: opentoline('c:\dynare\4.5.4\matlab\print_info.m',76,0)">line 76</a>)
+The steadystate file did not compute the steady state
+
+Error in <a href="matlab:matlab.internal.language.introspective.errorDocCallback('steady', 'c:\dynare\4.5.4\matlab\steady.m', 104)" style="font-weight:bold">steady</a> (<a href="matlab: opentoline('c:\dynare\4.5.4\matlab\steady.m',104,0)">line 104</a>)
+    print_info(info,options_.noprint, options_);
+
+Error in <a href="matlab:matlab.internal.language.introspective.errorDocCallback('BC_19March2019_RBC_with_K_N', 'C:\Users\th3\Documents\Noise_Over_Cycles\Dynare\BC_19March2019_RBC_with_K_N.m', 133)" style="font-weight:bold">BC_19March2019_RBC_with_K_N</a> (<a href="matlab: opentoline('C:\Users\th3\Documents\Noise_Over_Cycles\Dynare\BC_19March2019_RBC_with_K_N.m',133,0)">line 133</a>)
+steady;
+
+Error in <a href="matlab:matlab.internal.language.introspective.errorDocCallback('dynare', 'c:\dynare\4.5.4\matlab\dynare.m', 223)" style="font-weight:bold">dynare</a> (<a href="matlab: opentoline('c:\dynare\4.5.4\matlab\dynare.m',223,0)">line 223</a>)
+evalin('base',fname) ;
+
+Error in <a href="matlab:matlab.internal.language.introspective.errorDocCallback('run_file', 'C:\Users\th3\Documents\Noise_Over_Cycles\Dynare\run_file.m', 7)" style="font-weight:bold">run_file</a> (<a href="matlab: opentoline('C:\Users\th3\Documents\Noise_Over_Cycles\Dynare\run_file.m',7,0)">line 7</a>)
+dynare BC_19March2019_RBC_with_K_N
+} 
+uiopen('C:\Users\th3\Dropbox\fin_fisc_polu\MATLAB\main_file_daily_march2019.m',1)
+main_file_daily_march2019
+Step 1a
+{Operation terminated by user during <a href="matlab:matlab.internal.language.introspective.errorDocCallback('data_boot_IVSVAR', 'C:\Users\th3\Dropbox\fin_fisc_polu\MATLAB\data_boot_IVSVAR.m', 34)" style="font-weight:bold">data_boot_IVSVAR</a> (<a href="matlab: opentoline('C:\Users\th3\Dropbox\fin_fisc_polu\MATLAB\data_boot_IVSVAR.m',34,0)">line 34</a>)
+
+
+In <a href="matlab:matlab.internal.language.introspective.errorDocCallback('bootstrap_IVSVAR', 'C:\Users\th3\Dropbox\fin_fisc_polu\MATLAB\bootstrap_IVSVAR.m', 21)" style="font-weight:bold">bootstrap_IVSVAR</a> (<a href="matlab: opentoline('C:\Users\th3\Dropbox\fin_fisc_polu\MATLAB\bootstrap_IVSVAR.m',21,0)">line 21</a>)
+[data_boot1, Z_boot1]      = data_boot_IVSVAR(B_hat,nburn,res,Z,nsimul,which_correction);
+
+In <a href="matlab:matlab.internal.language.introspective.errorDocCallback('main_file_daily_march2019', 'C:\Users\th3\Dropbox\fin_fisc_polu\MATLAB\main_file_daily_march2019.m', 139)" style="font-weight:bold">main_file_daily_march2019</a> (<a href="matlab: opentoline('C:\Users\th3\Dropbox\fin_fisc_polu\MATLAB\main_file_daily_march2019.m',139,0)">line 139</a>)
+      = bootstrap_IVSVAR(B,nburn,res,Zvar,nsimul,which_correction);
+} 
+some_experiment_understanding
+corr(res1,res3)
+
+ans =
+
+     1
+
+some_experiment_understanding
+corr(res1,res3)
+
+ans =
+
+         0.272116022457666
+
+some_experiment_understanding
+corr(res1,res3)
+
+ans =
+
+         0.290767392725949
+
+some_experiment_understanding
+corr(res1,res3)
+
+ans =
+
+        0.0831992382702957
+
+some_experiment_understanding
+corr(res1,res3)
+
+ans =
+
+   NaN
+
+main_file_daily_march2019
+{Undefined function or variable 'asd'.
+
+Error in <a href="matlab:matlab.internal.language.introspective.errorDocCallback('main_file_daily_march2019', 'C:\Users\th3\Dropbox\fin_fisc_polu\MATLAB\main_file_daily_march2019.m', 116)" style="font-weight:bold">main_file_daily_march2019</a> (<a href="matlab: opentoline('C:\Users\th3\Dropbox\fin_fisc_polu\MATLAB\main_file_daily_march2019.m',116,0)">line 116</a>)
+asd
+} 
+res(1:15,1)
+
+ans =
+
+          -2.3660099076792
+          2.43002840808886
+          3.44342089547942
+         -9.05743638330586
+         -3.49915484767872
+           11.018686011808
+         0.837764031135805
+          3.91970006636461
+         -7.77238257145711
+          2.53888319401568
+          1.62887235840441
+          8.26080859301017
+           5.0776586544214
+         -1.76852350976505
+         -1.26135970737785
+
+res(1:15,5)
+
+ans =
+
+       -0.0145647173041684
+       0.00953093605731502
+        0.0178053641478542
+       -0.0256690872726433
+       -0.0204772390078292
+     -8.78104057729298e-05
+        0.0136221089917735
+       -0.0383583388802835
+        0.0256629546342808
+       -0.0969630975693686
+      -0.00789418564940775
+      -0.00618281734103551
+      -0.00695369978469806
+        0.0108822446960373
+       -0.0035759033028325
+
+some_experiment_understanding
+res1(1:15)
+
+ans =
+
+       -0.0145647173040517
+       0.00953093605713251
+        0.0178053641477858
+       -0.0256690872726493
+       -0.0204772390076946
+     -8.78104056605267e-05
+        0.0136221089916342
+       -0.0383583388800246
+         0.025662954634126
+       -0.0969630975692541
+      -0.00789418564941302
+      -0.00618281734106763
+      -0.00695369978470062
+         0.010882244696043
+      -0.00357590330269586
+
+main_file_daily_march2019
+{Undefined function or variable 'asd'.
+
+Error in <a href="matlab:matlab.internal.language.introspective.errorDocCallback('main_file_daily_march2019', 'C:\Users\th3\Dropbox\fin_fisc_polu\MATLAB\main_file_daily_march2019.m', 116)" style="font-weight:bold">main_file_daily_march2019</a> (<a href="matlab: opentoline('C:\Users\th3\Dropbox\fin_fisc_polu\MATLAB\main_file_daily_march2019.m',116,0)">line 116</a>)
+asd
+} 
