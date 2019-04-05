@@ -23,7 +23,7 @@ alp      = 0.6;  % Curvature production of non-durables
 gam      = 0.97;  % Curvature production of durables
 v0       = 1;    % Disutility of labor (linear)
 
-rhox     = 0.95;  % Persistence of tech shock of durables production
+rhox     = 0;  % Persistence of tech shock of durables production
 rhok     = 0;  % Persistence of tech shock of non-durables production
 rhos     = 0;  % Persistence of sentiment shock
 
@@ -31,11 +31,11 @@ rhos     = 0;  % Persistence of sentiment shock
 
 model; 
 
-exp(LOGSENT) * v0 * ( exp(LOGTHETK)*thetk*gam*LK^(gam-1) )^(-1) = exp(LOGSENT) * bet * (1-del) * v0 * ( exp(LOGTHETK(+1))*thetk*gam*LK(+1)^(gam-1) )^(-1) + exp(LOGSENT) * bet * ( a*( exp(LOGTHETX(+1)) * thetx * LX(+1)^alp )^v + (1-a)*( K )^v )^(-1) * (1-a) * ( K )^(v-1);
+exp(LOGSENT) * v0 * ( exp(LOGTHETK)*thetk*gam*LK^(gam-1) )^(-1) =  bet * (1-del) * v0 * ( exp(LOGTHETK(+1))*thetk*gam*LK(+1)^(gam-1) )^(-1) + exp(LOGSENT) * bet * ( a*( exp(LOGTHETX(+1)) * thetx * LX(+1)^alp )^v + (1-a)*( K )^v )^(-1) * (1-a) * ( K )^(v-1);
 
 exp(LOGSENT) * v0 = ( a*( exp(LOGTHETX) * thetx * LX^alp )^v + (1-a)*( K(-1) )^v )^(-1) * a * ( exp(LOGTHETX) * thetx * LX^alp )^(v-1) * exp(LOGTHETX)*thetx * alp * LX^(alp-1);
 
-C = ( a*( exp(LOGTHETX) * thetx * LX^alp )^v + (1-a)*( K(-1) )^v )^(1/v);
+exp(LOGSENT) * C = ( a*( exp(LOGTHETX) * thetx * LX^alp )^v + (1-a)*( K(-1) )^v )^(1/v);
 
 L = LK + LX;
 
@@ -49,7 +49,7 @@ LOGTHETX  = rhox*LOGTHETX(-1) + eps_X;
 
 LOGTHETK = rhok*LOGTHETK(-1) + eps_K;
 
-LOGSENT = rhos*LOGSENT(-1) + eps_S;
+LOGSENT = rhos*LOGSENT(-1) - eps_S;
 
 end;
 
@@ -91,7 +91,7 @@ end;
 steady;
 check;
 
-stoch_simul(irf=20, order=1) LOGTHETX C I L X LK LX K;
+stoch_simul(irf=20, order=1) LOGSENT LOGTHETX C I L X LK LX K;
 
 %stoch_simul(periods=100000, hp_filter = 1600, order=2,ar = 0, nofunctions,nograph,nodecomposition,nocorr) jobphim logz logR logU logV logFPHIC;
 
