@@ -75,7 +75,7 @@ for iss = 1:length(system_names)-1
       subsystem       = detrend_func(subsystem,which_trend);
       
       % Tests for lags
-      max_lags     = 40;
+      max_lags     = 8;
       [AIC(iss),BIC(iss),HQ(iss)] = aic_bic_hq(subsystem,max_lags);
       
       % Cholesky decomposition
