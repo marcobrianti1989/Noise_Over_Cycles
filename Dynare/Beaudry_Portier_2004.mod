@@ -25,7 +25,7 @@ v0       = 1;    % Disutility of labor (linear)
 
 rhox     = 0;  % Persistence of tech shock of durables production
 rhok     = 0;  % Persistence of tech shock of non-durables production
-rhos     = 0;  % Persistence of sentiment shock
+rhos     = 0.5;  % Persistence of sentiment shock
 
 % Defining functionals forms and derivatives
 
@@ -91,7 +91,7 @@ end;
 steady;
 check;
 
-stoch_simul(irf=20, order=1) LOGSENT LOGTHETX C I L X LK LX K;
+stoch_simul(irf=10, order=1) LOGSENT LOGTHETX C I L X LK LX K;
 
 %stoch_simul(periods=100000, hp_filter = 1600, order=2,ar = 0, nofunctions,nograph,nodecomposition,nocorr) jobphim logz logR logU logV logFPHIC;
 
