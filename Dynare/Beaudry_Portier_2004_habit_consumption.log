@@ -1,0 +1,131 @@
+Starting Dynare (version 4.5.4).
+Starting preprocessing of the model file ...
+Found 10 equation(s).
+Evaluating expressions...done
+Computing static model derivatives:
+ - order 1
+Computing dynamic model derivatives:
+ - order 1
+Processing outputs ...
+done
+Preprocessing completed.
+
+STEADY-STATE RESULTS:
+
+C        		 0.955393
+K        		 2.16381
+LK       		 0.101
+LX       		 0.511732
+X        		 0.668999
+L        		 0.612732
+I        		 0.108191
+LOGTHETX 		 0
+LOGTHETK 		 0
+LOGSENT  		 0
+
+EIGENVALUES:
+         Modulus             Real        Imaginary
+
+               0                0                0
+               0               -0                0
+       7.532e-17        7.532e-17                0
+             0.5              0.5                0
+             0.5              0.5                0
+          0.7144           0.6875           0.1943
+          0.7144           0.6875          -0.1943
+           1.488            1.488                0
+        3.06e+16        -3.06e+16                0
+       5.201e+18        5.201e+18                0
+             Inf             -Inf                0
+             Inf             -Inf                0
+             Inf             -Inf                0
+
+
+There are 6 eigenvalue(s) larger than 1 in modulus 
+for 6 forward-looking variable(s)
+
+The rank condition is verified.
+
+
+MODEL SUMMARY
+
+  Number of variables:         10
+  Number of stochastic shocks: 3
+  Number of state variables:   7
+  Number of jumpers:           6
+  Number of static variables:  2
+
+
+MATRIX OF COVARIANCE OF EXOGENOUS SHOCKS
+Variables       eps_X     eps_K     eps_S
+eps_X        1.000000  0.000000  0.000000
+eps_K        0.000000  0.000000  0.000000
+eps_S        0.000000  0.000000  1.000000
+
+POLICY AND TRANSITION FUNCTIONS
+                             LOGSENT        LOGTHETX               C               I               L               X              LK              LX               K
+Constant                           0               0        0.955393        0.108191        0.612732        0.668999        0.101000        0.511732        2.163813
+I(-1)                              0               0        0.140902       -0.179462       -0.093067        0.062475       -0.172715        0.079647        1.000000
+LOGTHETX(-1)                       0        0.500000        0.359363        0.054616        0.002076        0.294898        0.052563       -0.050486               0
+K(-1)                              0               0        0.133857       -0.170488       -0.088414        0.059351       -0.164079        0.075665        0.950000
+L(-1)                              0               0        0.136482        0.479668        0.604419        0.111999        0.461635        0.142784               0
+LOGSENT(-1)                 0.500000               0       -0.100637       -0.237303       -0.333666       -0.082584       -0.228382       -0.105284               0
+eps_X                              0        1.000000        0.718726        0.109232        0.004153        0.589797        0.105126       -0.100973               0
+eps_K                              0               0       -0.210152        0.967938        0.607569       -0.172454        0.827426       -0.219856               0
+eps_S                      -1.000000               0        0.201274        0.474607        0.667332        0.165168        0.456764        0.210568               0
+
+
+THEORETICAL MOMENTS
+VARIABLE         MEAN  STD. DEV.   VARIANCE
+LOGSENT        0.0000     1.1547     1.3333
+LOGTHETX       0.0000     1.1547     1.3333
+C              0.9554     1.0332     1.0675
+I              0.1082     0.8181     0.6693
+L              0.6127     1.1473     1.3163
+X              0.6690     0.7830     0.6131
+LK             0.1010     0.7873     0.6199
+LX             0.5117     0.4913     0.2413
+K              2.1638     2.6051     6.7863
+
+
+
+VARIANCE DECOMPOSITION (in percent)
+             eps_X   eps_K   eps_S
+LOGSENT       0.00    0.00  100.00
+LOGTHETX    100.00    0.00    0.00
+C            66.78    0.00   33.22
+I             2.28    0.00   97.72
+L             0.18    0.00   99.82
+X            77.00    0.00   23.00
+LK            2.28    0.00   97.72
+LX            5.03    0.00   94.97
+K             1.07    0.00   98.93
+
+
+
+MATRIX OF CORRELATIONS
+Variables     LOGSENT  LOGTHETX         C         I         L         X        LK        LX         K
+LOGSENT        1.0000    0.0000   -0.3801   -0.8271   -0.8876   -0.3678   -0.8271   -0.7474   -0.2474
+LOGTHETX       0.0000    1.0000    0.8166    0.1300   -0.0058    0.8773    0.1300   -0.2219    0.0389
+C             -0.3801    0.8166    1.0000    0.3855    0.4239    0.9887    0.3855    0.3720    0.5318
+I             -0.8271    0.1300    0.3855    1.0000    0.9381    0.4178    1.0000    0.5883   -0.0019
+L             -0.8876   -0.0058    0.4239    0.9381    1.0000    0.4037    0.9381    0.8319    0.3125
+X             -0.3678    0.8773    0.9887    0.4178    0.4037    1.0000    0.4178    0.2732    0.3990
+LK            -0.8271    0.1300    0.3855    1.0000    0.9381    0.4178    1.0000    0.5883   -0.0019
+LX            -0.7474   -0.2219    0.3720    0.5883    0.8319    0.2732    0.5883    1.0000    0.7328
+K             -0.2474    0.0389    0.5318   -0.0019    0.3125    0.3990   -0.0019    0.7328    1.0000
+
+
+
+COEFFICIENTS OF AUTOCORRELATION
+Order            1       2       3       4       5
+LOGSENT     0.5000  0.2500  0.1250  0.0625  0.0313
+LOGTHETX    0.5000  0.2500  0.1250  0.0625  0.0312
+C           0.6575  0.4482  0.3080  0.2084  0.1362
+I           0.7397  0.3653  0.0541 -0.1474 -0.2479
+L           0.7775  0.4583  0.1832 -0.0071 -0.1158
+X           0.5986  0.3680  0.2281  0.1396  0.0825
+LK          0.7397  0.3653  0.0541 -0.1474 -0.2479
+LX          0.8607  0.6866  0.5115  0.3563  0.2305
+K           0.9494  0.8245  0.6639  0.4994  0.3515
+Total computing time : 0h00m02s
