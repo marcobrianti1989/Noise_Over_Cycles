@@ -18,9 +18,9 @@ dseries('initialize');
 global M_ options_ oo_ estim_params_ bayestopt_ dataset_ dataset_info estimation_info ys0_ ex0_
 options_ = [];
 M_.fname = 'BGP_FEB2019';
-M_.dynare_version = '4.5.6';
-oo_.dynare_version = '4.5.6';
-options_.dynare_version = '4.5.6';
+M_.dynare_version = '4.5.4';
+oo_.dynare_version = '4.5.4';
+options_.dynare_version = '4.5.4';
 %
 % Some global variables initialization
 %
@@ -224,10 +224,6 @@ oo_.dr.eigval = check(M_,options_,oo_);
 options_.irf = 30;
 options_.order = 1;
 var_list_ = char('logthet','logzeta','e','x','c');
-info = stoch_simul(var_list_);
-options_.irf = 20;
-options_.order = 1;
-var_list_ = char('logthet','logzeta','e','x','rp');
 info = stoch_simul(var_list_);
 save('BGP_FEB2019_results.mat', 'oo_', 'M_', 'options_');
 if exist('estim_params_', 'var') == 1

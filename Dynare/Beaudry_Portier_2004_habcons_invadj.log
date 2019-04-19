@@ -1,0 +1,10 @@
+Starting Dynare (version 4.5.4).
+Starting preprocessing of the model file ...
+Found 13 equation(s).
+Evaluating expressions...done
+Computing static model derivatives:
+ - order 1
+Computing dynamic model derivatives:
+ - order 1
+Processing outputs ...
+ERROR: Can't open file Beaudry_Portier_2004_habcons_invadj/checksum
