@@ -25,15 +25,15 @@ parameters PI LAMBDA PHI R A M ALPHA VOLZ RHOZ RHOS VOLS C;
 
 
 %% Calibration
-A   = .5; %1
-PHI = 1.4; %1.3; %20
-R   = 1.025; %1.01
-LAMBDA = 0.9875;
-PI = 0.60 ;  
-ALPHA  = .5/3;
+A   = .45; %1; NOTE THAT A - (1-LAMBDA)*PHI > 0
+PHI = 1.1; %1.4; %20
+R   = 1.01; %1.01
+LAMBDA = 0.995875;
+PI = 0.150 ; %NOTE THAT PI - 1 + 1/R > 0 
+ALPHA  = .9/3;
 M = 1;
-VOLZ = .1;
-VOLS = 0.01;
+VOLZ = .5;
+VOLS = 0; %.001;
 RHOZ = .92;
 RHOS = .92;
 C = .5;
@@ -41,13 +41,13 @@ C = .5;
 %% Model block
 model;
 
-k =  (PI/(q + PHI - q(+1)/R))*( (A*exp(z)+LAMBDA*PHI+q)*k(-1) - R*b) + (1-PI)*LAMBDA*k(-1);
+k =  (PI/(q + PHI - q(+1)/R))*( (A*exp(z)+LAMBDA*PHI+q)*k(-1) - R*b(-1)) + (1-PI)*LAMBDA*k(-1);
 
 b*exp(s)    =  R*b(-1) + q*(k - k(-1)) + PHI*(k-LAMBDA*k(-1)) - A*exp(z)*k(-1);
 
 ALPHA*exp(z(+1))*(((kbar - k)/M)^(ALPHA-1))/R   =  q - q(+1)/R; 
 
-kbar =2; %*exp(10*z);  
+kbar =2; %*exp(20*z);  
 
 yg = M^(1-ALPHA)*exp(z)*(kbar(-1)-k(-1))^ALPHA; %gatherers'aggregate output
 
@@ -65,7 +65,7 @@ dp = q - q(+1)/R;
 
 i = PHI*(k-LAMBDA*k(-1));
 
-cons = q*k(-1) - R*b(-1);
+cons = q*k(-1) - R*b(-1); %THE COBSTRAINT DOES NOT BIND IN SS
 
 end;
 
