@@ -99,7 +99,7 @@ for i_shock=1:nshocks
 end
 
 %Normalization
-normalization = 1;
+normalization = 0;
 if normalization == 1
       ub1(:,:,i_shock)   = ub1(:,:,1)/IRFs(1,1,1);
       lb1(:,:,i_shock)   = lb1(:,:,1)/IRFs(1,1,1);

@@ -17,7 +17,7 @@ control_pop                = 0;       % Divide key macro variables over populati
 which_trend                = 'quad';  %'BP', 'HP', 'lin', 'quad', 'diff', 'none', 'demean': detrending the variables before adding them in the VAR.
 which_boot                 = 'none';  % Either 'none' or 'blocks'
 blocksize                  = 4;       % if which_boot = 'blocks', then decide the block of residuals
-nsimul                     = 20;     % Number of bootstrap simulations
+nsimul                     = 500;     % Number of bootstrap simulations
 nburn                      = 0;       % Number of observations to burn during each bootstrap
 sig1                       = 0.16;    % Tighter Confidence Interval
 sig2                       = 0.05;    % Looser Confidence Interval
@@ -31,7 +31,7 @@ pos_ZTILDE                 = find(strcmp('ZTILDE',system_names)==1);  % Position
 pos_uTFP                   = find(strcmp('UnantTFPshock',system_names)==1); % Position of unexpected productivity shock
 which_shocks               = pos_ZTILDE;                              % Cholesky, Position of the Shock
 system_names_graph         = {'Real GDP','Real Investment','Total Hours',...
-      'Real Inventories','Real Consumption','GDP Deflator'};  
+      'Real Inventories','Real Consumption','GDP Deflator'};
 % Read main dataset
 filename                    = 'main_file';
 sheet                       = 'Sheet1';
@@ -97,8 +97,16 @@ for iss = 1:length(system_names)-1
       end
       
       % Generate IRFs with upper and lower bounds
-      [IRFs(:,:,:,iss), ub1(:,:,:,iss), lb1(:,:,:,iss), ub2(:,:,:,iss), lb2(:,:,:,iss)] = ...
+      [IRFs(:,:,:,iss),ub1(:,:,:,iss),lb1(:,:,:,iss),ub2(:,:,:,iss),lb2(:,:,:,iss)] = ...
             genIRFs(A(:,:,iss),A_boot(:,:,:,iss),B(:,:,iss),B_boot(:,:,:,iss),H,sig1,sig2);
+      
+      % Create and Printing figures for Variance decomposition
+      which_ID          = 'vardec';
+      print_figs        = 'no';
+      [vardec(:,:,:,iss),ub1_vardec(:,:,:,iss), ...
+            lb1_vardec(:,:,:,iss),ub2_vardec(:,:,:,iss),lb2_vardec(:,:,:,iss)] = ...
+            gen_vardec_boot(0,0,A(:,:,iss),A_boot(:,:,:,iss),...
+            B(:,:,iss),B_boot(:,:,:,iss),H,sig1,sig2);
       
       clear subsystem data_boot2 res ss
 end
@@ -115,6 +123,18 @@ LB1          = 100*squeeze(LB1)';
 LB2          = lb2(2,:,1,:);
 LB2          = 100*squeeze(LB2)';
 
+% Reshape VDs to use "plot_IRFs_2CIs" function below
+VD              = vardec(2,:,1,:);
+VD              = 100*squeeze(VD)';
+ub1_VD          = ub1_vardec(2,:,1,:);
+ub1_VD          = 100*squeeze(ub1_VD)';
+ub2_VD          = ub2_vardec(2,:,1,:);
+ub2_VD          = 100*squeeze(ub2_VD)';
+lb1_VD          = lb1_vardec(2,:,1,:);
+lb1_VD          = 100*squeeze(lb1_VD)';
+lb2_VD          = lb2_vardec(2,:,1,:);
+lb2_VD          = 100*squeeze(lb2_VD)';
+
 % Create and Printing figures
 for iend = 1:length(system_names)-1
       endogenous_var_names{iend} = system_names{iend+1};
@@ -122,7 +142,12 @@ end
 base_path         = pwd;
 which_ID          = 'CHOL';
 which_shocks      = 1;
-plot_IRFs_2CIs(IRFS,UB1,LB1,UB2,LB2,H,which_shocks,shocknames,...
+% plot_IRFs_2CIs(IRFS,UB1,LB1,UB2,LB2,...
+%       H,which_shocks,shocknames,...
+%       system_names_graph,which_ID,print_figs,use_current_time,base_path)
+
+plot_IRFs_2CIs(VD,ub1_VD,lb1_VD,ub2_VD,lb2_VD,...
+      H,which_shocks,shocknames,...
       system_names_graph,which_ID,print_figs,use_current_time,base_path)
 
 tech_info_table_Chol;

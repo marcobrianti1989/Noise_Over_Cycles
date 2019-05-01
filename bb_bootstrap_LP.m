@@ -10,7 +10,7 @@ function [Yboot, Xboot] = bb_bootstrap_LP(Y,X,nsimul,lags)
 
 T                  = length(Y); 
 q                  = size(X,2); 
-l                  = floor((T-q)^(1/3)); %quite arbitrary 
+l                  = ceil((T-q)^(1/3)); %quite arbitrary 
 
 % need to do for every h
 % there are (T-l+1) (1+q)-tuples

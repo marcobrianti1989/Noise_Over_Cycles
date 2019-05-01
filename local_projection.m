@@ -17,22 +17,19 @@ for h = 1:H
                         X = [X, u(lags-jj+1:end-jj-h+1,:), y(lags-jj+1:end-jj-h+1,:), ...
                               x(lags-jj+1:end-jj-h+1,:)];
                         if h > 1 && jj == 1
-                              X = [X, resh(1:end-1)];
+                              X = [X, resh(2:end)];
                         end
                   else % no controls
                         X = [X, u(lags-jj+1:end-jj-h+1,:), y(lags-jj+1:end-jj-h+1,:)];
                         if h > 1 && jj == 1
-                              X = [X, resh(1:end-1)];
+                              X = [X, resh(2:end)];
                         end
                   end
             end
       end
-     
+      
       X                  = [X, ones(length(Y),1)];
       [T,n]              = size(X);
-      %Trend              = [1:1:T]';
-      %Trend              = [Trend Trend.^2];
-      %X                  = [X Trend];
       degreeFreedom(h)   = T - n;
       nRegressor(h)      = n;
       tuple_store{h}     = [Y X];
@@ -42,8 +39,23 @@ for h = 1:H
       res{h}             = resh;
       Rsquared(h)        = 1 - var(res{h})/var(Y);
       
-      % Variance Decomposition
-      NUM                = NUM + B(1)^2;
+      
+      XVD                       = X(:,2:end);
+      BVD                       = XVD'*XVD\(XVD'*Y);
+      resVD                     = Y - XVD*BVD;
+      XXVD                      = ones(length(resVD),1);
+      for i = 1:h
+            XXVD                      = [XXVD u(lags+i:end-h+i,:)];
+      end
+      [~,~,~,~,Rq]              = regress(resVD,XXVD);
+      T                         = length(resVD);
+      RVD(h)                    = Rq(1); %1 - (1-Rq(1))*((T-1)/(T-h-1)); adj Rsquared
+      %VDstore                = RVD;
+      
+      
+      
+      %Variance Decomposition
+      NUM                = NUM + B(1)^2*var(u);
       %Den0 = var(resh) + Num; Den1 = var(resh - IRF(1)*X(1+1:end,1)) + Num; Den2 = var(resh - IRF(1)*X(1+2:end,1) - IRF(2)*X(1+1:end-1 ,1)) + Num;
       if h == 1
             Xstore       = u(lags+1:end-h+1,1);
@@ -54,4 +66,8 @@ for h = 1:H
             DEN          = var(resh - sum(IRFrep.*Xstore,2)) + NUM;
       end
       VDstore(h)   = NUM/DEN;
+      
+      clear X
+      
+      
 end
