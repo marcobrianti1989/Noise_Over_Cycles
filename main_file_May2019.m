@@ -14,8 +14,8 @@ load('TechShock_identification.mat');
 lags                = 4;             % Number of lags in the first step (deriving Ztilde)
 leads               = 0;             % Number of leads in the first step (deriving Ztilde)
 H                   = 20;            % IRFs horizon
-lags_LP             = 1;            % Number of lags in the Local Projection
-which_trend         = 'none';        %'BP', 'HP', 'lin', 'quad', 'none', 'demean' for Local Projection
+lags_LP             = 2;            % Number of lags in the Local Projection
+which_trend         = 'quad';        %'BP', 'HP', 'lin', 'quad', 'none', 'demean' for Local Projection
 which_Z             = {'1','2','3','4','5'}; % Which Forecast Revision: RGDP, NGDP, RCONS, INDPROD, RINV. If it is more than one it takes the first PC
 which_shock         = {'Sentiment'};      % Tech, News, Sentiment
 loc_start_exogenous = 0;             % Exogenous start
@@ -25,9 +25,9 @@ nPC_LP              = 3;             % Number of Principal Components in the sec
 norm_SHOCK          = 0;             % Divide shock over its own variance
 printIRFs           = 0;             % Print IRFs
 printVD             = 0;              % Print Variance Decompositions
-nsimul              = 2000;           % number of simulations for bootstrap
+nsimul              = 500;           % number of simulations for bootstrap
 control_pop         = 0;             % Divide GDP, Cons, Hours, Investment over population
-varlist             = {'HoursAll','Hours','HoursPerPerson','UnempRate','Employment'};%,'GDPDefl','FFR'}; % Define endogenous variables for LP
+varlist             = {'RealGDP','RealInvestment','RealCons','Hours'};%{'HoursAll','Hours','HoursPerPerson','UnempRate','Employment'};%,'GDPDefl','FFR'}; % Define endogenous variables for LP
 varlist_graph       = varlist; %{'Real GDP','Real Investment','Real Consumption','Total Hours'};
 
 % Read main dataset
@@ -79,6 +79,7 @@ X_lead                      = TFPBP;
 % Control Regression
 [~, Zhat, Ztilde, regressor] = lead_lag_matrix_regression(Y,X_lead,...
       leads,X_lag,lags,X_contemporaneous);
+%Ztilde                       = (nanvar(Ztilde)^0.5)*randn(length(Ztilde),1);
 
 %*************************************************************************%
 %                                                                         %

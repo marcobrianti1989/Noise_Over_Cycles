@@ -6,7 +6,6 @@ function [IRF,res,tuple_store,VDstore,degreeFreedom,nRegressor] = ...
 % u is exogenous regressor
 % lags is how many lags of x and u we want to take in the regression
 % regression: y(t+h) = alpha + B*u(t) + C1*u(t-1) + D1*y(t-1) + G1*x(t-1) + ...
-NUM = 0;
 y = detrend_func(y,which_trend);
 for h = 1:H
       Y          = y(lags+h:end,:);
@@ -39,35 +38,51 @@ for h = 1:H
       res{h}             = resh;
       Rsquared(h)        = 1 - var(res{h})/var(Y);
       
+      trunc = 12;
       
       XVD                       = X(:,2:end);
       BVD                       = XVD'*XVD\(XVD'*Y);
       resVD                     = Y - XVD*BVD;
-      XXVD                      = ones(length(resVD),1);
-      for i = 1:h
-            XXVD                      = [XXVD u(lags+i:end-h+i,:)];
+      if h == 1
+            CC = ones(length(resVD),1);
+      end
+      if h == 1
+            XXVD                      = [CC u(lags+h:end,:)];
+      elseif h < trunc && h > 1
+            XXVD                      = [XXVD(1:end-1,:) u(lags+h:end,:)];
+      else
+            XXVD                      = [XXVD(1:end-1,1) XXVD(1:end-1,3:end) u(lags+h:end,:)];
       end
       [~,~,~,~,Rq]              = regress(resVD,XXVD);
       T                         = length(resVD);
       RVD(h)                    = Rq(1); %1 - (1-Rq(1))*((T-1)/(T-h-1)); adj Rsquared
-      %VDstore                = RVD;
-      
-      
+           
       
       %Variance Decomposition
-      NUM                = NUM + B(1)^2*var(u);
       %Den0 = var(resh) + Num; Den1 = var(resh - IRF(1)*X(1+1:end,1)) + Num; Den2 = var(resh - IRF(1)*X(1+2:end,1) - IRF(2)*X(1+1:end-1 ,1)) + Num;
-      if h == 1
-            Xstore       = u(lags+1:end-h+1,1);
-            DEN          = var(resh) + NUM;
-      else
-            Xstore       = [u(lags+h:end,1) Xstore(1:end-1,:)];
-            IRFrep       = repmat(IRF,[size(Xstore,1),1]);
-            DEN          = var(resh - sum(IRFrep.*Xstore,2)) + NUM;
-      end
-      VDstore(h)   = NUM/DEN;
+%       if h == 1
+%             NUM          = IRF.^2*var(u);
+%             DEN          = var(resh) + NUM;
+%       else
+%             if h == 2
+%                   Xstore       = u(lags+h:end,1);
+%                   IRFrep       = repmat(IRF(1:end-1),[size(Xstore,1),1]);
+%                   NUM          = sum(IRF.^2)*var(u);
+%             elseif h > 2 && h <= trunc
+%                   Xstore       = [u(lags+h:end,1) Xstore(1:end-1,:)];
+%                   IRFrep       = repmat(IRF(1:end-1),[size(Xstore,1),1]);
+%                   NUM          = sum(IRF.^2)*var(u);
+%             else
+%                   Xstore       = [u(lags+h:end,1) Xstore(1:end-1,1:end-1)];
+%                   IRFrep       = repmat(IRF(1:trunc-1),[size(Xstore,1),1]);
+%                   NUM          = sum(IRF(1:trunc-1).^2)*var(u);
+%             end
+%             DEN          = var(resh - sum(IRFrep.*Xstore,2)) + NUM;
+%       end
+%       VDstore(h)   = NUM/DEN;
       
       clear X
       
-      
 end
+
+VDstore                   = RVD;
