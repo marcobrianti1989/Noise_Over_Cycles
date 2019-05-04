@@ -14,7 +14,7 @@ load('TechShock_identification.mat');
 lags                = 4;             % Number of lags in the first step (deriving Ztilde)
 leads               = 0;             % Number of leads in the first step (deriving Ztilde)
 H                   = 20;            % IRFs horizon
-lags_LP             = 2;            % Number of lags in the Local Projection
+lags_LP             = 3;            % Number of lags in the Local Projection
 which_trend         = 'quad';        %'BP', 'HP', 'lin', 'quad', 'none', 'demean' for Local Projection
 which_Z             = {'1','2','3','4','5'}; % Which Forecast Revision: RGDP, NGDP, RCONS, INDPROD, RINV. If it is more than one it takes the first PC
 which_shock         = {'Sentiment','Tech'};      % Tech, News, Sentiment
@@ -25,15 +25,15 @@ nPC_LP              = 3;             % Number of Principal Components in the sec
 norm_SHOCK          = 0;             % Divide shock over its own variance
 printIRFs           = 1;             % Print IRFs
 printVD             = 0;              % Print Variance Decompositions
-nsimul              = 2000;           % number of simulations for bootstrap
+nsimul              = 500;           % number of simulations for bootstrap
 control_pop         = 0;             % Divide GDP, Cons, Hours, Investment over population
-varlist             = {'ProfitAdj','ProfitbefTax','ProfitaftTax','Dividends','RealGDP','Cashflow'};%{'HoursAll','Hours','HoursPerPerson','UnempRate','Employment'};%,'GDPDefl','FFR'}; % Define endogenous variables for LP
-varlist_graph       = varlist; %{'Real GDP','Real Investment','Real Consumption','Total Hours'};
+varlist             = {'ProfitAdj','ProfitbefTax','ProfitaftTax','Dividends','RealGDP','Cashflow'};%{'RealGDP','RealInvestment','RealCons','HoursAll'};%{'ProfitAdj','ProfitbefTax','ProfitaftTax','Dividends','RealGDP','Cashflow'};%{'HoursAll','Hours','HoursPerPerson','UnempRate','Employment'};%,'GDPDefl','FFR'}; % Define endogenous variables for LP
+varlist_graph       = varlist; %{'RealGDP','RealInvestment','RealCons','Hours'};
 
 % Read main dataset
 filename                    = 'main_file';
 sheet                       = 'Sheet1';
-range                       = 'B1:ED300';
+range                       = 'B1:EG300';
 do_truncation               = 0; %Do not truncate data. You will have many NaN
 [dataset, var_names]        = read_data2(filename, sheet, range, do_truncation);
 dataset                     = [dataset; NaN(leads,size(dataset,2))]; % Adding some NaN at the end for technical reasons
@@ -73,8 +73,8 @@ YPCs               = get_principal_components(Y_cut);
 YPCs               = [NaN(tt-1,size(Yiw,2)); YPCs; NaN(size(Yiw,1)-tt2,size(Yiw,2))];
 Y                  = YPCs(:,1);
 % Define Regressors and Dependent Variable
-X_contemporaneous           = [TFPBP SHOCKS_NARRATIVE];% [TFPBP SHOCKS_NARRATIVE]; %[TFPBP];%
-X_lag                       = [TFPBP PC_first SHOCKS_NARRATIVE];%[TFPBP PC SHOCKS_NARRATIVE]; %[TFPBP PC];%
+X_contemporaneous           = [TFPBP];% SHOCKS_NARRATIVE];% [TFPBP SHOCKS_NARRATIVE]; %[TFPBP];%
+X_lag                       = [TFPBP PC_first]; % SHOCKS_NARRATIVE];%[TFPBP PC SHOCKS_NARRATIVE]; %[TFPBP PC];%
 X_lead                      = TFPBP;
 % Control Regression
 [~, Zhat, Ztilde, regressor] = lead_lag_matrix_regression(Y,X_lead,...
@@ -117,13 +117,15 @@ TermYield               = TenYTreasury - ThreeMTreasury;
 BankLeverage            = BanksTotLiabilities - BanksTotAssets;
 CorpEqui2Assets         = NonFinEquity - NonFinTotAssets;
 CorpDebt2Assets         = NonFinDebtSecurities - NonFinTotAssets;
-ProfitAdj               = CorpProfitsAdj - GDPDefl;
-ProfitbefTax            = CorpProfitsbefTax - GDPDefl;
-ProfitaftTax            = CorpProfitsNoAdj - GDPDefl;
-Dividends               = Dividends - GDPDefl;
-UndistProf              = UndistributedProfits - GDPDefl;
-Cashflow                = CashFlow - GDPDefl;
-CorpEqui2Assets         = NonFinEquity - GDPDefl;
+ProfitAdj               = CorpProfitsAdj - GDPDefl - RealGDP;
+ProfitbefTax            = CorpProfitsbefTax - GDPDefl - RealGDP;
+ProfitaftTax            = CorpProfitsNoAdj - GDPDefl - RealGDP;
+Dividends               = Dividends - GDPDefl - RealGDP;
+UndistProf              = UndistributedProfits - GDPDefl - RealGDP;
+Cashflow                = CashFlow - GDPDefl - RealGDP;
+CorpEqui2Assets         = NonFinEquity - GDPDefl - RealGDP;
+Epay                    = 100*EPayout./exp(ValueAddedNFCorp); %./exp(RealGDP);
+Drep                    = 100*DebtRep./exp(ValueAddedNFCorp); %./exp(RealGDP); 
 % ProfAdj                 = CorpProfitsAdj - NonFinEquity;
 % ProfbT                  = CorpProfitsbefTax - NonFinEquity;
 % Prof                    = CorpProfitsNoAdj - NonFinEquity;
@@ -148,6 +150,8 @@ end
 if diff_LP == 1
       dep_var = [nan(1,size(dep_var,2)); diff(dep_var)];
 end
+
+
 
 % Align timing with SHOCK
 dep_var          = dep_var(1+lags:end-leads,:);

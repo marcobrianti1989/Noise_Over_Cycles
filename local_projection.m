@@ -38,7 +38,7 @@ for h = 1:H
       res{h}             = resh;
       Rsquared(h)        = 1 - var(res{h})/var(Y);
       
-      trunc = 12;
+      trunc = 25;
       
       XVD                       = X(:,2:end);
       BVD                       = XVD'*XVD\(XVD'*Y);
