@@ -14,20 +14,20 @@ load('TechShock_identification.mat');
 lags                = 4;             % Number of lags in the first step (deriving Ztilde)
 leads               = 0;             % Number of leads in the first step (deriving Ztilde)
 H                   = 20;            % IRFs horizon
-lags_LP             = 3;            % Number of lags in the Local Projection
+lags_LP             = 2;            % Number of lags in the Local Projection
 which_trend         = 'quad';        %'BP', 'HP', 'lin', 'quad', 'none', 'demean' for Local Projection
 which_Z             = {'1','2','3','4','5'}; % Which Forecast Revision: RGDP, NGDP, RCONS, INDPROD, RINV. If it is more than one it takes the first PC
 which_shock         = {'Sentiment','Tech'};      % Tech, News, Sentiment
 loc_start_exogenous = 0;             % Exogenous start
 diff_LP             = 0;             % LP in levels or differences
 nPC_first           = 3;             % Number of Principal Components in the first stage
-nPC_LP              = 3;             % Number of Principal Components in the second stage
+nPC_LP              = 2;             % Number of Principal Components in the second stage
 norm_SHOCK          = 0;             % Divide shock over its own variance
 printIRFs           = 1;             % Print IRFs
 printVD             = 0;              % Print Variance Decompositions
 nsimul              = 500;           % number of simulations for bootstrap
 control_pop         = 0;             % Divide GDP, Cons, Hours, Investment over population
-varlist             = {'ProfitAdj','ProfitbefTax','ProfitaftTax','Dividends','RealGDP','Cashflow'};%{'RealGDP','RealInvestment','RealCons','HoursAll'};%{'ProfitAdj','ProfitbefTax','ProfitaftTax','Dividends','RealGDP','Cashflow'};%{'HoursAll','Hours','HoursPerPerson','UnempRate','Employment'};%,'GDPDefl','FFR'}; % Define endogenous variables for LP
+varlist             = {'ProfitAdj','ProfitaftTax','Dividends','RealGDP','Cashflow'};%{'RealGDP','RealInvestment','RealCons','HoursAll'};%{'ProfitAdj','ProfitbefTax','ProfitaftTax','Dividends','RealGDP','Cashflow'};%{'HoursAll','Hours','HoursPerPerson','UnempRate','Employment'};%,'GDPDefl','FFR'}; % Define endogenous variables for LP
 varlist_graph       = varlist; %{'RealGDP','RealInvestment','RealCons','Hours'};
 
 % Read main dataset
@@ -117,15 +117,15 @@ TermYield               = TenYTreasury - ThreeMTreasury;
 BankLeverage            = BanksTotLiabilities - BanksTotAssets;
 CorpEqui2Assets         = NonFinEquity - NonFinTotAssets;
 CorpDebt2Assets         = NonFinDebtSecurities - NonFinTotAssets;
-ProfitAdj               = CorpProfitsAdj - GDPDefl - RealGDP;
-ProfitbefTax            = CorpProfitsbefTax - GDPDefl - RealGDP;
-ProfitaftTax            = CorpProfitsNoAdj - GDPDefl - RealGDP;
-Dividends               = Dividends - GDPDefl - RealGDP;
-UndistProf              = UndistributedProfits - GDPDefl - RealGDP;
-Cashflow                = CashFlow - GDPDefl - RealGDP;
-CorpEqui2Assets         = NonFinEquity - GDPDefl - RealGDP;
-Epay                    = 100*EPayout./exp(ValueAddedNFCorp); %./exp(RealGDP);
-Drep                    = 100*DebtRep./exp(ValueAddedNFCorp); %./exp(RealGDP); 
+ProfitAdj               = CorpProfitsAdj - GDPDefl;
+ProfitbefTax            = CorpProfitsbefTax - GDPDefl;
+ProfitaftTax            = CorpProfitsNoAdj - GDPDefl;
+Dividends               = Dividends - GDPDefl;
+UndistProf              = UndistributedProfits - GDPDefl;
+Cashflow                = CashFlow - GDPDefl;
+CorpEqui2Assets         = NonFinEquity - GDPDefl;
+Epay                    = 100*EPayout./exp(RealGDP);%./exp(ValueAddedNFCorp); %./exp(RealGDP);
+Drep                    = 100*DebtRep./exp(RealGDP);%./exp(ValueAddedNFCorp); %./exp(RealGDP); 
 % ProfAdj                 = CorpProfitsAdj - NonFinEquity;
 % ProfbT                  = CorpProfitsbefTax - NonFinEquity;
 % Prof                    = CorpProfitsNoAdj - NonFinEquity;
@@ -140,6 +140,11 @@ Drep                    = 100*DebtRep./exp(ValueAddedNFCorp); %./exp(RealGDP);
 % Div                     = Dividends - NonFinTotAssets;
 % UndistProf              = UndistributedProfits - NonFinTotAssets;
 % Cashflow                = CashFlow - NonFinTotAssets;
+
+% corr(Epay(1:end),RealGDP,'rows','complete')
+% corr(Drep(1:end),RealGDP,'rows','complete')
+
+
 
 % Matrix of dependent variables - All the variables are in log levels
 for i = 1:length(varlist)
