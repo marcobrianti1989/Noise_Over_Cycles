@@ -29,6 +29,9 @@ for k = 1 : nsimul                 % loop over bootstrap simulations
       end
       % Store spect
       spect(:,k) = sp;
+      if k/50 == ceil(k/50)
+            disp(['Spectrum: simulation number ',num2str(k)])
+      end
 end
 
 periodicity = 2*pi./omega;

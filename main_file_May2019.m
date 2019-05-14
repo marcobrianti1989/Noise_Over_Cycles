@@ -3,6 +3,7 @@
 %    Code by Brianti, Marco e Cormun, Vito
 %*************************************************************************%
 
+tic
 clear
 close all
 
@@ -14,7 +15,7 @@ load('TechShock_identification.mat');
 lags                = 4;             % Number of lags in the first step (deriving Ztilde)
 leads               = 0;             % Number of leads in the first step (deriving Ztilde)
 H                   = 20;            % IRFs horizon
-lags_LP             = 2;            % Number of lags in the Local Projection
+lags_LP             = 2;             % Number of lags in the Local Projection
 which_trend         = 'quad';        %'BP', 'HP', 'lin', 'quad', 'none', 'demean' for Local Projection
 which_Z             = {'1','2','3','4','5'}; % Which Forecast Revision: RGDP, NGDP, RCONS, INDPROD, RINV. If it is more than one it takes the first PC
 which_shock         = {'Sentiment','Tech'};      % Tech, News, Sentiment
@@ -24,11 +25,11 @@ nPC_first           = 3;             % Number of Principal Components in the fir
 nPC_LP              = 2;             % Number of Principal Components in the second stage
 norm_SHOCK          = 0;             % Divide shock over its own variance
 printIRFs           = 1;             % Print IRFs
-printVD             = 0;              % Print Variance Decompositions
-nsimul              = 500;           % number of simulations for bootstrap
+printVD             = 0;             % Print Variance Decompositions
+nsimul              = 10000;          % number of simulations for bootstrap
 control_pop         = 0;             % Divide GDP, Cons, Hours, Investment over population
-varlist             = {'ProfitAdj','ProfitaftTax','Dividends','RealGDP','Cashflow'};%{'RealGDP','RealInvestment','RealCons','HoursAll'};%{'ProfitAdj','ProfitbefTax','ProfitaftTax','Dividends','RealGDP','Cashflow'};%{'HoursAll','Hours','HoursPerPerson','UnempRate','Employment'};%,'GDPDefl','FFR'}; % Define endogenous variables for LP
-varlist_graph       = varlist; %{'RealGDP','RealInvestment','RealCons','Hours'};
+varlist             = {'RealGDP'};   %,'RealCons','RealInvestment','HoursAll'};   %{'RealGDP','RealInvestment','RealCons','HoursAll'};%{'ProfitAdj','ProfitbefTax','ProfitaftTax','Dividends','RealGDP','Cashflow'};%{'HoursAll','Hours','HoursPerPerson','UnempRate','Employment'};%,'GDPDefl','FFR'}; % Define endogenous variables for LP
+varlist_graph       = varlist;       %{'RealGDP','RealInvestment','RealCons','Hours'};
 
 % Read main dataset
 filename                    = 'main_file';
@@ -125,7 +126,7 @@ UndistProf              = UndistributedProfits - GDPDefl;
 Cashflow                = CashFlow - GDPDefl;
 CorpEqui2Assets         = NonFinEquity - GDPDefl;
 Epay                    = 100*EPayout./exp(RealGDP);%./exp(ValueAddedNFCorp); %./exp(RealGDP);
-Drep                    = 100*DebtRep./exp(RealGDP);%./exp(ValueAddedNFCorp); %./exp(RealGDP); 
+Drep                    = 100*DebtRep./exp(RealGDP);%./exp(ValueAddedNFCorp); %./exp(RealGDP);
 % ProfAdj                 = CorpProfitsAdj - NonFinEquity;
 % ProfbT                  = CorpProfitsbefTax - NonFinEquity;
 % Prof                    = CorpProfitsNoAdj - NonFinEquity;
@@ -199,6 +200,7 @@ for is = 1:length(which_shock)
             depvarkk                           = dep_var(:,kk);
             [~, loc_start(kk,is), loc_end]     = truncate_data([depvarkk SHOCK PC_LP]);
             depvarkk                           = depvarkk(loc_start(kk,is):loc_end);
+            TT(kk,is)                          = length(depvarkk);
             SHOCKkk                            = SHOCK(loc_start(kk,is):loc_end);
             pckk                               = PC_LP(loc_start(kk,is):loc_end,:);
             
@@ -256,18 +258,21 @@ end
 % Technical Parameters
 tech_info_table;
 
-asd
-
 %*************************************************************************%
 %                                                                         %
 %                        Test Cyclicality - Canova                        %
 %                                                                         %
 %*************************************************************************%
 
+fprintf('\n')
+fprintf('\n')
+fprintf('\n')
+disp('Test Cyclicality')
+fprintf('\n')
 % Simulate AR(1), Estimate IRFs via LP, Generate Spectral Density
 rho             = 0;    % rho = 0, Hnull: flat spectral density, otherwise rho should be estimated from data as im BG
-sigm            = 1;    % variance of disturbances (shocks)
-T               = 1000; % Asyntotic (Maybe should be the same length) !!!
+sigm            = nanvar(SHOCK)^0.5;    % variance of disturbances (shocks)
+T               = max(max(TT)); % Asyntotic (Maybe should be the same length) !!!
 show_fig_AR_LP  = 1;
 show_fig_AR_SD  = 1;
 [IRF_AR,IRF_boot_AR] = generate_AR1_LP_IRF(rho,sigm,T,H,nsimul,sig,sig2,show_fig_AR_LP);
@@ -275,6 +280,7 @@ show_fig_AR_SD  = 1;
 [SD_AR(:,1),SD_AR_UP(:,1),SD_AR_LOW(:,1), ...
       SD_AR_UP2(:,1),SD_AR_LOW2(:,1),SD_AR_MED(:,1),SD_AR_boot,period] ...
       = spectral_density_MA(IRF_AR,IRF_boot_AR,sig,sig2,show_fig_AR_SD);
+
 
 %Generate Empirical Spectral Density
 show_fig_SD  = 1;
@@ -325,18 +331,21 @@ end
 
 %Compute average spectral density, D1, around the peak  and average
 %spectral density around the trough, D2
-lpeak_low    = 35; %should be adjusted with steps and IRF horizon
-lpeak_up     = 45;
+lpeak_low    = 30; %should be adjusted with steps and IRF horizon
+lpeak_up     = 40;
 ltrough_low  = 60;
 ltrough_up   = 70;
 for iv = 1:length(varlist)
       for is = 1:length(which_shock)
             pval(is,iv) = test_canova_peak_sdensity(lpeak_low,lpeak_up,ltrough_low,ltrough_up,...
-                  SD_boot(:,:,iv,is),SD_AR,period,nsimul);
+                  SD_boot(:,:,iv,is),SD_AR_boot,period,nsimul);
       end
 end
+format longG
 tech_info_test;
 toc
+
+%save WorkSpace_TenThousands_Simulations_Spectrum
 
 % %Check Overreaction and Underreaction conditional on a shock  - adjust FE
 % timing
