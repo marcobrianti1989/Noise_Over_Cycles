@@ -15,7 +15,7 @@
 
 %% Labelling block
 % declare endogenous variables
-var k q b z kbar s dp yg y c i cg cons;  
+var k q b z kbar s dp yg y c i cg cons lev;  
 
 % declare exogenous variables
 varexo ez es; 
@@ -63,9 +63,11 @@ exp(s) = exp(RHOS*s(-1) + es);
 
 dp = q - q(+1)/R;
 
+lev = b/k;
+
 i = PHI*(k-LAMBDA*k(-1));
 
-cons = q*k(-1) - R*b(-1); %THE COBSTRAINT DOES NOT BIND IN SS
+cons = q*k(-1) - R*b(-1); %THE CONSTRAINT DOES NOT BIND IN SS
 
 end;
 
@@ -84,6 +86,7 @@ dp = q*(1-1/R);
 i = PHI*(k-LAMBDA*k);
 cg = c -  C*k;
 cons = q*k - R*b;
+lev = b/k;
 end;
 
 steady;
@@ -100,7 +103,7 @@ end;
 steady;
 check;
 
-stoch_simul(periods=200,order=1,irf=25) k b q z s i  y c dp cons; % order is the Taylor approximation; %irf is the # periods 
+stoch_simul(periods=200,order=1,irf=25) k b q z lev y c dp cons; % order is the Taylor approximation; %irf is the # periods 
 
 %options_.noprint = 1;
 

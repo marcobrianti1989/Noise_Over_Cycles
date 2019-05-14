@@ -469,7 +469,7 @@ hold on
 hh2=plot(timeline,100*emp_debt,'g');
 hold off
 axis([-inf inf -12 15]);        
-plot_NBER_recessions([hh1;hh2]);     %plot shaded recession dates behind plot with handle h
+plot_NBER_recessions([hh1;hh2]);     %plot s    haded recession dates behind plot with handle h
 title('Debt repurchase');
 subplot(2,2,4)
 hh1=plot(timeline,100*y_IRF_both_fric(strmatch('dyhat',M_.endo_names,'exact'),:),'b-.');
